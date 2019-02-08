@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "1000541586546",
+    "firebase_url": "https://expensely-cs307.firebaseio.com",
+    "project_id": "expensely-cs307",
+    "storage_bucket": "expensely-cs307.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1000541586546:android:4783738348970afa",
+        "android_client_info": {
+          "package_name": "team16.cs307.expensetracker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1000541586546-2tehf2jn10c79699jkarc6lg8nfslu9u.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "team16.cs307.expensetracker",
+            "certificate_hash": "fb35ea1ec4f1784ad376f7f51ac34a3d64db437d"
+          }
+        },
+        {
+          "client_id": "1000541586546-kcq736a6s7fvon8cvi08oiuog7a36l7i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDfgKFzA7N7kgVfYMKLUMI90UFrERYlHIQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1000541586546-kcq736a6s7fvon8cvi08oiuog7a36l7i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
