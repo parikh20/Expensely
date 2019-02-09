@@ -2,10 +2,12 @@
 
     <!-- Login Activity Strings -->
     <string name="app_name">Expensely</string>
-    <string name="email_address_or_username">Email Address or Username</string>
+    <string name="email_address_or_username">Username or Email Address</string>
+    <string name="username">Username</string>
     <string name="password">Password</string>
     <string name="login">Login</string>
     <string name="forgot_password">Forgot Password</string>
     <string name="create_new_account">Create an Account</string>
+    <string name="logo">logo</string>
 
 </resources>

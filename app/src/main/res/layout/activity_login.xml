@@ -10,12 +10,20 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context=".LoginActivity">
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="150dp"
+        android:contentDescription="@string/logo"
+        android:src="@mipmap/logo_transparent_cropped"
+        android:background="@null" />
+
     <EditText
         android:id="@+id/username_exitText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/email_address_or_username"
-        android:inputType="textEmailAddress" />
+        android:inputType="textEmailAddress"
+        android:paddingTop="50dp" />
 
     <EditText
         android:id="@+id/password_editText"
@@ -60,7 +68,9 @@
             android:layout_marginTop="@dimen/padding"
             android:clickable="true"
             android:onClick="onClick"
-            android:text="@string/forgot_password" />
+            android:text="@string/forgot_password"
+            android:textSize="@dimen/text_size_normal"
+            android:focusable="true" />
 
         <TextView
             android:id="@+id/create_new_account_clickable"
@@ -70,6 +80,8 @@
             android:text="@string/create_new_account"
             android:layout_marginTop="@dimen/padding_small"
             android:onClick="onClick"
-            android:clickable="true" />
+            android:clickable="true"
+            android:textSize="@dimen/text_size_normal"
+            android:focusable="true" />
     </LinearLayout>
 </LinearLayout>

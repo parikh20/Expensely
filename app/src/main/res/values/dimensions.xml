@@ -10,4 +10,7 @@
     <dimen name="padding_small">16dp</dimen>
     <dimen name="padding_very_small">9dp</dimen>
 
+    <!-- Font sizes -->
+    <dimen name="text_size_small">13sp</dimen>
+    <dimen name="text_size_normal">16sp</dimen>
 </resources>

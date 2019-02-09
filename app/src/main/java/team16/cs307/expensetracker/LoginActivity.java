@@ -33,8 +33,6 @@ public class LoginActivity extends AppCompatActivity {
         mLoginButton = (Button) findViewById(R.id.login_button);
         mGoogleSignInButton = (SignInButton) findViewById(R.id.google_sign_in_button);
 
-        mGoogleSignInButton.setSize(SignInButton.SIZE_STANDARD);
-
         // OnClickListener for when the login button is pressed
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
