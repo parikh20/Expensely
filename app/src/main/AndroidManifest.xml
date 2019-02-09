@@ -14,14 +14,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/LightTheme">
-
-        <activity android:name=".GoogleSignInActivity" />
+        <activity android:name=".CreateNewAccountActivity"
+            android:theme="@style/LightTheme.NoActionBar" />
         <activity
             android:name=".LoginActivity"
             android:theme="@style/LightTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
