@@ -11,6 +11,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
+
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -114,7 +116,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         mCreateNewAccountClickable.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(getApplicationContext(), CreateNewAccountActivity.class);
+                startActivity(intent);
             }
         });
     }

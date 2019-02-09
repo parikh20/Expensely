@@ -3,13 +3,14 @@
     <!-- Login Activity Strings -->
     <string name="app_name">Expensely</string>
     <string name="email_address_or_username">Username or Email Address</string>
+    <string name="email_address">Email Address</string>
     <string name="username">Username</string>
     <string name="password">Password</string>
     <string name="login">Login</string>
     <string name="forgot_password">Forgot Password</string>
-    <string name="create_new_account">Create an Account</string>
     <string name="logo">logo</string>
     <string name="title_activity_create_acct">Create an Expensely Account</string>
+
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password (optional)</string>
@@ -22,5 +23,10 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+
+    <!-- Create New Account Strings -->
+    <string name="confirm_password">Confirm Password</string>
+    <string name="create_new_account">Create an Account</string>
+    <string name="create">Create</string>
 
 </resources>
