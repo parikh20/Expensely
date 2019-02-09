@@ -15,19 +15,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "1000541586546-2tehf2jn10c79699jkarc6lg8nfslu9u.apps.googleusercontent.com",
+          "client_id": "1000541586546-qf5kl40cbleegfuii0sdd16tf6fkmbav.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "team16.cs307.expensetracker",
-            "certificate_hash": "fb35ea1ec4f1784ad376f7f51ac34a3d64db437d"
-          }
-        },
-        {
-          "client_id": "1000541586546-4ub1j4nfph0cttf87b5225qpj09761f3.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "team16.cs307.expensetracker",
-            "certificate_hash": "e8c67e9119b67eb9701988bfed5caca325bafbdc"
+            "certificate_hash": "907eedf5c71fc657313379a38aa7bf5069066326"
           }
         },
         {
