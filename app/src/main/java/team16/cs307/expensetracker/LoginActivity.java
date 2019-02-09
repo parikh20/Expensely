@@ -121,7 +121,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
     public void configureGoogleSignIn() {
         GoogleSignInOptions options = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken("1000541586546-qf5kl40cbleegfuii0sdd16tf6fkmbav.apps.googleusercontent.com").requestEmail().build();
+                .requestIdToken("1000541586546-kcq736a6s7fvon8cvi08oiuog7a36l7i.apps.googleusercontent.com").requestEmail().build();
         mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(LoginActivity.this, this).addApi(Auth.GOOGLE_SIGN_IN_API, options).build();
         mGoogleApiClient.connect();
     }
@@ -135,19 +135,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             try {
                 GoogleSignInAccount account = task.getResult(ApiException.class);
 
-            } catch (ApiException e) {
-                Toast.makeText(LoginActivity.this, "Google Login Unsuccessful", Toast.LENGTH_SHORT).show();
-            }
-
-
-
-
-
-
-/*            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            if (result.isSuccess()) {
-                GoogleSignInAccount gAcc = result.getSignInAccount();
-                AuthCredential credential = GoogleAuthProvider.getCredential(gAcc.getIdToken(), null);
+                AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
                 mAuth.signInWithCredential(credential)
                         .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                             @Override
@@ -160,9 +148,17 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                 }
                             }
                         });
-            } else {
-                Toast.makeText(LoginActivity.this, "Google Login Unsuccessful", Toast.LENGTH_SHORT).show();
-            } */
+            } catch (ApiException e) {
+
+                Toast.makeText(LoginActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+
+
+
+
+
+
+
         }
     }
 
