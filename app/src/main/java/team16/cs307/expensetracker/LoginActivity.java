@@ -102,7 +102,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         mForgotPasswordClickable.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(getApplicationContext(), ResetPasswordActivity.class);
+                startActivity(intent);
             }
         });
 

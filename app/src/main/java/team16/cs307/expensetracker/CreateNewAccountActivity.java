@@ -13,7 +13,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class CreateNewAccountActivity extends AppCompatActivity {
 
-    private EditText mEmail; //Comment
+    private EditText mEmail;
     private EditText mPassword;
     private EditText mConfirmPassword;
     private Button mCreateButton;
