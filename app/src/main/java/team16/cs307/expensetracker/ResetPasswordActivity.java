@@ -97,6 +97,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
      * @return a boolean true if email exists, false if it doesn't
      */
     private boolean validateEmail(final EditText mConfirmEmail, FirebaseAuth auth) {
+        //Try to create a dummy account using user input email and check if adding is possible without exceptions
         mAuth.createUserWithEmailAndPassword(mConfirmEmail.getText().toString(), "Testifdummyworks12345").
                 addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
