@@ -1,5 +1,6 @@
 package team16.cs307.expensetracker;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -38,6 +39,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private SignInButton mGoogleSignInButton;
     private FirebaseAuth mAuth;
     private GoogleApiClient mGoogleApiClient;
+    //private ProgressDialog pd;
 
 
 
@@ -54,6 +56,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         mCreateNewAccountClickable = (TextView) findViewById(R.id.create_new_account_clickable);
         mLoginButton = (Button) findViewById(R.id.login_button);
         mGoogleSignInButton = (SignInButton) findViewById(R.id.google_sign_in_button);
+        //pd = new ProgressDialog(this);
+        //pd.setMessage("Logging in...");
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -72,14 +76,21 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     Toast.makeText(getApplicationContext(), "Please Enter Your Password", Toast.LENGTH_SHORT).show();
                     return;
                 }
+
                 mAuth.signInWithEmailAndPassword(username, password)
-                    .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+                    .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>(){
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
+                            //pd.show();
+
+
+
                             if(!task.isSuccessful()) {
                                 //TODO Launch login failure dialog or use toast
-                                Toast.makeText(LoginActivity.this,"Username or password is invalid",Toast.LENGTH_SHORT).show();
+                                //pd.dismiss();
+                                Toast.makeText(LoginActivity.this,task.getException().getLocalizedMessage(),Toast.LENGTH_SHORT).show();
                             } else {
+                                //pd.dismiss();
                                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                 LoginActivity.this.startActivity(intent);
                                 finish();
@@ -127,7 +138,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        //pd.show();
         if (requestCode == 1) {
+
             Task<GoogleSignInAccount>  task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
                 GoogleSignInAccount account = task.getResult(ApiException.class);
@@ -137,6 +150,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if(task.isSuccessful()) {
+                                    //pd.dismiss();
                                     Toast.makeText(LoginActivity.this, "Google Login Successful", Toast.LENGTH_SHORT).show();
                                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                     LoginActivity.this.startActivity(intent);
@@ -145,6 +159,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                             }
                         });
             } catch (ApiException e) {
+                //pd.dismiss();
                 Toast.makeText(LoginActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         }
