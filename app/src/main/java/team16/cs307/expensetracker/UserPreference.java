@@ -2,8 +2,10 @@ package team16.cs307.expensetracker;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.Switch;
 
 public class UserPreference extends AppCompatActivity {
+    private Switch darkmode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
