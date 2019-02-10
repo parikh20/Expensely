@@ -14,7 +14,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/LightTheme">
-        <activity android:name=".FinancialInfo"/>
+        <activity android:name=".UserPreference"></activity>
+        <activity android:name=".FinancialInfo" />
         <activity android:name=".ResetPasswordActivity" />
         <activity android:name=".ImageActivity" />
         <activity

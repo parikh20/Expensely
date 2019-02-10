@@ -20,11 +20,17 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 public class ImageActivity extends AppCompatActivity {
     private Button choose,upload;
     private ImageView imageview;
     private Uri filePath;
     ProgressDialog pd;
+    private String timeStamp;
+    private Date date;
 
     private final int PICK_IMAGE_REQUEST = 71;
     FirebaseStorage storage;
@@ -83,7 +89,8 @@ public class ImageActivity extends AppCompatActivity {
         private void uploadImage(){
                 if(filePath!=null){
                     pd.show();
-                    StorageReference ref = storageReference.child("test image");
+                    timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+                    StorageReference ref = storageReference.child(timeStamp);
                     UploadTask uploadTask = ref.putFile(filePath);
                     uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
