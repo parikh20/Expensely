@@ -26,7 +26,7 @@
         android:paddingTop="50dp" />
 
     <EditText
-        android:id="@+id/password_editText"
+        android:id="@+id/new_account_password_editText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/password"

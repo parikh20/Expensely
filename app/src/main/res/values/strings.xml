@@ -28,5 +28,8 @@
     <string name="confirm_password">Confirm Password</string>
     <string name="create_new_account">Create an Account</string>
     <string name="create">Create</string>
+    <string name="choose">Choose</string>
+    <string name="upload">Upload</string>
+
 
 </resources>
