@@ -76,6 +76,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if(!task.isSuccessful()) {
                                 //TODO Launch login failure dialog or use toast
+                                Toast.makeText(LoginActivity.this,"Username or password is invalid",Toast.LENGTH_SHORT).show();
                             } else {
                                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                 LoginActivity.this.startActivity(intent);
