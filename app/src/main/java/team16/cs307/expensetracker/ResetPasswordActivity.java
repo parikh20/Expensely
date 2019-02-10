@@ -83,12 +83,9 @@ public class ResetPasswordActivity extends AppCompatActivity {
             mConfirmEmail.setError("Emails do not match!");
             return false;
         }
-        else if(!validateEmail(mConfirmEmail,auth))
-        {
-            return false;
+        else {
+          return validateEmail(mConfirmEmail,auth);
         }
-        // Otherwise return true
-        return true;
     }
     /**
      *

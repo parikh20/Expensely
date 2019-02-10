@@ -1,6 +1,7 @@
 package team16.cs307.expensetracker;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Patterns;
@@ -9,7 +10,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+
+import java.util.Objects;
 
 public class CreateNewAccountActivity extends AppCompatActivity {
 
@@ -40,6 +47,25 @@ public class CreateNewAccountActivity extends AppCompatActivity {
                 // Check if the inputs are valid before proceeding
                 if (validateInputs(mEmail, mPassword, mConfirmPassword)) {
                     // Create a new user with the email and password
+                    mAuth.createUserWithEmailAndPassword(mEmail.getText().toString(), mPassword.getText().toString()).
+                            addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if (!task.isSuccessful())
+                                    {
+                                        try
+                                        {
+                                           throw Objects.requireNonNull(task.getException());
+                                        }
+                                        catch(FirebaseAuthUserCollisionException exception)
+                                        {
+                                            mEmail.setError("Account already exists");
+                                        }
+                                        catch (Exception ignored) {
+                                        }
+                                    }
+                                }
+                            });
                     mAuth.createUserWithEmailAndPassword(mEmail.getText().toString(), mPassword.getText().toString());
                     Intent mainActivityIntent = new Intent(getApplicationContext(), MainActivity.class);
                     startActivity(mainActivityIntent);
