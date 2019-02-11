@@ -8,32 +8,41 @@
     tools:ignore="ExtraText"
     tools:context=".ImageActivity">
 
-
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="150dp"
+        android:layout_marginTop="15dp"
+        android:background="@null"
+        android:contentDescription="@string/logo"
+        android:src="@mipmap/logo_transparent_cropped" />
     <Button
         android:id="@+id/Choose"
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="150dp"
         android:layout_height="50dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="60dp"
-        android:layout_marginEnd="8dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:text="@string/choose"/>
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="19dp"
+        android:layout_marginTop="250dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="29dp"
+        android:text="@string/choose" />
 
     <Button
         android:id="@+id/Upload"
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="150dp"
-        android:layout_alignParentRight="true"
         android:layout_height="50dp"
         android:layout_below="@id/Choose"
         android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
         android:layout_marginStart="8dp"
-        android:layout_marginLeft="137dp"
-        android:layout_marginTop="21dp"
+        android:layout_marginLeft="18dp"
+        android:layout_marginTop="42dp"
         android:layout_marginEnd="8dp"
 
+        android:layout_marginRight="30dp"
         android:layout_marginBottom="32dp"
         android:text="@string/upload" />
 
