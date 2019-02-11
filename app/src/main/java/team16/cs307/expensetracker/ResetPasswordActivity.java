@@ -1,6 +1,5 @@
 package team16.cs307.expensetracker;
 
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,66 +7,75 @@ import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.SignInMethodQueryResult;
 
 public class ResetPasswordActivity extends AppCompatActivity {
 
     private EditText mEmail;
-    private EditText mConfirmEmail;
     private Button mSendButton;
     private Button mResendButton;
     FirebaseAuth mAuth;
     private boolean exist;
-
+    private int mNumPressed;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_new_account);
+        setContentView(R.layout.activity_reset_password);
 
         // Get attributes from the screen
-        mEmail = (EditText) findViewById(R.id.email_editText);
-        mConfirmEmail = (EditText) findViewById(R.id.confirm_email_editText);
-        mSendButton = (Button) findViewById(R.id.Send_button);
-        mResendButton = (Button) findViewById(R.id.ReSend_button);
+        mEmail = (EditText) findViewById(R.id.reset_password_email_editText);
+        mSendButton = (Button) findViewById(R.id.reset_password_send_button);
+        mResendButton = (Button) findViewById(R.id.reset_password_resend_button);
         exist = true;
-
+        mNumPressed = 0;
         // Get Firebase instance
         mAuth = FirebaseAuth.getInstance();
 
-        // When a user clicks the send button, a password reset email is sent to the user
         mSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Check if the inputs are valid before proceeding
-                if (validateInputs(mEmail, mConfirmEmail, mAuth)) {
+                if (validateInputs(mEmail, mAuth)) {
                     // Send the user a password reset email
-                    mAuth.sendPasswordResetEmail(mConfirmEmail.getText().toString());
-                    mResendButton.setVisibility(View.VISIBLE);
+                    if (mNumPressed >= 3) {
+                        Toast.makeText(getApplicationContext(),"An email has been sent 3 times, please check your inbox", Toast.LENGTH_SHORT).show();
+                    } else {
+                        mAuth.sendPasswordResetEmail(mEmail.getText().toString());
+                        mResendButton.setVisibility(View.VISIBLE);
+                        mNumPressed++;
+                        Toast.makeText(getApplicationContext(), "An email has been sent to you!", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
+
+        // TODO: Make a popup that says that email has been sent. Make it so that the resent email button goes on this popup
         mResendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mAuth.sendPasswordResetEmail(mConfirmEmail.getText().toString());
+                if (mNumPressed >= 3) {
+                    Toast.makeText(getApplicationContext(),"An email has been sent 3 times, please check your inbox", Toast.LENGTH_SHORT).show();
+                } else {
+                    mAuth.sendPasswordResetEmail(mEmail.getText().toString());
+                    mNumPressed++;
+                    Toast.makeText(getApplicationContext(), "An email has been sent to you!", Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
-
     }
 
     /**
      *
      * @param mEmail EditText field for the username
-     * @param mConfirmEmail EditText field for email confirmation
      * @param auth Firebase auth
      * @return a boolean true if inputs are valid of false if not
      */
-    private boolean validateInputs(EditText mEmail, EditText mConfirmEmail, FirebaseAuth auth) {
+    private boolean validateInputs(EditText mEmail, FirebaseAuth auth) {
         // If email is empty, prompt user with an error
         if (mEmail.getText() == null) {
             mEmail.setError("Email Address must not be empty!");
@@ -79,30 +87,30 @@ public class ResetPasswordActivity extends AppCompatActivity {
             return false;
             // If the password does not equal the confirm password, prompt the user with an error
         }
-        else if (!(mEmail.getText().toString().equals(mConfirmEmail.getText().toString()))) {
-            mConfirmEmail.setError("Emails do not match!");
-            return false;
-        }
         else {
-          return validateEmail(mConfirmEmail,auth);
+          return validateEmail(mEmail, auth);
         }
     }
+
     /**
      *
-     * @param mConfirmEmail EditText field for email confirmation
+     * @param mEmail EditText field for email confirmation
      * @param auth Firebase auth
      * @return a boolean true if email exists, false if it doesn't
      */
-    private boolean validateEmail(final EditText mConfirmEmail, FirebaseAuth auth) {
+    private boolean validateEmail(final EditText mEmail, FirebaseAuth auth) {
         //Try to create a dummy account using user input email and check if adding is possible without exceptions
-        mAuth.createUserWithEmailAndPassword(mConfirmEmail.getText().toString(), "Testifdummyworks12345").
-                addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        auth.fetchSignInMethodsForEmail(mEmail.getText().toString())
+                .addOnCompleteListener(new OnCompleteListener<SignInMethodQueryResult>() {
                     @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful())
-                        {
-                            mConfirmEmail.setError("Email doesn't exist");
-                            exist = false;
+                    public void onComplete(@NonNull Task<SignInMethodQueryResult> task) {
+                        if (task.isSuccessful()) {
+                            if (task.getResult().getSignInMethods().isEmpty()) {
+                                exist = false;
+                                mEmail.setError("Email does not exist");
+                            } else {
+                                exist = true;
+                            }
                         }
                     }
                 });

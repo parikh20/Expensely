@@ -11,7 +11,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
 
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -41,9 +40,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private GoogleApiClient mGoogleApiClient;
     //private ProgressDialog pd;
 
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,11 +65,11 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 String username = mUsername.getText().toString().trim();
                 String password = mPassword.getText().toString().trim();
                 if (username.equals("")) {
-                    Toast.makeText(getApplicationContext(), "Please Enter Your Email", Toast.LENGTH_SHORT).show();
+                    mUsername.setError("Username cannot be empty");
                     return;
                 }
                 if (password.equals("")) {
-                    Toast.makeText(getApplicationContext(), "Please Enter Your Password", Toast.LENGTH_SHORT).show();
+                    mPassword.setError("Password cannot be empty");
                     return;
                 }
 
@@ -82,9 +78,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             //pd.show();
-
-
-
                             if(!task.isSuccessful()) {
                                 //TODO Launch login failure dialog or use toast
                                 //pd.dismiss();
@@ -113,8 +106,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         mForgotPasswordClickable.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), ResetPasswordActivity.class);
-                startActivity(intent);
+                Intent forgotPasswordIntent = new Intent(getApplicationContext(), ResetPasswordActivity.class);
+                startActivity(forgotPasswordIntent);
             }
         });
 
@@ -122,8 +115,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         mCreateNewAccountClickable.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), CreateNewAccountActivity.class);
-                startActivity(intent);
+                Intent createNewAccountIntent = new Intent(getApplicationContext(), CreateNewAccountActivity.class);
+                startActivity(createNewAccountIntent);
             }
         });
     }

@@ -15,7 +15,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
-
 import java.util.Objects;
 
 public class CreateNewAccountActivity extends AppCompatActivity {
@@ -51,31 +50,26 @@ public class CreateNewAccountActivity extends AppCompatActivity {
                             addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
-                                    if (!task.isSuccessful())
-                                    {
-                                        try
-                                        {
+                                    if (!task.isSuccessful()) {
+                                        try {
                                            throw Objects.requireNonNull(task.getException());
-                                        }
-                                        catch(FirebaseAuthUserCollisionException exception)
-                                        {
+
+                                        } catch(FirebaseAuthUserCollisionException exception) {
                                             mEmail.setError("Account already exists");
+                                        } catch (Exception ignored) {
                                         }
-                                        catch (Exception ignored) {
-                                        }
+                                    } else {
+                                        Intent mainActivityIntent = new Intent(getApplicationContext(), MainActivity.class);
+                                        startActivity(mainActivityIntent);
                                     }
                                 }
                             });
-                    mAuth.createUserWithEmailAndPassword(mEmail.getText().toString(), mPassword.getText().toString());
-                    Intent mainActivityIntent = new Intent(getApplicationContext(), MainActivity.class);
-                    startActivity(mainActivityIntent);
                 }
             }
         });
     }
 
     /**
-     *
      * @param mEmail EditText field for the username
      * @param mPassword EditText field for the password
      * @param mConfirmPassword EditText field for the confirm password field

@@ -16,7 +16,9 @@
         android:theme="@style/LightTheme">
         <activity android:name=".UserPreference"></activity>
         <activity android:name=".FinancialInfo" />
-        <activity android:name=".ResetPasswordActivity" />
+        <activity
+            android:name=".ResetPasswordActivity"
+            android:theme="@style/LightTheme.NoActionBar" />
         <activity android:name=".ImageActivity" />
         <activity
             android:name=".CreateNewAccountActivity"

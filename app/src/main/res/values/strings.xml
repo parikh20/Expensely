@@ -31,5 +31,9 @@
     <string name="choose">Choose</string>
     <string name="upload">Upload</string>
 
+    <!-- Reset Password Strings -->
+    <string name="weve_got_you">Forgot your password?\nNo worries, we\'ve got you!</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="resend_email">Resend Email</string>
 
 </resources>
