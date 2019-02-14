@@ -57,6 +57,20 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
         mAuth = FirebaseAuth.getInstance();
 
+        /*check if user is already signed in.  Firebase should save authentication details,
+        but because loginactivity is our first activity by default, we need to check if
+        we must redirect them to main.  No need to login again.
+        NOTE: For debugging purposes before we implement a logout button, feel free to
+        comment this following if statement out, to force a fresh login every time the app
+        is started, or test something on the loginactivity page.  -LH
+        */
+        if (mAuth.getCurrentUser() != null) {
+            //Toast.makeText(LoginActivity.this,"already logged in, redirecting", Toast.LENGTH_SHORT).show();
+            Intent i = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(i);
+            finish();
+        }
+        //configure google signin setup
         configureGoogleSignIn();
         // OnClickListener for when the login button is pressed
         mLoginButton.setOnClickListener(new View.OnClickListener() {
