@@ -29,11 +29,44 @@
     <string name="create_new_account">Create an Account</string>
     <string name="create">Create</string>
     <string name="choose">Choose</string>
-    <string name="upload">Upload</string>
+    <string name="upload">Upload Image</string>
 
     <!-- Reset Password Strings -->
     <string name="weve_got_you">Forgot your password?\nNo worries, we\'ve got you!</string>
     <string name="reset_password">Reset Password</string>
     <string name="resend_email">Resend Email</string>
+    <string name="title_activity_budget_download">BudgetDownload</string>
+
+
+
+    <!--Budget Download Strings -->
+    <string name="budg_browse">
+        Browse Budget Templates
+    </string>
+    <string name="budg_details">
+        Customize Your Financial Details
+    </string>
+    <string name="budg_browse_user">
+        Browse User-Created Budgets
+    </string>
+    <string name="budg_upload">
+        Upload Your Custom Budget
+    </string>
+    <string name="budg_custom">
+        Create a Custom Budget
+    </string>
+    <string name="budg_curr">
+        Current Budget =
+    </string>
+    <string name="budg_curr_details">
+        Budget Type: None \n
+        Limits: \n
+        \t Weekly: $0 \n
+        \t Monthly: $0 \n
+        \t Yearly: $0 \n
+    </string>
+    <string name="select_budg">
+        Select or Download a Budget
+    </string>
 
 </resources>
