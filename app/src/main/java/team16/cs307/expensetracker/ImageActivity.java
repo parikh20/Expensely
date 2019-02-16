@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
+import java.lang.String.*;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.firebase.auth.FirebaseAuth;
@@ -22,8 +23,11 @@ import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -42,7 +46,8 @@ public class ImageActivity extends AppCompatActivity {
     private String timeStamp;
     private Date date;
     private FirebaseAuth mAuth;
-    private DatabaseReference mDatabase;
+    private FirebaseFirestore db;
+
 
     private final int PICK_IMAGE_REQUEST = 71;
     FirebaseStorage storage;
@@ -54,7 +59,7 @@ public class ImageActivity extends AppCompatActivity {
         setContentView(R.layout.activity_image);
         mAuth = FirebaseAuth.getInstance();
         //Initialize
-        mDatabase = FirebaseDatabase.getInstance().getReference();
+        db = FirebaseFirestore.getInstance();
         choose = (Button) findViewById(R.id.Choose);
         upload = (Button) findViewById(R.id.Upload);
         imageview = (ImageView) findViewById(R.id.imgView);
@@ -105,27 +110,23 @@ public class ImageActivity extends AppCompatActivity {
                     timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
                     final StorageReference ref = storageReference.child(timeStamp);
                     final UploadTask uploadTask = ref.putFile(filePath);
-                    final Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                        @Override
-                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                            if (!task.isSuccessful()) {
-                                throw task.getException();
-                            }
-                            return ref.getDownloadUrl();
-                        }
-                    });
+
                     uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            Uri downloadUri = urlTask.getResult();
+                            Task <Uri> downloadUriTask = ref.getDownloadUrl();
+                            while (!downloadUriTask.isSuccessful());
+                            Uri downloadUri = downloadUriTask.getResult();
                             if (downloadUri !=null) {
-                                String imgurl = downloadUri.toString();
-                                /*Map<String, Object> map = new HashMap<>();
-                                map.put("imgurl", imgurl);*/
+                                String imgurl = downloadUri.toString().substring(downloadUri.toString().lastIndexOf('/') + 1);;
+                                Map<String, Object> map = new HashMap<>();
+                                map.put("imgurl", imgurl);
+                                db.collection("users").document(mAuth.getUid()).collection("images").document(imgurl).set(map);
 
                             }
+
                             pd.dismiss();
-                            Toast.makeText(ImageActivity.this, "Uploaded" + downloadUri.toString(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ImageActivity.this, "Uploaded" , Toast.LENGTH_SHORT).show();
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
