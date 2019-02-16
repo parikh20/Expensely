@@ -15,6 +15,13 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class CreateNewAccountActivity extends AppCompatActivity {
@@ -23,6 +30,7 @@ public class CreateNewAccountActivity extends AppCompatActivity {
     private EditText mPassword;
     private EditText mConfirmPassword;
     private Button mCreateButton;
+    private FirebaseFirestore db;
     FirebaseAuth mAuth;
 
     @Override
@@ -38,7 +46,7 @@ public class CreateNewAccountActivity extends AppCompatActivity {
 
         // Get Firebase instance
         mAuth = FirebaseAuth.getInstance();
-
+        db = FirebaseFirestore.getInstance();
         // When a user clicks the create button, create a new account
         mCreateButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,6 +67,10 @@ public class CreateNewAccountActivity extends AppCompatActivity {
                                         } catch (Exception ignored) {
                                         }
                                     } else {
+                                        //Toast.makeText(CreateNewAccountActivity.this, "User does not exist in db", Toast.LENGTH_SHORT).show();
+                                        Map<String, Object> newUser = new HashMap<>();
+                                        newUser.put("email", mAuth.getCurrentUser().getEmail());
+                                        db.collection("users").document(mAuth.getUid()).set(newUser);
                                         Intent mainActivityIntent = new Intent(getApplicationContext(), MainActivity.class);
                                         startActivity(mainActivityIntent);
                                     }

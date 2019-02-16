@@ -14,8 +14,16 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.Auth;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -23,6 +31,8 @@ import com.google.firebase.storage.UploadTask;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ImageActivity extends AppCompatActivity {
     private Button choose,upload;
@@ -31,6 +41,8 @@ public class ImageActivity extends AppCompatActivity {
     ProgressDialog pd;
     private String timeStamp;
     private Date date;
+    private FirebaseAuth mAuth;
+    private DatabaseReference mDatabase;
 
     private final int PICK_IMAGE_REQUEST = 71;
     FirebaseStorage storage;
@@ -40,8 +52,9 @@ public class ImageActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image);
-
+        mAuth = FirebaseAuth.getInstance();
         //Initialize
+        mDatabase = FirebaseDatabase.getInstance().getReference();
         choose = (Button) findViewById(R.id.Choose);
         upload = (Button) findViewById(R.id.Upload);
         imageview = (ImageView) findViewById(R.id.imgView);
@@ -90,13 +103,29 @@ public class ImageActivity extends AppCompatActivity {
                 if(filePath!=null){
                     pd.show();
                     timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
-                    StorageReference ref = storageReference.child(timeStamp);
-                    UploadTask uploadTask = ref.putFile(filePath);
+                    final StorageReference ref = storageReference.child(timeStamp);
+                    final UploadTask uploadTask = ref.putFile(filePath);
+                    final Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                        @Override
+                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                            if (!task.isSuccessful()) {
+                                throw task.getException();
+                            }
+                            return ref.getDownloadUrl();
+                        }
+                    });
                     uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            Uri downloadUri = urlTask.getResult();
+                            if (downloadUri !=null) {
+                                String imgurl = downloadUri.toString();
+                                /*Map<String, Object> map = new HashMap<>();
+                                map.put("imgurl", imgurl);*/
+
+                            }
                             pd.dismiss();
-                            Toast.makeText(ImageActivity.this, "Uploaded", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ImageActivity.this, "Uploaded" + downloadUri.toString(), Toast.LENGTH_SHORT).show();
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
@@ -110,6 +139,8 @@ public class ImageActivity extends AppCompatActivity {
                 }
 
     }
+    //delete photo
+
 
 }
 

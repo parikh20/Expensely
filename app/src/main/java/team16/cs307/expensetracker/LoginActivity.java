@@ -1,6 +1,6 @@
 package team16.cs307.expensetracker;
 
-import android.app.ProgressDialog;
+
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +11,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,6 +27,17 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
@@ -38,6 +50,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private SignInButton mGoogleSignInButton;
     private FirebaseAuth mAuth;
     private GoogleApiClient mGoogleApiClient;
+    FirebaseFirestore db;
     //private ProgressDialog pd;
 
     @Override
@@ -56,7 +69,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         //pd.setMessage("Logging in...");
 
         mAuth = FirebaseAuth.getInstance();
-
+        db = FirebaseFirestore.getInstance();
         /*check if user is already signed in.  Firebase should save authentication details,
         but because loginactivity is our first activity by default, we need to check if
         we must redirect them to main.  No need to login again.
@@ -66,9 +79,35 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         */
         if (mAuth.getCurrentUser() != null) {
             //Toast.makeText(LoginActivity.this,"already logged in, redirecting", Toast.LENGTH_SHORT).show();
-            Intent i = new Intent(LoginActivity.this, MainActivity.class);
-            startActivity(i);
-            finish();
+            //Check if user is already in the DB, if not, set up DB (to be moved to on login and on createacct)
+            DocumentReference user = db.collection("users").document(mAuth.getCurrentUser().getUid());
+            user.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            //user exists in db
+                            Toast.makeText(LoginActivity.this, "User is in db!", Toast.LENGTH_SHORT).show();
+
+                        } else {
+                            //user does not exist in db
+                            Toast.makeText(LoginActivity.this, "User does not exist in db", Toast.LENGTH_SHORT).show();
+                            Map<String, Object> newUser = new HashMap<>();
+                            newUser.put("email", mAuth.getCurrentUser().getEmail());
+                            db.collection("users").document(mAuth.getUid()).set(newUser);
+                        }
+                    } else {
+                        Toast.makeText(LoginActivity.this, "Failure to check db", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+
+
+            Toast.makeText(LoginActivity.this,"user path = " + mAuth.getCurrentUser().getUid(), Toast.LENGTH_SHORT).show();
+ //           Intent i = new Intent(LoginActivity.this, MainActivity.class);
+//            startActivity(i);
+  //          finish();
         }
         //configure google signin setup
         configureGoogleSignIn();
@@ -98,6 +137,29 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                 Toast.makeText(LoginActivity.this,task.getException().getLocalizedMessage(),Toast.LENGTH_SHORT).show();
                             } else {
                                 //pd.dismiss();
+                                //check if user exists in the db, then add if they do not
+                                DocumentReference user = db.collection("users").document(mAuth.getCurrentUser().getUid());
+                                user.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            DocumentSnapshot document = task.getResult();
+                                            if (document.exists()) {
+                                                //user exists in db
+                                                Toast.makeText(LoginActivity.this, "User is in db!", Toast.LENGTH_SHORT).show();
+
+                                            } else {
+                                                //user does not exist in db
+                                                Toast.makeText(LoginActivity.this, "User does not exist in db", Toast.LENGTH_SHORT).show();
+                                                Map<String, Object> newUser = new HashMap<>();
+                                                newUser.put("email", mAuth.getCurrentUser().getEmail());
+                                                db.collection("users").document(mAuth.getUid()).set(newUser);
+                                            }
+                                        } else {
+                                            Toast.makeText(LoginActivity.this, "Failure to check db", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
                                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                 LoginActivity.this.startActivity(intent);
                                 finish();
@@ -158,6 +220,29 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if(task.isSuccessful()) {
                                     //pd.dismiss();
+                                    //check for db exist, add if they are not in db
+                                    DocumentReference user = db.collection("users").document(mAuth.getCurrentUser().getUid());
+                                    user.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                DocumentSnapshot document = task.getResult();
+                                                if (document.exists()) {
+                                                    //user exists in db
+                                                    Toast.makeText(LoginActivity.this, "User is in db!", Toast.LENGTH_SHORT).show();
+
+                                                } else {
+                                                    //user does not exist in db
+                                                    Toast.makeText(LoginActivity.this, "User does not exist in db", Toast.LENGTH_SHORT).show();
+                                                    Map<String, Object> newUser = new HashMap<>();
+                                                    newUser.put("email", mAuth.getCurrentUser().getEmail());
+                                                    db.collection("users").document(mAuth.getUid()).set(newUser);
+                                                }
+                                            } else {
+                                                Toast.makeText(LoginActivity.this, "Failure to check db", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    });
                                     Toast.makeText(LoginActivity.this, "Google Login Successful", Toast.LENGTH_SHORT).show();
                                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                     LoginActivity.this.startActivity(intent);
