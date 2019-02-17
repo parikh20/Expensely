@@ -88,11 +88,11 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                         DocumentSnapshot document = task.getResult();
                         if (document.exists()) {
                             //user exists in db
-                            Toast.makeText(LoginActivity.this, "User is in db!", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(LoginActivity.this, "User is in db!", Toast.LENGTH_SHORT).show();
 
                         } else {
                             //user does not exist in db
-                            Toast.makeText(LoginActivity.this, "User does not exist in db", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(LoginActivity.this, "User does not exist in db", Toast.LENGTH_SHORT).show();
                             Map<String, Object> newUser = new HashMap<>();
                             newUser.put("email", mAuth.getCurrentUser().getEmail());
                             db.collection("users").document(mAuth.getUid()).set(newUser);

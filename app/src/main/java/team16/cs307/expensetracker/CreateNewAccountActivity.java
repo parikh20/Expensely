@@ -70,6 +70,7 @@ public class CreateNewAccountActivity extends AppCompatActivity {
                                         //Toast.makeText(CreateNewAccountActivity.this, "User does not exist in db", Toast.LENGTH_SHORT).show();
                                         Map<String, Object> newUser = new HashMap<>();
                                         newUser.put("email", mAuth.getCurrentUser().getEmail());
+
                                         db.collection("users").document(mAuth.getUid()).set(newUser);
                                         Intent mainActivityIntent = new Intent(getApplicationContext(), MainActivity.class);
                                         startActivity(mainActivityIntent);

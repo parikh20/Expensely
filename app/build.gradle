@@ -38,7 +38,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-core:16.0.7'
     implementation 'com.google.android.gms:play-services-auth:16.0.1'
     implementation 'com.google.firebase:firebase-firestore:18.0.1'
-
+    implementation 'com.jakewharton.threetenabp:threetenabp:1.1.2'
     //image test
 
 }
