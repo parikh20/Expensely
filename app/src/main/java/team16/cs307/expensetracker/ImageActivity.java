@@ -84,26 +84,35 @@ public class ImageActivity extends AppCompatActivity {
     }
 
         private void chooseImage(){
+             //choose images from gallery
             //Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+            //startActivityForResult(intent,PICK_IMAGE_REQUEST);
+
+            //Choose multiple images from file explorer
             Intent intent = new Intent();
             intent.setType("image/*");
             intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE,true);
             intent.setAction(intent.ACTION_GET_CONTENT);
-            //startActivityForResult(intent,PICK_IMAGE_REQUEST);
             startActivityForResult(Intent.createChooser(intent,"Select Picture"),PICK_IMAGE_REQUEST);
         }
         @Override
         protected void onActivityResult(int requestCode,int resultCode,Intent data) {
             super.onActivityResult(requestCode, resultCode, data);
-            if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
-                filePath = data.getData();
-                try {
-                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
-                    imageview.setImageBitmap(bitmap);
-                } catch (Exception e) {
-                    e.printStackTrace();
+            if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK ) {
+                if(data.getClipData()!=null){
+                    Toast.makeText(ImageActivity.this,"multiple",Toast.LENGTH_SHORT).show();
+                }else if(data.getData() != null){
+                    filePath = data.getData();
+                    try {
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
+                        imageview.setImageBitmap(bitmap);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+
+                    }
 
                 }
+
             }
         }
 
