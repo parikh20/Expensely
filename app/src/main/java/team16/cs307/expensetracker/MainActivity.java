@@ -15,8 +15,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        uploadpic = (Button) findViewById(R.id.photoupload);
-        selectbudg = findViewById(R.id.select_budg);
+        uploadpic = (Button) findViewById(R.id.MainActivity_photoupload);
+        selectbudg = findViewById(R.id.MainActivity_select_budg);
 
         //upload photo
         uploadpic.setOnClickListener(new View.OnClickListener() {
