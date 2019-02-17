@@ -60,9 +60,9 @@ public class ImageActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         //Initialize
         db = FirebaseFirestore.getInstance();
-        choose = (Button) findViewById(R.id.Choose);
-        upload = (Button) findViewById(R.id.Upload);
-        imageview = (ImageView) findViewById(R.id.imgView);
+        choose = (Button) findViewById(R.id.ImageActivity_Choose);
+        upload = (Button) findViewById(R.id.ImageActivity_Upload);
+        imageview = (ImageView) findViewById(R.id.ImageActivity_imgView);
         pd = new ProgressDialog(this);
         pd.setMessage("Uploading...");
         storage  = FirebaseStorage.getInstance();
@@ -84,10 +84,13 @@ public class ImageActivity extends AppCompatActivity {
     }
 
         private void chooseImage(){
-            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
-            //intent.setType("imgae/*");
-            //intent.setAction(intent.ACTION_GET_CONTENT);
-            startActivityForResult(intent,PICK_IMAGE_REQUEST);
+            //Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+            Intent intent = new Intent();
+            intent.setType("image/*");
+            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE,true);
+            intent.setAction(intent.ACTION_GET_CONTENT);
+            //startActivityForResult(intent,PICK_IMAGE_REQUEST);
+            startActivityForResult(Intent.createChooser(intent,"Select Picture"),PICK_IMAGE_REQUEST);
         }
         @Override
         protected void onActivityResult(int requestCode,int resultCode,Intent data) {
@@ -108,7 +111,7 @@ public class ImageActivity extends AppCompatActivity {
                 if(filePath!=null){
                     pd.show();
                     timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
-                    final StorageReference ref = storageReference.child(timeStamp);
+                    final StorageReference ref = storageReference.child(mAuth.getUid()+"/"+timeStamp);
                     final UploadTask uploadTask = ref.putFile(filePath);
 
                     uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {

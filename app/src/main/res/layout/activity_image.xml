@@ -16,7 +16,7 @@
         android:contentDescription="@string/logo"
         android:src="@mipmap/logo_transparent_cropped" />
     <Button
-        android:id="@+id/Choose"
+        android:id="@+id/ImageActivity_Choose"
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="150dp"
         android:layout_height="50dp"
@@ -30,11 +30,11 @@
         android:text="@string/choose" />
 
     <Button
-        android:id="@+id/Upload"
+        android:id="@+id/ImageActivity_Upload"
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="150dp"
         android:layout_height="50dp"
-        android:layout_below="@id/Choose"
+        android:layout_below="@id/ImageActivity_Choose"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_marginStart="8dp"
@@ -47,10 +47,10 @@
         android:text="@string/upload" />
 
     <ImageView
-        android:id="@+id/imgView"
+        android:id="@+id/ImageActivity_imgView"
         android:layout_width="388dp"
         android:layout_height="451dp"
-        android:layout_below="@id/Upload"
+        android:layout_below="@id/ImageActivity_Upload"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="5dp"
