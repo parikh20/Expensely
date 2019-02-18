@@ -89,7 +89,7 @@ public class ResetPasswordActivityTest {
         }
 
         //   ValidateEmail for string containing "\n"
-        mEmail.setText("")
+        mEmail.setText("hello\n");
 
         try {
             mSendButton.performClick();
@@ -104,9 +104,30 @@ public class ResetPasswordActivityTest {
              */
         } catch (Exception | Error e) {
             e.printStackTrace();
-            Log.e("Email_empty_string", "Test failed. Condition(s): String username == \"\"\nError or Exception");
+            Log.e("Email_newline_string", "Test failed. Condition(s): String username == \"\"\nError or Exception");
             assert(false);
         }
+
+        //    ValidateEmail for string containing special chars
+        mEmail.setText("∑∑");
+        try {
+            mSendButton.performClick();
+            //TODO how to tell if toast happens? Need to check Toast text for appropriate message
+            /*
+            if(//Toast happens and message is "Please Enter Your Email") {
+                assert(true);
+            } else {
+                Log.e("Email_empty_string", "Test failed. Condition(s): String username == \"\"");
+                assert(false);
+            }
+             */
+        } catch (Exception | Error e) {
+            e.printStackTrace();
+            Log.e("Email_special_string", "Test failed. Condition(s): String username == \"\"\nError or Exception");
+            assert(false);
+        }
+
+        //     
 
 
     }
