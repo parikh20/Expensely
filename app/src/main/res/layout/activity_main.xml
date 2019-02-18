@@ -7,7 +7,7 @@
     tools:context=".MainActivity">
 
     <Button
-        android:id="@+id/photoupload"
+        android:id="@+id/MainActivity_photoupload"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -23,7 +23,7 @@
         app:layout_constraintVertical_bias="0.851" />
 
     <Button
-        android:id="@+id/select_budg"
+        android:id="@+id/MainActivity_select_budg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/select_budg"

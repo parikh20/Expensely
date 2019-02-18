@@ -48,13 +48,15 @@
 
     <ImageView
         android:id="@+id/ImageActivity_imgView"
-        android:layout_width="388dp"
-        android:layout_height="451dp"
+        android:layout_width="390dp"
+        android:layout_height="272dp"
         android:layout_below="@id/ImageActivity_Upload"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
         android:layout_marginStart="5dp"
         android:layout_marginTop="5dp"
-        android:layout_marginEnd="5dp" />
+        android:layout_marginEnd="0dp"
+        android:layout_marginBottom="30dp" />
 
 </RelativeLayout>
