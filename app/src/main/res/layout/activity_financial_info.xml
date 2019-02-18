@@ -7,7 +7,7 @@
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
     tools:ignore="ExtraText"
-    tools:context=".FinancialInfo">
+    tools:context=".FinancialInfoActivity">
 
 
     <EditText
