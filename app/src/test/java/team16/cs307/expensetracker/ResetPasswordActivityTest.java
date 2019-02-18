@@ -88,7 +88,7 @@ public class ResetPasswordActivityTest {
             assert(false);
         }
 
-        //   ValidateEmail for string containing "\n"
+        //   ValidateInput for string containing "\n"
         mEmail.setText("hello\n");
 
         try {
@@ -108,7 +108,7 @@ public class ResetPasswordActivityTest {
             assert(false);
         }
 
-        //    ValidateEmail for string containing special chars
+        //    ValidateInput for string containing special chars
         mEmail.setText("∑∑");
         try {
             mSendButton.performClick();
@@ -127,7 +127,7 @@ public class ResetPasswordActivityTest {
             assert(false);
         }
 
-        //     
+        //
 
 
     }
