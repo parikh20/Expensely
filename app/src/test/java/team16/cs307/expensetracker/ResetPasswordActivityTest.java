@@ -1,5 +1,13 @@
 package team16.cs307.expensetracker;
 
+import android.util.Log;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+
+import com.google.android.gms.common.SignInButton;
+import com.google.firebase.auth.FirebaseAuth;
+
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -28,5 +36,40 @@ public class ResetPasswordActivityTest {
             c) !task.isSuccessful
             d) task.isSuccessful
          */
+        //  Setup
+        EditText mEmail;
+        Button mSendButton;
+        Button mResendButton;
+        FirebaseAuth mAuth;
+        boolean exist;
+        int mNumPressed;
+        
+        mEmail = (EditText) findViewById(R.id.reset_password_email_editText);
+        mSendButton = (Button) findViewById(R.id.reset_password_send_button);
+        mResendButton = (Button) findViewById(R.id.reset_password_resend_button);
+
+        // Get Firebase instance
+        mAuth = FirebaseAuth.getInstance();
+
+        //  1
+        assertNotNull(mEmail);
+        assertNotNull(mSendButton);
+        assertNotNull(mResendButton);
+
+        //  2
+        assertNotNull(mAuth);
+
+        //  3
+        mEmail.setText(null);
+
+        try {
+            mEmail.performClick();
+            assert(true);
+        } catch (Exception | Error e){
+            e.printStackTrace();
+            Log.e("Email_null", "Test failed. Condition(s): mEmail.getText() == null");
+            assert(false);
+        }
+
     }
 }
