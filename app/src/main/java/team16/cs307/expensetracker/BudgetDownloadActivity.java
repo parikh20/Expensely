@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
-public class BudgetDownload extends AppCompatActivity {
+public class BudgetDownloadActivity extends AppCompatActivity {
 
     //budg_curr displays the name of the currently selected budget
     //budg_curr_details displays the stats of this budget (i.e. limits, source, etc)

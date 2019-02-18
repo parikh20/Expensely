@@ -5,7 +5,6 @@ import android.app.Instrumentation;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.view.View;
-import android.widget.Button;
 
 import org.junit.After;
 import org.junit.Before;
@@ -56,7 +55,7 @@ public class MainActivityTest {
 
     @Test
     public void testBudgetDownload(){
-        monitor = getInstrumentation().addMonitor(BudgetDownload.class.getName(),null,false);
+        monitor = getInstrumentation().addMonitor(BudgetDownloadActivity.class.getName(),null,false);
         assertNotNull(mActivity.findViewById(R.id.MainActivity_select_budg));
 
         onView(withId(R.id.MainActivity_select_budg)).perform(click());

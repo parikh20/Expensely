@@ -31,6 +31,14 @@
           }
         },
         {
+          "client_id": "1000541586546-l6splk6169s4ibigrdi49b75rhfge913.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "team16.cs307.expensetracker",
+            "certificate_hash": "e8c67e9119b67eb9701988bfed5caca325bafbdc"
+          }
+        },
+        {
           "client_id": "1000541586546-kcq736a6s7fvon8cvi08oiuog7a36l7i.apps.googleusercontent.com",
           "client_type": 3
         }

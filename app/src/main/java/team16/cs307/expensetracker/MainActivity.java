@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
         selectbudg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                selectBudg();
+                selectBudget();
             }
         });
 
@@ -42,8 +42,8 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(getApplicationContext(),ImageActivity.class);
             startActivityForResult(intent,1);
         }
-        private void selectBudg() {
-            Intent intent = new Intent(getApplicationContext(), BudgetDownload.class);
+        private void selectBudget() {
+            Intent intent = new Intent(getApplicationContext(), BudgetDownloadActivity.class);
             startActivity(intent);
             finish();
         }

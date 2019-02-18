@@ -14,7 +14,7 @@
         android:layout_height="150dp"
         android:layout_marginTop="15dp"
         android:background="@null"
-        android:contentDescription="@string/logo"
+        android:contentDescription="@string/login_activity_logo"
         android:src="@mipmap/logo_transparent_cropped" />
 
     <Button
@@ -27,7 +27,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="450dp"
         android:layout_marginEnd="8dp"
-        android:text="@string/budg_browse" />
+        android:text="@string/budget_activity_browse" />
 
     <Button
         android:id="@+id/budg_custom"
@@ -41,7 +41,7 @@
         android:layout_marginTop="42dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="32dp"
-        android:text="@string/budg_custom" />
+        android:text="@string/budget_activity_custom" />
 
     <TextView
         android:id="@+id/budg_curr"
@@ -49,7 +49,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/budg_logo"
         android:layout_marginTop="21dp"
-        android:text="@string/budg_curr"
+        android:text="@string/budget_activity_current"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textStyle="bold" />
@@ -60,7 +60,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/budg_curr"
         android:layout_marginTop="21dp"
-        android:text="@string/budg_curr_details"
+        android:text="@string/budget_activity_current_details"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 

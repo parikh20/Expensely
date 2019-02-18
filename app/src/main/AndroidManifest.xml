@@ -16,12 +16,12 @@
         android:supportsRtl="true"
         android:theme="@style/LightTheme">
         <activity
-            android:name=".BudgetDownload"
+            android:name=".BudgetDownloadActivity"
             android:label="@string/title_activity_budget_download"
             android:parentActivityName=".MainActivity"
             android:theme="@style/LightTheme.NoActionBar">
         </activity>
-        <activity android:name=".UserPreference" />
+        <activity android:name=".UserPreferenceActivity" />
         <activity android:name=".FinancialInfo" />
         <activity
             android:name=".ResetPasswordActivity"

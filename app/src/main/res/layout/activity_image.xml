@@ -13,7 +13,7 @@
         android:layout_height="150dp"
         android:layout_marginTop="15dp"
         android:background="@null"
-        android:contentDescription="@string/logo"
+        android:contentDescription="@string/login_activity_logo"
         android:src="@mipmap/logo_transparent_cropped" />
     <Button
         android:id="@+id/ImageActivity_Choose"
@@ -27,7 +27,7 @@
         android:layout_marginTop="250dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="29dp"
-        android:text="@string/choose" />
+        android:text="@string/image_activity_choose" />
 
     <Button
         android:id="@+id/ImageActivity_Upload"
@@ -44,7 +44,7 @@
 
         android:layout_marginRight="30dp"
         android:layout_marginBottom="32dp"
-        android:text="@string/upload" />
+        android:text="@string/image_activity_upload" />
 
     <ImageView
         android:id="@+id/ImageActivity_imgView"

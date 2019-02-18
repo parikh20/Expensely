@@ -13,7 +13,7 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="150dp"
-        android:contentDescription="@string/logo"
+        android:contentDescription="@string/login_activity_logo"
         android:src="@mipmap/logo_transparent_cropped"
         android:background="@null" />
 
@@ -21,7 +21,7 @@
         android:id="@+id/email_exitText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/email_address"
+        android:hint="@string/login_activity_email_address"
         android:inputType="textEmailAddress"
         android:paddingTop="50dp" />
 
@@ -29,14 +29,14 @@
         android:id="@+id/new_account_password_editText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/password"
+        android:hint="@string/login_activity_password"
         android:inputType="textPassword" />
 
     <EditText
         android:id="@+id/confirm_password_editText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/confirm_password"
+        android:hint="@string/create_new_account_confirm_password"
         android:inputType="textPassword" />
 
     <Button
@@ -44,7 +44,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="@string/create"
+        android:text="@string/create_new_account_create"
         android:ems="7"
         android:layout_marginTop="@dimen/padding" />
 

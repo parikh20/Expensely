@@ -4,7 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Switch;
 
-public class UserPreference extends AppCompatActivity {
+public class UserPreferenceActivity extends AppCompatActivity {
     private Switch darkmode;
 
     @Override
