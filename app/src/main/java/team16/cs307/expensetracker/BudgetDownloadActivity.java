@@ -9,6 +9,17 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.w3c.dom.Text;
 
@@ -24,7 +35,9 @@ public class BudgetDownloadActivity extends AppCompatActivity {
     private TextView mBudg_curr_details;
     private Button mBudg_browse;
     private Button mBudg_custom;
-
+    private FirebaseFirestore db;
+    private FirebaseAuth mAuth;
+    public Budget curr_budg;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,12 +46,11 @@ public class BudgetDownloadActivity extends AppCompatActivity {
         mBudg_curr =  findViewById(R.id.budg_curr);
         mBudg_curr_details = findViewById(R.id.budg_curr_details);
         mBudg_custom = (Button) findViewById(R.id.budg_custom);
+        db = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
 
 
 
-        //Defaults
-        String budg_curr = "Current Budget: No Active Budget";
-        String budg_curr_details = "Budget Type: None \nLimits: \n\t Weekly: $0 \n\t Monthly: $0 \n\t Yearly: $0 \n ";
 
         /*
         TODO:
@@ -50,9 +62,32 @@ public class BudgetDownloadActivity extends AppCompatActivity {
                 this will also refresh when the user returns from picking a new budget
          */
 
-        mBudg_curr.setText(String.valueOf(budg_curr));
-        mBudg_curr_details.setText(String.valueOf(budg_curr_details));
+        DocumentReference ref = db.collection("users").document(mAuth.getUid()).collection("Preferences").document("Current Budget");
+        ref.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                //Defaults
+                String budg_curr = "Current Budget: No Active Budget";
+                String budg_curr_details = "Budget Type: None \nLimits: \n\t Weekly: $0 \n\t Monthly: $0 \n\t Yearly: $0 \n ";
+                curr_budg = documentSnapshot.toObject(Budget.class);
+                Toast.makeText(BudgetDownloadActivity.this, "found a current budget" + curr_budg.getName(), Toast.LENGTH_SHORT).show();
+                if (curr_budg != null) {
 
+                    budg_curr = "Current Budget: " + curr_budg.getName();
+
+                    budg_curr_details = "Budget Type: Custom \nLimits: \n\t Weekly: $"+ curr_budg.getLimitWeekly() +" \n\t Monthly: $"+ curr_budg.getLimitMonthly() +" \n\t Yearly: $"+ curr_budg.getLimitYearly() +" \n Additional Limits: " + curr_budg.getCustomLimits().size();
+
+                } else {
+                    Toast.makeText(BudgetDownloadActivity.this, "No current budget", Toast.LENGTH_LONG).show();
+                }
+
+                mBudg_curr.setText(String.valueOf(budg_curr));
+                mBudg_curr_details.setText(String.valueOf(budg_curr_details));
+
+
+
+            }
+        });
 
         mBudg_browse.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,9 +113,9 @@ public class BudgetDownloadActivity extends AppCompatActivity {
         */
     }
     private void createCustomBudget() {
-        /* TODO: redirect to custom budget creation screen
-        Intent intent = new Intent(getApplicationContext(), BrowseBudgets.class);
+
+        Intent intent = new Intent(getApplicationContext(), CustomBudgetCreation.class);
         startActivity(intent);
-        */
+        finish();
     }
 }

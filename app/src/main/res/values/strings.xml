@@ -33,7 +33,7 @@
     <string name="reset_password_activity_reset_password">Reset Password</string>
     <string name="reset_password_activity_resend_email">Resend Email</string>
 
-    <!--Budget Download Strings -->
+    <!--team16.cs307.expensetracker.Budget Download Strings -->
     <string name="title_activity_budget_download">Budget Download</string>
     <string name="budget_activity_browse">Browse Budget Templates</string>
     <string name="budget_activity_details">Customize Your Financial Details</string>
@@ -43,5 +43,24 @@
     <string name="budget_activity_current">Current Budget =</string>
     <string name="budget_activity_current_details">Budget Type: None\nLimits:\n\t Weekly: $0\n\t Monthly: $0\n\t Yearly: $0\n</string>
     <string name="budget_activity_select_budget">Select or Download a Budget</string>
+
+    <!--team16.cs307.expensetracker.Budget Custom strings -->
+    <string name="custom_budget_intro">Create your new custom budget!</string>
+    <string name="custom_budget_monthly">Enter a Monthly Spending Limit</string>
+    <string name="custom_budget_weekly">Enter a Weekly Spending Limit</string>
+    <string name="custom_budget_yearly">Enter a Yearly Spending Limit</string>
+    <string name="custom_budget_add_limit">Add a Custom Limit</string>
+    <string name="custom_budget_current_limits">Current Limits: </string>
+    <string name="custom_budget_finish">Finish</string>
+    <string name="custom_budget_name">Enter a name for your budget</string>
+
+    <!-- Limit Custom Strings -->
+
+    <string name="custom_limit_type">Enter a category</string>
+    <string name="custom_limit_monthly">Enter a Monthly Spending Limit</string>
+    <string name="custom_limit_weekly">Enter a Weekly Spending Limit</string>
+    <string name="custom_limit_yearly">Enter a Yearly Spending Limit</string>
+    <string name="custom_limit_finish">Finish</string>
+
 
 </resources>

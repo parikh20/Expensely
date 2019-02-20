@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    tools:ignore="ExtraText"
+    >
+
+    <ImageView
+        android:id="@+id/custom_budget_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="150dp"
+        android:layout_marginTop="15dp"
+        android:background="@null"
+        android:contentDescription="@string/login_activity_logo"
+        android:src="@mipmap/logo_transparent_cropped" />
+
+
+
+    <TextView
+        android:id="@+id/custom_budget_intro"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="170dp"
+        android:layout_centerHorizontal="true"
+        android:text="@string/custom_budget_intro" />
+
+    <EditText
+        android:id="@+id/custom_budget_monthly"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="340dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="@string/custom_budget_monthly" />
+
+    <EditText
+        android:id="@+id/custom_budget_weekly"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="265dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="@string/custom_budget_weekly" />
+
+    <EditText
+        android:id="@+id/custom_budget_yearly"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="415dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="@string/custom_budget_yearly" />
+
+    <Button
+        android:id="@+id/custom_budget_finish"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="645dp"
+
+        android:layout_centerHorizontal="true"
+        android:text="@string/custom_budget_finish" />
+
+    <TextView
+        android:id="@+id/custom_budget_current_limits"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="485dp"
+        android:text="@string/custom_budget_current_limits" />
+
+    <Button
+        android:id="@+id/custom_budget_add_limit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="565dp"
+        android:layout_centerHorizontal="true"
+        android:text="@string/custom_budget_add_limit" />
+
+    <EditText
+        android:id="@+id/custom_budget_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:layout_marginTop="195dp"
+        android:inputType="textPersonName"
+        android:text="@string/custom_budget_name" />
+
+</RelativeLayout>

@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
         private void selectBudget() {
             Intent intent = new Intent(getApplicationContext(), BudgetDownloadActivity.class);
             startActivity(intent);
-            finish();
+
         }
     }
 
