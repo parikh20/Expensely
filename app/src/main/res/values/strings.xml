@@ -1,5 +1,7 @@
 <resources>
 
+    <!-- Main Activity Strings -->
+    <string name="add_expense">Add New Expense</string>
     <!-- Login Activity Strings -->
     <string name="app_name">Expensely</string>
     <string name="login_activity_email_address">Email Address</string>
@@ -61,6 +63,21 @@
     <string name="custom_limit_weekly">Enter a Weekly Spending Limit</string>
     <string name="custom_limit_yearly">Enter a Yearly Spending Limit</string>
     <string name="custom_limit_finish">Finish</string>
+
+    <!-- Expense Custom Strings -->
+    <string name="custom_expense_intro">Enter your purchase information</string>
+    <string name="custom_expense_name">Give your purchase a name</string>
+    <string name="custom_expense_location">Where did you make this purchase?</string>
+    <string name="custom_expense_repeating">Is this a repeating purchase? (Y/N)</string>
+    <string name="custom_expense_frequency">If so, how often do you make this purchase? (weekly/monthly/yearly)</string>
+    <string name="custom_expense_amount">How much did you spend?</string>
+    <string name="custom_expense_category">Add a custom tag to this purchase</string>
+    <string name="custom_expense_tags">Current Tags: </string>
+    <string name="custom_expense_priority_prompt">How important was this purchase?</string>
+    <string name="custom_expense_outlier">Is this purchase an outlier?</string>
+    <string name="custom_expense_monthly">Yes, do not count this towards my Monthly budget</string>
+    <string name="custom_expense_weekly">Yes, do not count this towards my Weekly budget</string>
+    <string name="custom_expense_finish">Finish</string>
 
 
 </resources>
