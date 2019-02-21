@@ -70,8 +70,8 @@ public class BudgetDownloadActivity extends AppCompatActivity {
                 String budg_curr = "Current Budget: No Active Budget";
                 String budg_curr_details = "Budget Type: None \nLimits: \n\t Weekly: $0 \n\t Monthly: $0 \n\t Yearly: $0 \n ";
                 curr_budg = documentSnapshot.toObject(Budget.class);
-                Toast.makeText(BudgetDownloadActivity.this, "found a current budget" + curr_budg.getName(), Toast.LENGTH_SHORT).show();
                 if (curr_budg != null) {
+                    Toast.makeText(BudgetDownloadActivity.this, "found a current budget" + curr_budg.getName(), Toast.LENGTH_SHORT).show();
 
                     budg_curr = "Current Budget: " + curr_budg.getName();
 
