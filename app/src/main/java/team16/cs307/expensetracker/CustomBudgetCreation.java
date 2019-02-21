@@ -1,5 +1,6 @@
 package team16.cs307.expensetracker;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -49,7 +50,21 @@ public class CustomBudgetCreation extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
 
+        mAddLimit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                /*HashMap <String,Object> lims = new HashMap<>();
+                int i = 0;
+                for (Limit l : limits) {
+                    lims.put(String.valueOf(i), l);
+                }*/
+                //db.collection("users").document(mAuth.getUid()).collection("Preferences").document("Working Limits").set(lims);
+                Toast.makeText(CustomBudgetCreation.this, "Buttom Clicked", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getApplicationContext(), CustomLimitCreation.class);
+                startActivityForResult(intent, 100);
 
+            }
+        });
         mFinish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -75,7 +90,7 @@ public class CustomBudgetCreation extends AppCompatActivity {
 
                 Budget budget = new Budget(mName.getText().toString(), w, m, y, limits);
                 Toast.makeText(CustomBudgetCreation.this, "Budget Created", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                //Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 db.collection("users").document(mAuth.getUid()).collection("Budgets").document(mName.getText().toString()).set(budget);
                 /*HashMap<String, Object> map = new HashMap<>();
                 map.put("current budget", budget);*/
@@ -87,5 +102,26 @@ public class CustomBudgetCreation extends AppCompatActivity {
     }
     public void addLimit(Limit l) {
         limits.add(l);
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == 100) {
+            if (resultCode == Activity.RESULT_OK) {
+                String type = data.getStringExtra("type");
+                String w = data.getStringExtra("w");
+                String m = data.getStringExtra("m");
+                String y = data.getStringExtra("y");
+
+                Limit l = new Limit(type, Double.parseDouble(w), Double.parseDouble(m), Double.parseDouble(y));
+                addLimit(l);
+                String listLimits = "Current Limits: ";
+                for (Limit lim : limits) {
+                    listLimits += lim.getCategory();
+                    listLimits += ", ";
+                }
+                mLimits.setText(listLimits.substring(0, listLimits.lastIndexOf(",")));
+            }
+
+        }
     }
 }

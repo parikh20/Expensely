@@ -15,12 +15,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/LightTheme">
-        <activity android:name=".CustomBudgetCreation"></activity>
+        <activity android:name=".CustomLimitCreation"></activity>
+        <activity android:name=".CustomBudgetCreation" />
         <activity
             android:name=".BudgetDownloadActivity"
             android:label="@string/title_activity_budget_download"
             android:parentActivityName=".MainActivity"
-            android:theme="@style/LightTheme.NoActionBar"></activity>
+            android:theme="@style/LightTheme.NoActionBar" />
         <activity android:name=".UserPreferenceActivity" />
         <activity android:name=".FinancialInfo" />
         <activity

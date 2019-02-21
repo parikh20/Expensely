@@ -55,7 +55,7 @@
     <string name="custom_budget_name">Enter a name for your budget</string>
 
     <!-- Limit Custom Strings -->
-
+    <string name="custom_limit_intro">Create a custom limit:</string>
     <string name="custom_limit_type">Enter a category</string>
     <string name="custom_limit_monthly">Enter a Monthly Spending Limit</string>
     <string name="custom_limit_weekly">Enter a Weekly Spending Limit</string>

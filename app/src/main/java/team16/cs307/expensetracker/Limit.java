@@ -15,7 +15,7 @@ public class Limit {
 
     }
 
-    public Limit(String category, double limitMonthly, double limitWeekly, double limitYearly) {
+    public Limit(String category, double limitWeekly, double limitMonthly, double limitYearly) {
         this.category = category;
         this.limitMonthly = limitMonthly;
         this.limitWeekly = limitWeekly;
