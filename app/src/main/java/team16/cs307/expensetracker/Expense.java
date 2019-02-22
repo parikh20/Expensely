@@ -6,10 +6,12 @@ package team16.cs307.expensetracker;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import org.threeten.bp.Instant;
+import org.threeten.bp.LocalDateTime;
 
 /*Expense:
     An expense or purpose serves as a singular entry within a user's finances, one set of purchases or payment.
     An expense consists of:
+        - name and location : identifying information for the user
         - Repeating Bit : True if this is a repeating expense, for classification
         - Date/Time : when this purchase or payment was made or is scheduled to be made
         - Amount : amount of purchase in total, in USD
@@ -20,23 +22,28 @@ import org.threeten.bp.Instant;
         Functions:
             - Get/Set for all
             - modifyCategories : allows the user to add/remove additional categories
-
+note: For dealing with repeating purchases, we will generate 1 payment into the future, marking that as repeating as well
+//         Then, upon loading the app and realizing a <time period> has gone by, we will generate the next time period's repeating purchases
+//          Thus, we will always have 2 repeating purchases for each instance
 
  */
 public class Expense {
-    private Boolean repeating;
-    private Instant time;
+    private String name;
+    private String location;
+    private boolean repeating;
+    private LocalDateTime time;
     private double amount;
     private ArrayList<String> tags;
     private int priority;
-    private Boolean outlierMonthly;
-    private Boolean outlierWeekly;
+    private boolean outlierMonthly;
+    private boolean outlierWeekly;
 
 
     //default constructor
     public Expense() {
+        this.name = "";
         this.repeating = false;
-        this.time = Instant.now();
+        this.time = LocalDateTime.now();
         this.amount = 0;
         this.tags = new ArrayList<>();
         this.priority = 0;
@@ -44,7 +51,9 @@ public class Expense {
         this.outlierWeekly = false;
     }
     //non-default Constructor
-    public Expense (Boolean repeating, Instant time, double amount, ArrayList<String> tags, int priority, Boolean outlierMonthly, Boolean outlierWeekly) {
+    public Expense (String name, String location, boolean repeating, LocalDateTime time, double amount, ArrayList<String> tags, int priority, boolean outlierMonthly, boolean outlierWeekly) {
+        this.name = name;
+        this.location = location;
         this.repeating = repeating;
         this.time = time;
         this. amount = amount;
@@ -58,15 +67,15 @@ public class Expense {
         return repeating;
     }
 
-    public void setRepeating(Boolean repeating) {
+    public void setRepeating(boolean repeating) {
         this.repeating = repeating;
     }
 
-    public Instant getTime() {
+    public LocalDateTime getTime() {
         return time;
     }
 
-    public void setTime(Instant time) {
+    public void setTime(LocalDateTime time) {
         this.time = time;
     }
 
@@ -98,7 +107,7 @@ public class Expense {
         return outlierMonthly;
     }
 
-    public void setOutlierMonthly(Boolean outlierMonthly) {
+    public void setOutlierMonthly(boolean outlierMonthly) {
         this.outlierMonthly = outlierMonthly;
     }
 
@@ -106,10 +115,25 @@ public class Expense {
         return outlierWeekly;
     }
 
-    public void setOutlierWeekly(Boolean outlierWeekly) {
+    public void setOutlierWeekly(boolean outlierWeekly) {
         this.outlierWeekly = outlierWeekly;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
 
     //modifyCategories : Takes in an array list of tags, adds those that are not currently in the tag list.
     public void modifyCategories(ArrayList<String> str) {

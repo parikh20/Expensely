@@ -5,14 +5,14 @@ public class Preferences {
     private boolean darkMode;
     private int fontSize;
     private String colorScheme;
-    private int defaultGraph;
+    private String defaultGraph;
     private int defaultBudgetNum;
 
     Preferences(){
-        this(false,12,"Green",1,1);
+        this(false,12,"Green","Pie",1);
 
     }
-    Preferences(Boolean darkMode,int fontSize,String colorScheme,int defaultGraph,int defaultBudgetNum){
+    Preferences(Boolean darkMode,int fontSize,String colorScheme,String defaultGraph,int defaultBudgetNum){
         this.darkMode = darkMode;
         this.fontSize = fontSize;
         this.colorScheme = colorScheme;
@@ -45,11 +45,11 @@ public class Preferences {
         this.colorScheme = colorScheme;
     }
 
-    public int getDefaultGraph() {
+    public String getDefaultGraph() {
         return defaultGraph;
     }
 
-    public void setDefaultGraph(int defaultGraph) {
+    public void setDefaultGraph(String defaultGraph) {
         this.defaultGraph = defaultGraph;
     }
 

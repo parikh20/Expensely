@@ -71,7 +71,19 @@ public class CreateNewAccountActivity extends AppCompatActivity {
                                         Map<String, Object> newUser = new HashMap<>();
                                         newUser.put("email", mAuth.getCurrentUser().getEmail());
 
+
+
                                         db.collection("users").document(mAuth.getUid()).set(newUser);
+                                        //default user preference
+                                        Preferences defPref = new Preferences();
+                                        Map<String,Object> userPref = new HashMap<>();
+                                        userPref.put("darkMode",defPref.isDarkMode());
+                                        userPref.put("fontSize",defPref.getFontSize());
+                                        userPref.put("colorScheme",defPref.getColorScheme());
+                                        userPref.put("defaultGraph",defPref.getDefaultGraph());
+                                        userPref.put("defaultBudgetNum",defPref.getDefaultBudgetNum());
+                                        db.collection("users").document(mAuth.getUid()).collection("Preference").document("userPreference").set(userPref);
+
                                         Intent mainActivityIntent = new Intent(getApplicationContext(), MainActivity.class);
                                         startActivity(mainActivityIntent);
                                     }

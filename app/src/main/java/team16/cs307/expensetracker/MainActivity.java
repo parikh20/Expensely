@@ -9,6 +9,7 @@ import android.widget.Button;
 public class MainActivity extends AppCompatActivity {
     private Button uploadpic;
     private Button selectbudg;
+    private Button addExp;
 
 
     @Override
@@ -17,6 +18,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         uploadpic = (Button) findViewById(R.id.MainActivity_photoupload);
         selectbudg = findViewById(R.id.MainActivity_select_budg);
+        addExp = findViewById(R.id.main_new_expense);
+
 
         //upload photo
         uploadpic.setOnClickListener(new View.OnClickListener() {
@@ -29,23 +32,32 @@ public class MainActivity extends AppCompatActivity {
         selectbudg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                selectBudg();
+                selectBudget();
+            }
+        });
+
+        addExp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addExpense();
             }
         });
 
 
-
     }
 
-
+        private void addExpense() {
+            Intent intent = new Intent(getApplicationContext(), CustomExpense.class);
+            startActivity(intent);
+        }
         private void uploadImage(){
             Intent intent = new Intent(getApplicationContext(),ImageActivity.class);
             startActivityForResult(intent,1);
         }
-        private void selectBudg() {
-            Intent intent = new Intent(getApplicationContext(), BudgetDownload.class);
+        private void selectBudget() {
+            Intent intent = new Intent(getApplicationContext(), BudgetDownloadActivity.class);
             startActivity(intent);
-            finish();
+
         }
     }
 

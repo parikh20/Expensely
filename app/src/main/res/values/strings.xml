@@ -1,17 +1,16 @@
 <resources>
 
+    <!-- Main Activity Strings -->
+    <string name="add_expense">Add New Expense</string>
     <!-- Login Activity Strings -->
     <string name="app_name">Expensely</string>
-    <string name="email_address_or_username">Username or Email Address</string>
-    <string name="email_address">Email Address</string>
-    <string name="username">Username</string>
-    <string name="password">Password</string>
-    <string name="login">Login</string>
-    <string name="forgot_password">Forgot Password</string>
-    <string name="logo">logo</string>
-    <string name="title_activity_create_acct">Create an Expensely Account</string>
-
-    <!-- Strings related to login -->
+    <string name="login_activity_email_address">Email Address</string>
+    <string name="login_activity_username">Username</string>
+    <string name="login_activity_password">Password</string>
+    <string name="login_activity_login">Login</string>
+    <string name="login_activity_forgot_password">Forgot Password</string>
+    <string name="login_activity_logo">logo</string>
+    <string name="login_activity_create_account">Create an Expensely Account</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password (optional)</string>
     <string name="action_sign_in">Sign in or register</string>
@@ -20,53 +19,65 @@
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
-        completions."
-    </string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email completions."</string>
 
     <!-- Create New Account Strings -->
-    <string name="confirm_password">Confirm Password</string>
-    <string name="create_new_account">Create an Account</string>
-    <string name="create">Create</string>
-    <string name="choose">Choose</string>
-    <string name="upload">Upload Image</string>
+    <string name="create_new_account_confirm_password">Confirm Password</string>
+    <string name="create_new_account_create_an_account">Create an Account</string>
+    <string name="create_new_account_create">Create</string>
+
+    <!-- Image Activity Strings -->
+    <string name="image_activity_choose">Choose</string>
+    <string name="image_activity_upload">Upload Image</string>
 
     <!-- Reset Password Strings -->
-    <string name="weve_got_you">Forgot your password?\nNo worries, we\'ve got you!</string>
-    <string name="reset_password">Reset Password</string>
-    <string name="resend_email">Resend Email</string>
-    <string name="title_activity_budget_download">BudgetDownload</string>
+    <string name="reset_password_activity_weve_got_you">Forgot your password?\nNo worries, we\'ve got you!</string>
+    <string name="reset_password_activity_reset_password">Reset Password</string>
+    <string name="reset_password_activity_resend_email">Resend Email</string>
 
+    <!--team16.cs307.expensetracker.Budget Download Strings -->
+    <string name="title_activity_budget_download">Budget Download</string>
+    <string name="budget_activity_browse">Browse Budget Templates</string>
+    <string name="budget_activity_details">Customize Your Financial Details</string>
+    <string name="budget_activity_browse_user">Browse User-Created Budgets</string>
+    <string name="budget_activity_upload">Upload Your Custom Budget</string>
+    <string name="budget_activity_custom">Create a Custom Budget</string>
+    <string name="budget_activity_current">Current Budget =</string>
+    <string name="budget_activity_current_details">Budget Type: None\nLimits:\n\t Weekly: $0\n\t Monthly: $0\n\t Yearly: $0\n</string>
+    <string name="budget_activity_select_budget">Select or Download a Budget</string>
 
+    <!--team16.cs307.expensetracker.Budget Custom strings -->
+    <string name="custom_budget_intro">Create your new custom budget!</string>
+    <string name="custom_budget_monthly">Enter a Monthly Spending Limit</string>
+    <string name="custom_budget_weekly">Enter a Weekly Spending Limit</string>
+    <string name="custom_budget_yearly">Enter a Yearly Spending Limit</string>
+    <string name="custom_budget_add_limit">Add a Custom Limit</string>
+    <string name="custom_budget_current_limits">Current Limits: </string>
+    <string name="custom_budget_finish">Finish</string>
+    <string name="custom_budget_name">Enter a name for your budget</string>
 
-    <!--Budget Download Strings -->
-    <string name="budg_browse">
-        Browse Budget Templates
-    </string>
-    <string name="budg_details">
-        Customize Your Financial Details
-    </string>
-    <string name="budg_browse_user">
-        Browse User-Created Budgets
-    </string>
-    <string name="budg_upload">
-        Upload Your Custom Budget
-    </string>
-    <string name="budg_custom">
-        Create a Custom Budget
-    </string>
-    <string name="budg_curr">
-        Current Budget =
-    </string>
-    <string name="budg_curr_details">
-        Budget Type: None \n
-        Limits: \n
-        \t Weekly: $0 \n
-        \t Monthly: $0 \n
-        \t Yearly: $0 \n
-    </string>
-    <string name="select_budg">
-        Select or Download a Budget
-    </string>
+    <!-- Limit Custom Strings -->
+    <string name="custom_limit_intro">Create a custom limit:</string>
+    <string name="custom_limit_type">Enter a category</string>
+    <string name="custom_limit_monthly">Enter a Monthly Spending Limit</string>
+    <string name="custom_limit_weekly">Enter a Weekly Spending Limit</string>
+    <string name="custom_limit_yearly">Enter a Yearly Spending Limit</string>
+    <string name="custom_limit_finish">Finish</string>
+
+    <!-- Expense Custom Strings -->
+    <string name="custom_expense_intro">Enter your purchase information</string>
+    <string name="custom_expense_name">Give your purchase a name</string>
+    <string name="custom_expense_location">Where did you make this purchase?</string>
+    <string name="custom_expense_repeating">Is this a repeating purchase? (Y/N)</string>
+    <string name="custom_expense_frequency">If so, how often do you make this purchase? (weekly/monthly/yearly)</string>
+    <string name="custom_expense_amount">How much did you spend?</string>
+    <string name="custom_expense_category">Add a custom tag to this purchase</string>
+    <string name="custom_expense_tags">Current Tags: </string>
+    <string name="custom_expense_priority_prompt">How important was this purchase?</string>
+    <string name="custom_expense_outlier">Is this purchase an outlier?</string>
+    <string name="custom_expense_monthly">Yes, do not count this towards my Monthly budget</string>
+    <string name="custom_expense_weekly">Yes, do not count this towards my Weekly budget</string>
+    <string name="custom_expense_finish">Finish</string>
+
 
 </resources>

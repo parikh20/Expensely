@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class UserPreferenceTest {
+public class UserPreferenceActivityTest {
 
     @Test
     public void onCreate() {

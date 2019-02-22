@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    tools:ignore="ExtraText"
+    >
+
+    <ImageView
+        android:id="@+id/custom_budget_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="150dp"
+        android:layout_marginTop="15dp"
+        android:background="@null"
+        android:contentDescription="@string/login_activity_logo"
+        android:src="@mipmap/logo_transparent_cropped" />
+
+
+    <TextView
+        android:id="@+id/custom_limit_intro"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="170dp"
+        android:text="@string/custom_limit_intro" />
+
+    <EditText
+        android:id="@+id/custom_limit_monthly"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="340dp"
+        android:ems="10"
+        android:hint="@string/custom_limit_monthly"
+        android:inputType="textPersonName" />
+
+    <EditText
+        android:id="@+id/custom_limit_weekly"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="265dp"
+        android:ems="10"
+        android:hint="@string/custom_limit_weekly"
+        android:inputType="textPersonName" />
+
+    <EditText
+        android:id="@+id/custom_limit_yearly"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="415dp"
+        android:ems="10"
+        android:hint="@string/custom_limit_yearly"
+        android:inputType="textPersonName" />
+
+    <Button
+        android:id="@+id/custom_limit_finish"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+
+        android:layout_marginTop="645dp"
+        android:text="@string/custom_limit_finish" />
+
+    <EditText
+        android:id="@+id/custom_limit_type"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="195dp"
+        android:ems="10"
+        android:hint="@string/custom_limit_type"
+        android:inputType="textPersonName" />
+
+</RelativeLayout>
