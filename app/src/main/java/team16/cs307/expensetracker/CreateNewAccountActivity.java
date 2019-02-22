@@ -83,14 +83,14 @@ public class CreateNewAccountActivity extends AppCompatActivity {
                                         userPref.put("defaultGraph",defPref.getDefaultGraph());
                                         userPref.put("defaultBudgetNum",defPref.getDefaultBudgetNum());
                                         db.collection("users").document(mAuth.getUid()).collection("Preference").document("userPreference").set(userPref);
-
+                                        Toast.makeText(CreateNewAccountActivity.this, "moving to financial info", Toast.LENGTH_SHORT).show();
+                                        Intent financialInfoIntent = new Intent(getApplicationContext(), FinancialInfo.class);
+                                        startActivity(financialInfoIntent);
+                                        finish();
                                     }
                                 }
                             });
-                    Toast.makeText(CreateNewAccountActivity.this, "moving to financial info", Toast.LENGTH_SHORT).show();
-                    Intent financialInfoIntent = new Intent(getApplicationContext(), FinancialInfo.class);
-                    startActivity(financialInfoIntent);
-                    finish();
+
                 }
             }
         });

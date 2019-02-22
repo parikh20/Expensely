@@ -1,6 +1,7 @@
 package team16.cs307.expensetracker;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -9,13 +10,16 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class FinancialInfo extends AppCompatActivity {
     private double salary;
@@ -44,22 +48,29 @@ public class FinancialInfo extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
 
         DocumentReference ref = db.collection("users").document(mAuth.getUid()).collection("Preferences").document("Salary");
-        ref.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+        ref.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                if (documentSnapshot.exists()) {
-                    financial_info_intro.setText("Enter your New Salary and Number of Dependants,\nso we can get a custom budget for you:");
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        //returning user (from settings page
+                        financial_info_intro.setText("Enter your new salary and number of dependants:");
+
+                    } else {
+                        //new user
+
+                    }
+                } else {
+                    Toast.makeText(FinancialInfo.this, "Failure to check db", Toast.LENGTH_SHORT).show();
                 }
-
-
-
             }
         });
 
         mContinue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mSalary.getText() == null || mDependants.getText() == null) {
+                if (mSalary.getText().toString().equals("") || mDependants.getText().toString().equals("") ) {
                     Toast.makeText(getApplicationContext(), "Please input your salary and dependants", Toast.LENGTH_SHORT).show();
                     return;
                 }
