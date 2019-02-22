@@ -78,6 +78,8 @@
     <string name="custom_expense_monthly">Yes, do not count this towards my Monthly budget</string>
     <string name="custom_expense_weekly">Yes, do not count this towards my Weekly budget</string>
     <string name="custom_expense_finish">Finish</string>
+    <string name="title_activity_image_show">ImageShow</string>
+    <string name="access_image">access Image</string>
 
 
 </resources>

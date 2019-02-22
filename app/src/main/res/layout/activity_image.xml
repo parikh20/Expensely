@@ -5,28 +5,35 @@
     android:layout_height="match_parent"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
-    tools:ignore="ExtraText"
-    tools:context=".ImageActivity">
+    tools:context=".ImageActivity"
+    tools:ignore="ExtraText">
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="150dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="15dp"
+        android:layout_marginEnd="16dp"
         android:background="@null"
         android:contentDescription="@string/login_activity_logo"
         android:src="@mipmap/logo_transparent_cropped" />
+
     <Button
         android:id="@+id/ImageActivity_Choose"
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="150dp"
         android:layout_height="50dp"
         android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_marginStart="8dp"
-        android:layout_marginLeft="19dp"
-        android:layout_marginTop="250dp"
+        android:layout_marginLeft="21dp"
+        android:layout_marginTop="189dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginRight="29dp"
+        android:layout_marginRight="27dp"
         android:text="@string/image_activity_choose" />
 
     <Button
@@ -48,15 +55,15 @@
 
     <ImageView
         android:id="@+id/ImageActivity_imgView"
-        android:layout_width="390dp"
-        android:layout_height="272dp"
+        android:layout_width="277dp"
+        android:layout_height="504dp"
         android:layout_below="@id/ImageActivity_Upload"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="5dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="0dp"
-        android:layout_marginBottom="30dp" />
+        android:layout_marginStart="77dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="73dp"
+        android:layout_marginBottom="41dp" />
 
 </RelativeLayout>

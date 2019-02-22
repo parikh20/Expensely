@@ -15,7 +15,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/LightTheme">
-        <activity android:name=".CustomExpense"></activity>
+        <activity
+            android:name=".ImageShow"
+            android:label="@string/title_activity_image_show"
+            android:theme="@style/LightTheme.NoActionBar"></activity>
+        <activity android:name=".CustomExpense" />
         <activity android:name=".CustomLimitCreation" />
         <activity android:name=".CustomBudgetCreation" />
         <activity
