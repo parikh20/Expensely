@@ -105,10 +105,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             });
 
 
-            Toast.makeText(LoginActivity.this,"user path = " + mAuth.getCurrentUser().getUid(), Toast.LENGTH_SHORT).show();
- //           Intent i = new Intent(LoginActivity.this, MainActivity.class);
-//            startActivity(i);
-  //          finish();
+            //Toast.makeText(LoginActivity.this,"user path = " + mAuth.getCurrentUser().getUid(), Toast.LENGTH_SHORT).show();
+          Intent i = new Intent(LoginActivity.this, MainActivity.class);
+          startActivity(i);
+            finish();
         }
         //configure google signin setup
         configureGoogleSignIn();
@@ -147,7 +147,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                             DocumentSnapshot document = task.getResult();
                                             if (document.exists()) {
                                                 //user exists in db
-                                                Toast.makeText(LoginActivity.this, "User is in db!", Toast.LENGTH_SHORT).show();
+                                                //Toast.makeText(LoginActivity.this, "User is in db!", Toast.LENGTH_SHORT).show();
 
                                             } else {
                                                 //user does not exist in db

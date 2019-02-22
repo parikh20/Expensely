@@ -13,17 +13,21 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+
 public class MainActivity extends AppCompatActivity {
     private Button uploadpic;
     private Button selectbudg;
     private Button addExp;
     private Button imageAccess;
+    private Button logout;
+    private FirebaseAuth mAuth;
 
 
 
@@ -36,9 +40,11 @@ public class MainActivity extends AppCompatActivity {
         selectbudg = findViewById(R.id.MainActivity_select_budg);
         addExp = findViewById(R.id.main_new_expense);
         imageAccess=findViewById(R.id.MainActivity_ImageAccess);
-
+        logout = findViewById(R.id.main_logout);
+        mAuth = FirebaseAuth.getInstance();
 
         //upload photo
+
         uploadpic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -64,6 +70,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 accessImage();
+            }
+        });
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                logout();
             }
         });
 
@@ -96,6 +108,12 @@ public class MainActivity extends AppCompatActivity {
         private void accessImage(){
             Intent intent = new Intent(getApplicationContext(),ImageShow.class);
             startActivityForResult(intent,1);
+        }
+        private void logout() {
+            mAuth.signOut();
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(intent);
+            finish();
         }
     }
 

@@ -2,6 +2,7 @@
 
     <!-- Main Activity Strings -->
     <string name="add_expense">Add New Expense</string>
+    <string name="logout">Logout</string>
     <!-- Login Activity Strings -->
     <string name="app_name">Expensely</string>
     <string name="login_activity_email_address">Email Address</string>
