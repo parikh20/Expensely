@@ -121,13 +121,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="20dp"
         android:id="@+id/glogin_button"
         android:layout_below="@+id/login_button_panel">
 
         <com.google.android.gms.common.SignInButton
             android:id="@+id/google_sign_in_button"
-            android:layout_width="180dp"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:elevation="4dp"/>
     </RelativeLayout>
