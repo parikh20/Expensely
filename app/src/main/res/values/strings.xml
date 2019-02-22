@@ -81,5 +81,8 @@
     <string name="title_activity_image_show">ImageShow</string>
     <string name="access_image">access Image</string>
 
+    <!-- FinancialInfo Custom Strings-->
+    <string name="financial_info_intro">Welcome to Expensely!\nEnter your Current Salary and Number of Dependants,\nso we can get a custom budget for you:</string>
+    <string name="financial_info_continue"> Continue to Expensely</string>
 
 </resources>
