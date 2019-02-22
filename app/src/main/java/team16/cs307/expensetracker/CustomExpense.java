@@ -170,9 +170,6 @@ public class CustomExpense extends AppCompatActivity implements AdapterView.OnIt
 
             }
         });
-
-
-
     }
 
     @Override
@@ -192,4 +189,5 @@ public class CustomExpense extends AppCompatActivity implements AdapterView.OnIt
     public void onNothingSelected(AdapterView<?> arg0) {
         //do nothing
     }
+    
 }

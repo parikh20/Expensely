@@ -86,11 +86,30 @@ public class FinancialInfo extends AppCompatActivity {
 
                 Intent i = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(i);
-
-
             }
         });
+    }
 
+    @Override
+    public void onBackPressed() {
 
+    }
+
+    public boolean validateSalary(int salary) {
+        if (salary < 0) {
+            return false;
+        } else if (salary > 100000000) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean validateDependants(int dependants) {
+        if (dependants < 0) {
+            return false;
+        } else if (dependants > 30) {
+            return false;
+        }
+        return true;
     }
 }

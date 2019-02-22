@@ -116,4 +116,13 @@ public class ResetPasswordActivity extends AppCompatActivity {
                 });
         return exist;
     }
+
+    public boolean validateEmail(String email) {
+        if (email == null) {
+            return false;
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            return false;
+        }
+        return true;
+    }
 }

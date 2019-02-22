@@ -127,4 +127,34 @@ public class CreateNewAccountActivity extends AppCompatActivity {
            // Otherwise return true
            return true;
     }
+
+    public boolean validateEmail(String email) {
+        if (email == null) {
+            return false;
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean validatePassword(String password, String confirmPassword) {
+        if (password == null) {
+            return false;
+        } else if (password.length() < 8 || confirmPassword.length() < 8) {
+            return false;
+        } else if (password.length() > 32 || confirmPassword.length() > 32) {
+            return false;
+        } else if (password.contains(" ") || confirmPassword.contains(" ")) {
+            return false;
+        } else if (!password.matches("[A-Z0-9]") || !confirmPassword.matches("[A-Z0-9]")) {
+            return false;
+        } else if (password.contains(" ") || confirmPassword.contains(" ")) {
+            return false;
+        } else if (!password.equals(confirmPassword)) {
+            return false;
+        } else if (!password.matches("[!@#$%^&*]") || !confirmPassword.matches("[!@#$%^&*]")) {
+            return false;
+        }
+        return true;
+    }
 }

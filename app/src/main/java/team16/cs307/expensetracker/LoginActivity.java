@@ -292,7 +292,11 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             return false;
         } else if (password.contains(" ")) {
             return false;
-        } else if (!password.matches("[A-Z0-9!@$]")) {
+        } else if (!password.matches("[A-Z0-9]")) {
+            return false;
+        } else if (password.contains(" ")) {
+            return false;
+        } else if (!password.matches("[!@#$%^&*]")) {
             return false;
         }
         return true;

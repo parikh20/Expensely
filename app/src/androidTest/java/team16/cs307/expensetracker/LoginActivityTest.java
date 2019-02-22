@@ -3,7 +3,6 @@ package team16.cs307.expensetracker;
 import android.app.Instrumentation;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
-import android.view.View;
 
 import org.junit.After;
 import org.junit.Before;
@@ -64,6 +63,11 @@ public class LoginActivityTest {
     }
 
     @Test
+    public void testEmailWithSpecialCharacter() {
+        assertFalse(logActivity.validateEmail("string@string.com#"));
+    }
+
+    @Test
     public void testNullPassword() {
         assertFalse(logActivity.validatePassword(null));
     }
@@ -106,6 +110,16 @@ public class LoginActivityTest {
     @Test
     public void testPasswordWithEscapeCharacter() {
         assertFalse(logActivity.validatePassword("aAA\n1@CaaTc"));
+    }
+
+    @Test
+    public void testPasswordWithInvalidSpecialCharacter() {
+        assertFalse(logActivity.validatePassword("aaaaAAACC@))"));
+    }
+
+    @Test
+    public void testValidPassword2() {
+        assertTrue(logActivity.validatePassword("aA1@!vgGtOpLS!"));
     }
 
     @After
