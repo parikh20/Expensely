@@ -47,10 +47,11 @@ public class FinancialInfo extends AppCompatActivity {
         ref.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                if (documentSnapshot.getString("Amount") != null) {
-                    salary = Double.valueOf(documentSnapshot.getString("Amount"));
+                if (documentSnapshot.exists()) {
                     financial_info_intro.setText("Enter your New Salary and Number of Dependants,\nso we can get a custom budget for you:");
                 }
+
+
 
             }
         });
