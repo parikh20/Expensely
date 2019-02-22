@@ -60,12 +60,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        /*imageAccess.setOnClickListener(new View.OnClickListener() {
+        imageAccess.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 accessImage();
             }
-        });*/
+        });
 
 
 

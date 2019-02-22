@@ -1,5 +1,6 @@
 package team16.cs307.expensetracker;
 
+import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -11,36 +12,60 @@ import android.widget.TextView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
 
-public class NoteAdapter extends FirestoreRecyclerAdapter<Note, NoteAdapter.NoteHolder> {
+import java.util.ArrayList;
+
+public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
+
+    private ArrayList<String> urls;
+    private Context context;
 
 
-    public NoteAdapter(@NonNull FirestoreRecyclerOptions<Note> options) {
-        super(options);
+    public NoteAdapter(Context context) {
+        urls = new ArrayList<String>();
+        this.context = context;
     }
 
     @Override
-    protected void onBindViewHolder(@NonNull NoteHolder holder, int position, @NonNull Note model) {
-
+    public void onBindViewHolder(NoteAdapter.ViewHolder holder, int positionl) {
+        Picasso.get().load(urls.get(positionl)).resize(2500, 2500).centerCrop().into(holder.img);
     }
 
     @NonNull
     @Override
-    public NoteHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.image_item,viewGroup,false);
 
-        return new NoteHolder(v);
+        return new ViewHolder(v);
+    }
+    @Override
+    public int getItemCount() {
+        return urls.size();
     }
 
-    class NoteHolder extends RecyclerView.ViewHolder{
+    public void setUrls (@NonNull ArrayList<String> urlList) {
+        /*if (urls != null) {
+            urls.clear();
+        }*/
+        urls.addAll(urlList);
+        this.notifyItemRangeInserted(0,urlList.size() - 1);
+        System.out.println(urlList);
+    }
 
-        ImageView imageView;
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        private ImageView img;
 
-        public NoteHolder(View itemView){
-            super(itemView);
-            imageView=itemView.findViewById(R.id.image_item_ImageView);
+        public ViewHolder(View view) {
+            super(view);
+            img = view.findViewById(R.id.image_item_ImageView);
+
+        }
+
+        public ImageView getImg() {
+            return img;
         }
     }
 
