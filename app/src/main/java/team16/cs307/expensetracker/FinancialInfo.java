@@ -1,15 +1,84 @@
 package team16.cs307.expensetracker;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
 
 public class FinancialInfo extends AppCompatActivity {
-    private int salaryRange;
-    private int expected;
+    private double salary;
+    private int dependants;
+    private TextView financial_info_intro;
+    private EditText mDependants;
+    private Button mContinue;
+    private EditText mSalary;
+    private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_financial_info);
+
+        financial_info_intro = findViewById(R.id.financial_info_intro);
+        mDependants = findViewById(R.id.financial_info_dependants);
+        mContinue = findViewById(R.id.financial_info_continue);
+        mSalary = findViewById(R.id.salary);
+
+        salary = 0;
+        dependants = 0;
+
+        mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
+
+        DocumentReference ref = db.collection("users").document(mAuth.getUid()).collection("Preferences").document("Salary");
+        ref.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if (documentSnapshot.getString("Amount") != null) {
+                    salary = Double.valueOf(documentSnapshot.getString("Amount"));
+                    financial_info_intro.setText("Enter your New Salary and Number of Dependants,\nso we can get a custom budget for you:");
+                }
+
+            }
+        });
+
+        mContinue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mSalary.getText() == null || mDependants.getText() == null) {
+                    Toast.makeText(getApplicationContext(), "Please input your salary and dependants", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                salary = Double.valueOf(mSalary.getText().toString());
+                dependants = Integer.valueOf(mDependants.getText().toString());
+
+                HashMap<String, Object> map  = new HashMap<>();
+                map.put("Amount", salary);
+                db.collection("users").document(mAuth.getUid()).collection("Preferences").document("Salary").set(map);
+                map.remove("Amount");
+                map.put("Number", dependants);
+                db.collection("users").document(mAuth.getUid()).collection("Preferences").document("Dependants").set(map);
+
+                Intent i = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(i);
+
+
+            }
+        });
+
+
     }
 }

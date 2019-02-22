@@ -67,7 +67,7 @@ public class CreateNewAccountActivity extends AppCompatActivity {
                                         } catch (Exception ignored) {
                                         }
                                     } else {
-                                        //Toast.makeText(CreateNewAccountActivity.this, "User does not exist in db", Toast.LENGTH_SHORT).show();
+
                                         Map<String, Object> newUser = new HashMap<>();
                                         newUser.put("email", mAuth.getCurrentUser().getEmail());
 
@@ -84,11 +84,13 @@ public class CreateNewAccountActivity extends AppCompatActivity {
                                         userPref.put("defaultBudgetNum",defPref.getDefaultBudgetNum());
                                         db.collection("users").document(mAuth.getUid()).collection("Preference").document("userPreference").set(userPref);
 
-                                        Intent mainActivityIntent = new Intent(getApplicationContext(), MainActivity.class);
-                                        startActivity(mainActivityIntent);
                                     }
                                 }
                             });
+                    Toast.makeText(CreateNewAccountActivity.this, "moving to financial info", Toast.LENGTH_SHORT).show();
+                    Intent financialInfoIntent = new Intent(getApplicationContext(), FinancialInfo.class);
+                    startActivity(financialInfoIntent);
+                    finish();
                 }
             }
         });
