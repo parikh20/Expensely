@@ -56,7 +56,7 @@
                 android:layout_width="270dp"
                 android:layout_height="60dp"
                 android:layout_centerHorizontal="true"
-                android:hint="@string/email_address"
+                android:hint="@string/login_activity_email_address"
                 android:paddingLeft="10dp"
                 android:inputType="textEmailAddress"
                 android:layout_marginTop="20dp"/>
@@ -69,7 +69,7 @@
                 android:layout_width="270dp"
                 android:layout_height="60dp"
                 android:layout_centerHorizontal="true"
-                android:hint="@string/password"
+                android:hint="@string/login_activity_password"
                 android:inputType="textPassword"/>
 
             <TextView
@@ -161,7 +161,7 @@
             android:clickable="true"
             android:focusable="true"
             android:onClick="onClick"
-            android:text="@string/create_new_account"
+            android:text="Create an Account"
             android:textColor="@color/dollarGreen"
             android:textSize="@dimen/text_size_normal" />
     </RelativeLayout>
