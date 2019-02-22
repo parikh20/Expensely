@@ -22,22 +22,90 @@ public class LoginActivityTest {
     public void setUp() throws Exception {
         logActivity = loginActivityRule.getActivity();
     }
+
     @Test
-    public void testLaunch(){
-        View mUsername =  logActivity.findViewById(R.id.username_exitText);
-        View mPassword =  logActivity.findViewById(R.id.password_editText);
-        View mForgotPasswordClickable = logActivity.findViewById(R.id.forgot_password_clickable);
-        View mCreateNewAccountClickable =  logActivity.findViewById(R.id.create_new_account_clickable);
-        View mLoginButton =  logActivity.findViewById(R.id.login_button);
-        View mGoogleSignInButton = logActivity.findViewById(R.id.google_sign_in_button);
+    public void testNullEmail() {
+        assertFalse(logActivity.validateEmail(null));
+    }
 
-        assertNotNull(mUsername);
-        assertNotNull(mPassword);
-        assertNotNull(mForgotPasswordClickable);
-        assertNotNull(mCreateNewAccountClickable);
-        assertNotNull(mLoginButton);
-        assertNotNull(mGoogleSignInButton);
+    @Test
+    public void testEmptyEmail() {
+        assertFalse(logActivity.validateEmail(""));
+    }
 
+    @Test
+    public void testStringEmail() {
+        assertFalse(logActivity.validateEmail("string"));
+    }
+
+    @Test
+    public void testStringWithAt() {
+        assertFalse(logActivity.validateEmail("string@"));
+    }
+
+    @Test
+    public void testValidEmail() {
+        assertTrue(logActivity.validateEmail("string@string.com"));
+    }
+
+    @Test
+    public void testValidSubDomainEmail() {
+        assertTrue(logActivity.validateEmail("string@string.co.uk"));
+    }
+
+    @Test
+    public void testEmailWithSpace() {
+        assertFalse(logActivity.validateEmail("string @string.com"));
+    }
+
+    @Test
+    public void testEmailWithEscapeCharacter() {
+        assertFalse(logActivity.validateEmail("string\n@string.com"));
+    }
+
+    @Test
+    public void testNullPassword() {
+        assertFalse(logActivity.validatePassword(null));
+    }
+
+    @Test
+    public void testEmptyStringPassword() {
+        assertFalse(logActivity.validatePassword(""));
+    }
+
+    @Test
+    public void testShortPassword() {
+        assertFalse(logActivity.validatePassword("aaa"));
+    }
+
+    @Test
+    public void testPasswordWithNoCapital() {
+        assertFalse(logActivity.validatePassword("aaaaaaaa1@aa"));
+    }
+
+    @Test
+    public void testPasswordWithNoNumber() {
+        assertFalse(logActivity.validatePassword("aaaaaaaaaaAA@"));
+    }
+
+    @Test
+    public void testPasswordWithNoSpecialCharacter() {
+        assertFalse(logActivity.validatePassword("aaaaaaaaA1"));
+    }
+
+    @Test
+    public void testValidPassword() {
+        assertFalse(logActivity.validatePassword("AAaaCC1@@aaC"));
+    }
+
+    @Test
+    public void testPasswordWithSpace() {
+        assertFalse(logActivity.validatePassword("aaaa aaaa1@A"));
+    }
+
+    @Test
+    public void testPasswordWithEscapeCharacter() {
+        assertFalse(logActivity.validatePassword("aAA\n1@CaaTc"));
     }
 
     @After

@@ -12,6 +12,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
 
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -275,4 +276,25 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
     }
 
+    public boolean validateEmail(String email) {
+        if (email == null) {
+            return false;
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean validatePassword(String password) {
+        if (password == null) {
+            return false;
+        } else if (password.length() < 8) {
+            return false;
+        } else if (password.contains(" ")) {
+            return false;
+        } else if (!password.matches("[A-Z0-9!@$]")) {
+            return false;
+        }
+        return true;
+    }
 }
