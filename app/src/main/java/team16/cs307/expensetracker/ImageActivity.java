@@ -57,6 +57,8 @@ public class ImageActivity extends AppCompatActivity {
     private Date date;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
+    File photofile;
+
 
 
     private final int PICK_IMAGE_REQUEST = 1;
@@ -79,6 +81,7 @@ public class ImageActivity extends AppCompatActivity {
         pd.setMessage("Uploading...");
         storage  = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
+
         //camera need
 
 
@@ -128,7 +131,7 @@ public class ImageActivity extends AppCompatActivity {
                 //if(cameraFile !=null){
                     //cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT,Uri.fromFile(cameraFile));
 
-                        startActivityForResult(cameraIntent, CAMERA_REQUEST);
+                startActivityForResult(cameraIntent, CAMERA_REQUEST);
 
 
 
@@ -156,10 +159,11 @@ public class ImageActivity extends AppCompatActivity {
 
             }
             if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK ){
-
-
                 Bitmap bmp = (Bitmap) data.getExtras().get("data");
                 imageview.setImageBitmap(bmp);
+                //filePath = getImageUri(getApplicationContext(),bmp);
+                //imageview.setImageURI(filePath);
+                //imageview.setImageBitmap(bmp);
                 //filePath=getRealPathFromURI()
                 //filePath=getImageUri(getApplicationContext(),bmp);
 
@@ -204,10 +208,10 @@ public class ImageActivity extends AppCompatActivity {
                 }
 
     }
-    /*private Uri getImageUri(Context context, Bitmap inImage) {
+    /*public Uri getImageUri(Context inContext, Bitmap inImage) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), inImage, "Title", null);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
         return Uri.parse(path);
     }
 
@@ -219,14 +223,30 @@ public class ImageActivity extends AppCompatActivity {
         File image = File.createTempFile(
                 imageFileName,
                 ".jpg",
-                storageDir      
+                storageDir
         );
 
         // Save a file: path for use with ACTION_VIEW intents
         mCurrentPhotoPath = image.getAbsolutePath();
         return image;
-    }*/
+    }
     //delete photo
+
+
+    private static File getOutputMediaFile(){
+        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES), "CameraDemo");
+
+        if (!mediaStorageDir.exists()){
+            if (!mediaStorageDir.mkdirs()){
+                return null;
+            }
+        }
+
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        return new File(mediaStorageDir.getPath() + File.separator +
+                "IMG_"+ timeStamp + ".jpg");
+    }*/
 
 
 }
