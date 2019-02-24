@@ -1,14 +1,18 @@
 package team16.cs307.expensetracker;
 
 import android.app.ProgressDialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.provider.ContactsContract;
+import android.os.Environment;
+
 import android.provider.MediaStore;
-import android.provider.SyncStateContract;
+
 import android.support.annotation.NonNull;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -17,6 +21,8 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.lang.String.*;
 
 import com.google.android.gms.auth.api.Auth;
@@ -73,6 +79,9 @@ public class ImageActivity extends AppCompatActivity {
         pd.setMessage("Uploading...");
         storage  = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
+        //camera need
+
+
 
 
         choose.setOnClickListener(new View.OnClickListener() {
@@ -104,15 +113,27 @@ public class ImageActivity extends AppCompatActivity {
             Intent intent = new Intent();
             intent.setType("image/*");
             intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE,true);
-            //intent.putExtra(, 5);
             intent.setAction(intent.ACTION_GET_CONTENT);
             startActivityForResult(Intent.createChooser(intent,"Select Picture"),PICK_IMAGE_REQUEST);
         }
 
         //camera
         private void imageCamera(){
+                /*value = new ContentValues();
+                value.put(MediaStore.Images.Media.TITLE, "New Picture");
+                value.put(MediaStore.Images.Media.DESCRIPTION, "From your Camera");
+                cameraImgUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,value);*/
+
                 Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(cameraIntent,CAMERA_REQUEST);
+                //if(cameraFile !=null){
+                    //cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT,Uri.fromFile(cameraFile));
+
+                        startActivityForResult(cameraIntent, CAMERA_REQUEST);
+
+
+
+                //}
+
 
         }
         @Override
@@ -135,11 +156,13 @@ public class ImageActivity extends AppCompatActivity {
 
             }
             if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK ){
-                Toast.makeText(ImageActivity.this,"camera test",Toast.LENGTH_SHORT).show();
-                Bundle bundle = data.getExtras();
-                final Bitmap bmp = (Bitmap) bundle.get("data");
+
+
+                Bitmap bmp = (Bitmap) data.getExtras().get("data");
                 imageview.setImageBitmap(bmp);
+                //filePath=getRealPathFromURI()
                 //filePath=getImageUri(getApplicationContext(),bmp);
+
 
             }
         }
@@ -181,12 +204,28 @@ public class ImageActivity extends AppCompatActivity {
                 }
 
     }
-    private Uri getImageUri(Context context, Bitmap inImage) {
+    /*private Uri getImageUri(Context context, Bitmap inImage) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
         String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), inImage, "Title", null);
         return Uri.parse(path);
     }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,
+                ".jpg",
+                storageDir      
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = image.getAbsolutePath();
+        return image;
+    }*/
     //delete photo
 
 
