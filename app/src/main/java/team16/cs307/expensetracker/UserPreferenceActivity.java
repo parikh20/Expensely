@@ -21,13 +21,14 @@ public class UserPreferenceActivity extends AppCompatActivity {
     private Button mcolorScheme;
 
     private int mNumPressed;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reset_password);
 
         // Get attributes from the screen
-        mdarkMode = (Switch)findViewById(R.id.darkmode_switch);
+        mdarkMode = (Switch) findViewById(R.id.darkmode_switch);
         mfontSize = (Button) findViewById(R.id.font_button);
         mcolorScheme = (Button) findViewById(R.id.color_scheme_button);
 
@@ -38,7 +39,7 @@ public class UserPreferenceActivity extends AppCompatActivity {
                 if (validateInputs(mEmail, mAuth)) {
                     // Send the user a password reset email
                     if (mNumPressed >= 3) {
-                        Toast.makeText(getApplicationContext(),"An email has been sent 3 times, please check your inbox", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "An email has been sent 3 times, please check your inbox", Toast.LENGTH_SHORT).show();
                     } else {
                         mAuth.sendPasswordResetEmail(mEmail.getText().toString());
                         mResendButton.setVisibility(View.VISIBLE);
@@ -54,7 +55,7 @@ public class UserPreferenceActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (mNumPressed >= 3) {
-                    Toast.makeText(getApplicationContext(),"An email has been sent 3 times, please check your inbox", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "An email has been sent 3 times, please check your inbox", Toast.LENGTH_SHORT).show();
                 } else {
                     mAuth.sendPasswordResetEmail(mEmail.getText().toString());
                     mNumPressed++;
@@ -63,63 +64,6 @@ public class UserPreferenceActivity extends AppCompatActivity {
 
             }
         });
-    }
-
-    /**
-     *
-     * @param mEmail EditText field for the username
-     * @param auth Firebase auth
-     * @return a boolean true if inputs are valid of false if not
-     */
-    private boolean validateInputs(EditText mEmail, FirebaseAuth auth) {
-        // If email is empty, prompt user with an error
-        if (mEmail.getText() == null) {
-            mEmail.setError("Email Address must not be empty!");
-            return false;
-        }
-        // If the email address is not valid, prompt the user with an error
-        else if (!Patterns.EMAIL_ADDRESS.matcher(mEmail.getText()).matches()) {
-            mEmail.setError("Not a valid Email Address!");
-            return false;
-            // If the password does not equal the confirm password, prompt the user with an error
-        }
-        else {
-            return validateEmail(mEmail, auth);
-        }
-    }
-
-    /**
-     *
-     * @param mEmail EditText field for email confirmation
-     * @param auth Firebase auth
-     * @return a boolean true if email exists, false if it doesn't
-     */
-    private boolean validateEmail(final EditText mEmail, FirebaseAuth auth) {
-        //Try to create a dummy account using user input email and check if adding is possible without exceptions
-        auth.fetchSignInMethodsForEmail(mEmail.getText().toString())
-                .addOnCompleteListener(new OnCompleteListener<SignInMethodQueryResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<SignInMethodQueryResult> task) {
-                        if (task.isSuccessful()) {
-                            if (task.getResult().getSignInMethods().isEmpty()) {
-                                exist = false;
-                                mEmail.setError("Email does not exist");
-                            } else {
-                                exist = true;
-                            }
-                        }
-                    }
-                });
-        return exist;
-    }
-
-    public boolean validateEmail(String email) {
-        if (email == null) {
-            return false;
-        } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            return false;
-        }
-        return true;
     }
 }
 
