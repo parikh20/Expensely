@@ -8,6 +8,21 @@
     tools:context=".ImageActivity"
     tools:ignore="ExtraText">
 
+    <Button
+        android:id="@+id/ImageActivity_Camera"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="31dp"
+        android:layout_marginTop="257dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="17dp"
+        android:text="camera" />
+
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="150dp"
@@ -30,10 +45,10 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_marginStart="8dp"
-        android:layout_marginLeft="21dp"
-        android:layout_marginTop="189dp"
+        android:layout_marginLeft="29dp"
+        android:layout_marginTop="191dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginRight="27dp"
+        android:layout_marginRight="19dp"
         android:text="@string/image_activity_choose" />
 
     <Button
@@ -45,11 +60,11 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_marginStart="8dp"
-        android:layout_marginLeft="18dp"
-        android:layout_marginTop="42dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="89dp"
         android:layout_marginEnd="8dp"
 
-        android:layout_marginRight="30dp"
+        android:layout_marginRight="24dp"
         android:layout_marginBottom="32dp"
         android:text="@string/image_activity_upload" />
 

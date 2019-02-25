@@ -32,6 +32,8 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(NoteAdapter.ViewHolder holder, int positionl) {
         Picasso.get().load(urls.get(positionl)).resize(2500, 2500).centerCrop().into(holder.img);
+        //holder.textDescription.setText();
+
     }
 
     @NonNull
@@ -57,16 +59,19 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private ImageView img;
+        private TextView textDescription;
 
         public ViewHolder(View view) {
             super(view);
             img = view.findViewById(R.id.image_item_ImageView);
+            //textDescription = view.findViewById(R.id.image_item_Description);
 
         }
 
         public ImageView getImg() {
             return img;
         }
+        //public TextView getTextDescription(){return textDescription;}
     }
 
 }

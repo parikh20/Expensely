@@ -1,18 +1,28 @@
 package team16.cs307.expensetracker;
 
 import android.app.ProgressDialog;
+import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.provider.ContactsContract;
+import android.os.Environment;
+
 import android.provider.MediaStore;
+
 import android.support.annotation.NonNull;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.lang.String.*;
 
 import com.google.android.gms.auth.api.Auth;
@@ -39,7 +49,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ImageActivity extends AppCompatActivity {
-    private Button choose,upload;
+    private Button choose,upload,camera;
     private ImageView imageview;
     private Uri filePath;
     ProgressDialog pd;
@@ -47,9 +57,12 @@ public class ImageActivity extends AppCompatActivity {
     private Date date;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
+    File photofile;
 
 
-    private final int PICK_IMAGE_REQUEST = 71;
+
+    private final int PICK_IMAGE_REQUEST = 1;
+    private final int CAMERA_REQUEST = 2;
     FirebaseStorage storage;
     StorageReference storageReference;
 
@@ -62,11 +75,16 @@ public class ImageActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         choose = (Button) findViewById(R.id.ImageActivity_Choose);
         upload = (Button) findViewById(R.id.ImageActivity_Upload);
+        camera = (Button) findViewById(R.id.ImageActivity_Camera);
         imageview = (ImageView) findViewById(R.id.ImageActivity_imgView);
         pd = new ProgressDialog(this);
         pd.setMessage("Uploading...");
         storage  = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
+
+        //camera need
+
+
 
 
         choose.setOnClickListener(new View.OnClickListener() {
@@ -81,8 +99,14 @@ public class ImageActivity extends AppCompatActivity {
                 uploadImage();
             }
         });
+        camera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                imageCamera();
+            }
+        });
     }
-
+        //choose image from gallery
         private void chooseImage(){
              //choose images from gallery
             //Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
@@ -94,6 +118,26 @@ public class ImageActivity extends AppCompatActivity {
             intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE,true);
             intent.setAction(intent.ACTION_GET_CONTENT);
             startActivityForResult(Intent.createChooser(intent,"Select Picture"),PICK_IMAGE_REQUEST);
+        }
+
+        //camera
+        private void imageCamera(){
+                /*value = new ContentValues();
+                value.put(MediaStore.Images.Media.TITLE, "New Picture");
+                value.put(MediaStore.Images.Media.DESCRIPTION, "From your Camera");
+                cameraImgUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,value);*/
+
+                Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                //if(cameraFile !=null){
+                    //cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT,Uri.fromFile(cameraFile));
+
+                startActivityForResult(cameraIntent, CAMERA_REQUEST);
+
+
+
+                //}
+
+
         }
         @Override
         protected void onActivityResult(int requestCode,int resultCode,Intent data) {
@@ -112,6 +156,17 @@ public class ImageActivity extends AppCompatActivity {
                     }
 
                 }
+
+            }
+            if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK ){
+                Bitmap bmp = (Bitmap) data.getExtras().get("data");
+                imageview.setImageBitmap(bmp);
+                //filePath = getImageUri(getApplicationContext(),bmp);
+                //imageview.setImageURI(filePath);
+                //imageview.setImageBitmap(bmp);
+                //filePath=getRealPathFromURI()
+                //filePath=getImageUri(getApplicationContext(),bmp);
+
 
             }
         }
@@ -133,6 +188,7 @@ public class ImageActivity extends AppCompatActivity {
                                 String imgurl = downloadUri.toString().substring(downloadUri.toString().lastIndexOf('/') + 1);;
                                 Map<String, Object> map = new HashMap<>();
                                 map.put("imgurl", imgurl);
+                                map.put("date",timeStamp);
                                 db.collection("users").document(mAuth.getUid()).collection("images").document(imgurl).set(map);
 
                             }
@@ -152,7 +208,45 @@ public class ImageActivity extends AppCompatActivity {
                 }
 
     }
+    /*public Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
+    }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,
+                ".jpg",
+                storageDir
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
     //delete photo
+
+
+    private static File getOutputMediaFile(){
+        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES), "CameraDemo");
+
+        if (!mediaStorageDir.exists()){
+            if (!mediaStorageDir.mkdirs()){
+                return null;
+            }
+        }
+
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        return new File(mediaStorageDir.getPath() + File.separator +
+                "IMG_"+ timeStamp + ".jpg");
+    }*/
 
 
 }
