@@ -8,21 +8,6 @@
     tools:ignore="ExtraText"
     tools:context=".UserPreferenceActivity">
 
-
-
-    <Spinner
-        android:id="@+id/spinner_color"
-        android:layout_width="280dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="40dp"
-        android:layout_marginTop="232dp"
-        android:layout_marginEnd="75dp"
-        android:layout_marginBottom="475dp" />
-
     <Switch
         android:id="@+id/darkmode"
         android:layout_width="395dp"
@@ -37,17 +22,18 @@
         android:layout_marginBottom="619dp"
         android:text="dark mode" />
 
-    <EditText
-        android:id="@+id/Budget_num"
-        android:layout_width="138dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="31dp"
-        android:layout_marginBottom="387dp"
-        android:ems="10"
-        android:inputType="numberSigned"
-        android:autofillHints="" />
-
-
+    <Button
+        android:id="@+id/font_size"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="31dp"
+        android:layout_marginTop="257dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="17dp"
+        android:text="Set font size" />
 </RelativeLayout>
