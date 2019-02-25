@@ -8,22 +8,8 @@
     tools:ignore="ExtraText"
     tools:context=".UserPreferenceActivity">
 
-    <Switch
-        android:id="@+id/darkmode_switch"
-        android:layout_width="395dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="160dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="534dp"
-        android:text="dark mode" />
-
     <Button
-        android:id="@+id/font_button"
+        android:id="@+id/color_scheme_button2"
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="150dp"
         android:layout_height="50dp"
@@ -31,10 +17,46 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_marginStart="8dp"
-        android:layout_marginLeft="31dp"
-        android:layout_marginTop="257dp"
+        android:layout_marginLeft="22dp"
+        android:layout_marginTop="426dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginRight="17dp"
+        android:layout_marginRight="26dp"
+        android:text="Set default graph" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="150dp"
+        android:contentDescription="@string/login_activity_logo"
+        android:src="@mipmap/logo_transparent_cropped"
+        android:background="@null" />
+
+    <Switch
+        android:id="@+id/darkmode_switch"
+        android:layout_width="367dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="14dp"
+        android:layout_marginTop="211dp"
+        android:layout_marginEnd="14dp"
+        android:layout_marginBottom="483dp"
+        android:text="Dark mode" />
+
+    <Button
+        android:id="@+id/font_button"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="326dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="278dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="24dp"
         android:text="Set font size" />
 
     <Button
@@ -46,9 +68,9 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_marginStart="8dp"
-        android:layout_marginLeft="31dp"
-        android:layout_marginTop="257dp"
+        android:layout_marginLeft="22dp"
+        android:layout_marginTop="351dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginRight="17dp"
-        android:text="Set font size" />
+        android:layout_marginRight="26dp"
+        android:text="Set color scheme" />
 </RelativeLayout>
