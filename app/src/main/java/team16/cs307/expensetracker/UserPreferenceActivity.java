@@ -25,17 +25,20 @@ public class UserPreferenceActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_reset_password);
+        setContentView(R.layout.activity_user_preference);
 
         // Get attributes from the screen
+        /*
         mdarkMode = (Switch) findViewById(R.id.darkmode_switch);
         mfontSize = (Button) findViewById(R.id.font_button);
         mcolorScheme = (Button) findViewById(R.id.color_scheme_button);
+        */
 
 
         mcolorScheme.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                /*
                 if (validateInputs(mEmail, mAuth)) {
                     // Send the user a password reset email
                     if (mNumPressed >= 3) {
@@ -46,7 +49,7 @@ public class UserPreferenceActivity extends AppCompatActivity {
                         mNumPressed++;
                         Toast.makeText(getApplicationContext(), "An email has been sent to you!", Toast.LENGTH_SHORT).show();
                     }
-                }
+                }*/
             }
         });
 
@@ -54,6 +57,7 @@ public class UserPreferenceActivity extends AppCompatActivity {
         mfontSize.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                /*
                 if (mNumPressed >= 3) {
                     Toast.makeText(getApplicationContext(), "An email has been sent 3 times, please check your inbox", Toast.LENGTH_SHORT).show();
                 } else {
@@ -61,6 +65,7 @@ public class UserPreferenceActivity extends AppCompatActivity {
                     mNumPressed++;
                     Toast.makeText(getApplicationContext(), "An email has been sent to you!", Toast.LENGTH_SHORT).show();
                 }
+                */
 
             }
         });

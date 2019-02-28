@@ -58,6 +58,9 @@ dependencies {
     // FirebaseUI for Firebase Auth
     implementation 'com.firebaseui:firebase-ui-auth:4.3.1'
 
+    //Graphview 4.2
+    implementation 'com.jjoe64:graphview:4.2.2'
+
 
 }
 
