@@ -3,6 +3,7 @@
     <!-- Main Activity Strings -->
     <string name="add_expense">Add New Expense</string>
     <string name="logout">Logout</string>
+    <string name="quick_stats">Loading Quick Statistics About Your Budget&#8230;</string>
     <!-- Login Activity Strings -->
     <string name="app_name">Expensely</string>
     <string name="login_activity_email_address">Email Address</string>

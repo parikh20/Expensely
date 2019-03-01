@@ -7,6 +7,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import org.threeten.bp.Instant;
 import org.threeten.bp.LocalDateTime;
+import org.threeten.bp.ZoneId;
 
 /*Expense:
     An expense or purpose serves as a singular entry within a user's finances, one set of purchases or payment.
@@ -31,7 +32,7 @@ public class Expense {
     private String name;
     private String location;
     private boolean repeating;
-    private LocalDateTime time;
+    private long timeEpoch;
     private double amount;
     private ArrayList<String> tags;
     private int priority;
@@ -43,7 +44,7 @@ public class Expense {
     public Expense() {
         this.name = "";
         this.repeating = false;
-        this.time = LocalDateTime.now();
+        this.timeEpoch = LocalDateTime.now().atZone(ZoneId.systemDefault()).toEpochSecond();
         this.amount = 0;
         this.tags = new ArrayList<>();
         this.priority = 0;
@@ -51,11 +52,22 @@ public class Expense {
         this.outlierWeekly = false;
     }
     //non-default Constructor
-    public Expense (String name, String location, boolean repeating, LocalDateTime time, double amount, ArrayList<String> tags, int priority, boolean outlierMonthly, boolean outlierWeekly) {
+    /*public Expense (String name, String location, boolean repeating, LocalDateTime time, double amount, ArrayList<String> tags, int priority, boolean outlierMonthly, boolean outlierWeekly) {
         this.name = name;
         this.location = location;
         this.repeating = repeating;
-        this.time = time;
+        this.timeEpoch = time.atZone(ZoneId.systemDefault()).toEpochSecond();
+        this. amount = amount;
+        this.tags = tags;
+        this.priority = priority;
+        this.outlierMonthly = outlierMonthly;
+        this.outlierWeekly = outlierWeekly;
+    }*/
+    public Expense (String name, String location, boolean repeating, long t, double amount, ArrayList<String> tags, int priority, boolean outlierMonthly, boolean outlierWeekly) {
+        this.name = name;
+        this.location = location;
+        this.repeating = repeating;
+        this.timeEpoch = t;
         this. amount = amount;
         this.tags = tags;
         this.priority = priority;
@@ -71,12 +83,12 @@ public class Expense {
         this.repeating = repeating;
     }
 
-    public LocalDateTime getTime() {
-        return time;
+    public long getTime() {
+        return timeEpoch;
     }
 
-    public void setTime(LocalDateTime time) {
-        this.time = time;
+    public void setTime(long time) {
+        this.timeEpoch = time;
     }
 
     public double getAmount() {

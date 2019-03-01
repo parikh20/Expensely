@@ -25,6 +25,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import android.widget.AdapterView.OnItemSelectedListener;
 import org.threeten.bp.Instant;
 import org.threeten.bp.LocalDateTime;
+import org.threeten.bp.ZoneId;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -138,29 +139,29 @@ public class CustomExpense extends AppCompatActivity implements AdapterView.OnIt
                 }
                 boolean outlierW = outlier == 1;
                 boolean outlierM = outlier == 2;
-                LocalDateTime time = LocalDateTime.now();
+                long time = LocalDateTime.now().atZone(ZoneId.systemDefault()).toEpochSecond();
                 Expense e = new Expense(name, location, repeating.equals("Y"), time, amount, tags, priority, outlierM, outlierW);
                 db.collection("users").document(mAuth.getUid()).collection("Expenses").document(name).set(e);
                 //TODO: update total monthly/weekly/yearly, update category totals m/y/w
 
                 if(weekly) {
 
-                    LocalDateTime nextTime = time.plus(7, DAYS);
-                    Expense next = new Expense(name, location, repeating.equals("Y"), nextTime, amount, tags, priority, outlierM, outlierW);
+                    LocalDateTime nextTime = LocalDateTime.now().plus(7, DAYS);
+                    Expense next = new Expense(name, location, repeating.equals("Y"), nextTime.atZone(ZoneId.systemDefault()).toEpochSecond(), amount, tags, priority, outlierM, outlierW);
                     db.collection("users").document(mAuth.getUid()).collection("Expenses").document("next " + name).set(next);
 
                 }
                 if(monthly) {
 
-                    LocalDateTime nextTime = time.plus(1, MONTHS);
-                    Expense next = new Expense(name, location, repeating.equals("Y"), nextTime, amount, tags, priority, outlierM, outlierW);
+                    LocalDateTime nextTime = LocalDateTime.now().plus(1, MONTHS);
+                    Expense next = new Expense(name, location, repeating.equals("Y"), nextTime.atZone(ZoneId.systemDefault()).toEpochSecond(), amount, tags, priority, outlierM, outlierW);
                     db.collection("users").document(mAuth.getUid()).collection("Expenses").document("next " + name).set(next);
 
                 }
                 if(yearly) {
 
-                    LocalDateTime nextTime = time.plus(1, YEARS);
-                    Expense next = new Expense(name, location, repeating.equals("Y"), nextTime, amount, tags, priority, outlierM, outlierW);
+                    LocalDateTime nextTime = LocalDateTime.now().plus(1, YEARS);
+                    Expense next = new Expense(name, location, repeating.equals("Y"), nextTime.atZone(ZoneId.systemDefault()).toEpochSecond(), amount, tags, priority, outlierM, outlierW);
                     db.collection("users").document(mAuth.getUid()).collection("Expenses").document("next " + name ).set(next);
 
                 }
