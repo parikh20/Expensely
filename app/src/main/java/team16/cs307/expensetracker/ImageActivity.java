@@ -113,11 +113,11 @@ public class ImageActivity extends AppCompatActivity {
             //startActivityForResult(intent,PICK_IMAGE_REQUEST);
 
             //Choose multiple images from file explorer
-            Intent intent = new Intent();
-            intent.setType("image/*");
+            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+            /*intent.setType("image/*");
             intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE,true);
-            intent.setAction(intent.ACTION_GET_CONTENT);
-            startActivityForResult(Intent.createChooser(intent,"Select Picture"),PICK_IMAGE_REQUEST);
+            intent.setAction(intent.ACTION_GET_CONTENT);*/
+            startActivityForResult(intent,PICK_IMAGE_REQUEST);
         }
 
         //camera
@@ -143,9 +143,10 @@ public class ImageActivity extends AppCompatActivity {
         protected void onActivityResult(int requestCode,int resultCode,Intent data) {
             super.onActivityResult(requestCode, resultCode, data);
             if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK ) {
-                if(data.getClipData()!=null){
+                /*if(data.getClipData()!=null){
                     Toast.makeText(ImageActivity.this,"multiple",Toast.LENGTH_SHORT).show();
-                }else if(data.getData() != null){
+                }else */
+                if(data.getData() != null){
                     filePath = data.getData();
                     try {
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);

@@ -25,12 +25,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ImageShow extends AppCompatActivity {
-    RecyclerView mRecyclerView;
+    private RecyclerView mRecyclerView;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private CollectionReference mRef;
     private NoteAdapter adapter;
-    private RecyclerView rv;
     private ArrayList<String> imageList;
 
     @Override
@@ -53,11 +52,11 @@ public class ImageShow extends AppCompatActivity {
                     System.out.println("-----------------------------------------------\n https://firebasestorage.googleapis.com/v0/b/expensely-cs307.appspot.com/o/" + s);
                     adapter = new NoteAdapter(getApplicationContext());
                     adapter.setUrls(imageList);
-                    RecyclerView recyclerView = findViewById(R.id.image_access_recyclerView);
-                    recyclerView.setHasFixedSize(true);
-                    recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+                    mRecyclerView = findViewById(R.id.image_access_recyclerView);
+                    mRecyclerView.setHasFixedSize(true);
+                    mRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
-                    recyclerView.setAdapter(adapter);
+                    mRecyclerView.setAdapter(adapter);
                     adapter.notifyDataSetChanged();
                 }
                 //rv = findViewById(R.id.image_access_recyclerView);

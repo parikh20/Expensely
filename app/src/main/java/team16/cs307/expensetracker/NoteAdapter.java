@@ -3,12 +3,15 @@ package team16.cs307.expensetracker;
 import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.v7.view.menu.MenuView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -40,7 +43,6 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.image_item,viewGroup,false);
-
         return new ViewHolder(v);
     }
     @Override
@@ -65,6 +67,13 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
             super(view);
             img = view.findViewById(R.id.image_item_ImageView);
             //textDescription = view.findViewById(R.id.image_item_Description);
+            img.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    System.out.println("test");
+                    Log.e("Test","Name clicked : "+getAdapterPosition());
+                }
+            });
 
         }
 
@@ -73,5 +82,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
         }
         //public TextView getTextDescription(){return textDescription;}
     }
+
+
 
 }
