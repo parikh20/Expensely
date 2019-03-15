@@ -21,9 +21,19 @@ import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
-public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
+public class NoteAdapter extends FirestoreRecyclerAdapter<Note,NoteAdapter.ViewHolder> {
+    /**
+     * Create a new RecyclerView adapter that listens to a Firestore Query.  See {@link
+     * FirestoreRecyclerOptions} for configuration options.
+     *
+     * @param options
+     */
+    String downloadUrl;
+    public NoteAdapter(@NonNull FirestoreRecyclerOptions<Note> options) {
+        super(options);
+    }
 
-    private ArrayList<String> urls;
+    /*private ArrayList<String> urls;
     private Context context;
 
 
@@ -34,8 +44,17 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(NoteAdapter.ViewHolder holder, int positionl) {
-        Picasso.get().load(urls.get(positionl)).resize(2500, 2500).centerCrop().into(holder.img);
+
         //holder.textDescription.setText();
+
+    }*/
+
+    @Override
+    protected void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull Note model) {
+        holder.dateDescription.setText(model.getDate());
+        downloadUrl = "https://firebasestorage.googleapis.com/v0/b/expensely-cs307.appspot.com/o/"+model.getImgurl();
+        Picasso.get().load(downloadUrl).resize(800, 600).centerCrop().into(holder.img);
+        //Log.e("Test",downloadUrl);
 
     }
 
@@ -45,27 +64,30 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.image_item,viewGroup,false);
         return new ViewHolder(v);
     }
-    @Override
+    /*@Override
     public int getItemCount() {
         return urls.size();
     }
+
+
 
     public void setUrls (@NonNull ArrayList<String> urlList) {
         /*if (urls != null) {
             urls.clear();
         }*/
-        urls.addAll(urlList);
+        /*urls.addAll(urlList);
         this.notifyItemRangeInserted(0,urlList.size() - 1);
         System.out.println(urlList);
-    }
+    }*/
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private ImageView img;
-        private TextView textDescription;
+        private TextView dateDescription;
 
         public ViewHolder(View view) {
             super(view);
             img = view.findViewById(R.id.image_item_ImageView);
+            dateDescription= view.findViewById(R.id.image_item_Description);
             //textDescription = view.findViewById(R.id.image_item_Description);
             img.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -80,7 +102,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
         public ImageView getImg() {
             return img;
         }
-        //public TextView getTextDescription(){return textDescription;}
+        public TextView getTextDescription(){return dateDescription;}
     }
 
 

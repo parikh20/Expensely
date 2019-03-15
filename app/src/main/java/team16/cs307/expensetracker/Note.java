@@ -4,28 +4,25 @@ public class Note {
 
 
 
-
+    private String date;
     private String imgurl;
 
-
-
-    private String Description;
 
     public Note() {
         //empty constructor needed
     }
 
-    public Note( String imgurl,String Description) {
+    public Note( String date,String imgurl) {
         this.imgurl = imgurl;
-        this.Description=Description;
+        this.date=date;
 
     }
 
-    public String getimgurl() {
+    public String getImgurl() {
         return imgurl;
     }
-    public String getDescription() {
-        return Description;
+    public String getDate() {
+        return date;
     }
 
 

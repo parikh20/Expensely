@@ -25,12 +25,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ImageShow extends AppCompatActivity {
-    private RecyclerView mRecyclerView;
+    private RecyclerView recyclerView;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private CollectionReference mRef;
     private NoteAdapter adapter;
-    private ArrayList<String> imageList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,59 +37,36 @@ public class ImageShow extends AppCompatActivity {
         setContentView(R.layout.image_access);
 
 
-
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
-        imageList = new ArrayList<>();
         mRef = db.collection("users").document(mAuth.getUid()).collection("images");
-        mRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot querySnapshot) {
-                for (QueryDocumentSnapshot d : querySnapshot) {
-                    String s = d.getId();
-                    imageList.add("https://firebasestorage.googleapis.com/v0/b/expensely-cs307.appspot.com/o/" + s);
-                    System.out.println("-----------------------------------------------\n https://firebasestorage.googleapis.com/v0/b/expensely-cs307.appspot.com/o/" + s);
-                    adapter = new NoteAdapter(getApplicationContext());
-                    adapter.setUrls(imageList);
-                    mRecyclerView = findViewById(R.id.image_access_recyclerView);
-                    mRecyclerView.setHasFixedSize(true);
-                    mRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-
-                    mRecyclerView.setAdapter(adapter);
-                    adapter.notifyDataSetChanged();
-                }
-                //rv = findViewById(R.id.image_access_recyclerView);
-
-
-            }
-
-
-
-
-
-        });
-
+        setUpRecyclerView();
 
 
     }
     private void setUpRecyclerView() {
-        //Query query = mRef;
-
+        Query query = mRef;
+        FirestoreRecyclerOptions<Note> options = new FirestoreRecyclerOptions.Builder<Note>().setQuery(query,Note.class).build();
+        adapter = new NoteAdapter(options);
+        recyclerView = findViewById(R.id.image_access_recyclerView);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(adapter);
 
     }
     @Override
     protected void onStart(){
         super.onStart();
-        //adapter.startListening();
+        adapter.startListening();
     }
     @Override
     protected void onStop() {
         super.onStop();
-        //adapter.stopListening();
+        adapter.stopListening();
     }
 
 
 
-    }
+}
 
 
