@@ -26,6 +26,7 @@ android:layout_height="wrap_content">
     <TextView
         android:id="@+id/image_item_Description"
         android:textSize="20sp"
+        android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 </LinearLayout>

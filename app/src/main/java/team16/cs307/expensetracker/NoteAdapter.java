@@ -1,27 +1,26 @@
 package team16.cs307.expensetracker;
 
-import android.app.AlertDialog;
-import android.content.Context;
-import android.net.Uri;
+
+
 import android.support.annotation.NonNull;
-import android.support.v7.view.menu.MenuView;
+
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.squareup.picasso.Picasso;
 
-import org.w3c.dom.Text;
 
-import java.util.ArrayList;
+
+
 
 public class NoteAdapter extends FirestoreRecyclerAdapter<Note,NoteAdapter.ViewHolder> {
     private OnItemClickListener listener;
@@ -99,8 +98,8 @@ public class NoteAdapter extends FirestoreRecyclerAdapter<Note,NoteAdapter.ViewH
                         listener.onItemClick(getSnapshots().getSnapshot(position),position);
                     }
                     //deleteItem(position);
-                    System.out.println("test");
-                    Log.e("Test","Name clicked : "+position);
+                    //System.out.println("test");
+                    //Log.e("Test","Name clicked : "+position);
                 }
             });
 
