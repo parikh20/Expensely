@@ -109,14 +109,14 @@ public class ImageActivity extends AppCompatActivity {
         //choose image from gallery
         private void chooseImage(){
              //choose images from gallery
-            //Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
             //startActivityForResult(intent,PICK_IMAGE_REQUEST);
 
             //Choose multiple images from file explorer
-            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
-            /*intent.setType("image/*");
-            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE,true);
-            intent.setAction(intent.ACTION_GET_CONTENT);*/
+            //Intent intent = new Intent();
+            //intent.setType("image/*");
+            //intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE,true);
+            //intent.setAction(intent.ACTION_GET_CONTENT);
             startActivityForResult(intent,PICK_IMAGE_REQUEST);
         }
 
@@ -159,7 +159,7 @@ public class ImageActivity extends AppCompatActivity {
                 }
 
             }
-            if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK ){
+            else if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK ){
                 Bitmap bmp = (Bitmap) data.getExtras().get("data");
                 imageview.setImageBitmap(bmp);
                 //filePath = getImageUri(getApplicationContext(),bmp);

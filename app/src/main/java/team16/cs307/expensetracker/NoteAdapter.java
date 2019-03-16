@@ -1,5 +1,6 @@
 package team16.cs307.expensetracker;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
@@ -22,12 +24,7 @@ import org.w3c.dom.Text;
 import java.util.ArrayList;
 
 public class NoteAdapter extends FirestoreRecyclerAdapter<Note,NoteAdapter.ViewHolder> {
-    /**
-     * Create a new RecyclerView adapter that listens to a Firestore Query.  See {@link
-     * FirestoreRecyclerOptions} for configuration options.
-     *
-     * @param options
-     */
+    private OnItemClickListener listener;
     String downloadUrl;
     public NoteAdapter(@NonNull FirestoreRecyclerOptions<Note> options) {
         super(options);
@@ -64,6 +61,11 @@ public class NoteAdapter extends FirestoreRecyclerAdapter<Note,NoteAdapter.ViewH
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.image_item,viewGroup,false);
         return new ViewHolder(v);
     }
+
+    public void deleteItem( int position){
+        getSnapshots().getSnapshot(position).getReference().delete();
+
+    }
     /*@Override
     public int getItemCount() {
         return urls.size();
@@ -80,7 +82,7 @@ public class NoteAdapter extends FirestoreRecyclerAdapter<Note,NoteAdapter.ViewH
         System.out.println(urlList);
     }*/
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         private ImageView img;
         private TextView dateDescription;
 
@@ -92,17 +94,27 @@ public class NoteAdapter extends FirestoreRecyclerAdapter<Note,NoteAdapter.ViewH
             img.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    if(position != RecyclerView.NO_POSITION && listener != null){
+                        listener.onItemClick(getSnapshots().getSnapshot(position),position);
+                    }
+                    //deleteItem(position);
                     System.out.println("test");
-                    Log.e("Test","Name clicked : "+getAdapterPosition());
+                    Log.e("Test","Name clicked : "+position);
                 }
             });
 
         }
 
-        public ImageView getImg() {
-            return img;
-        }
-        public TextView getTextDescription(){return dateDescription;}
+
+    }
+    public interface OnItemClickListener{
+        void onItemClick(DocumentSnapshot documentSnapshot,int position);
+    }
+
+
+    public void setOnItemClickListener(OnItemClickListener listener){
+        this.listener=listener;
     }
 
 
