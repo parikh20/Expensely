@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -24,6 +25,7 @@ import com.squareup.picasso.Picasso;
 
 public class NoteAdapter extends FirestoreRecyclerAdapter<Note,NoteAdapter.ViewHolder> {
     private OnItemClickListener listener;
+    private OnItemLongClickListener longlistener;
     String downloadUrl;
     public NoteAdapter(@NonNull FirestoreRecyclerOptions<Note> options) {
         super(options);
@@ -50,7 +52,7 @@ public class NoteAdapter extends FirestoreRecyclerAdapter<Note,NoteAdapter.ViewH
         holder.dateDescription.setText(model.getDate());
         holder.tag.setText(model.getTag());
         downloadUrl = "https://firebasestorage.googleapis.com/v0/b/expensely-cs307.appspot.com/o/"+model.getImgurl();
-        Picasso.get().load(downloadUrl).resize(1920,1080).centerCrop().into(holder.img);
+        Picasso.get().load(downloadUrl).fit().centerCrop().into(holder.img);
 
 
     }
@@ -93,17 +95,23 @@ public class NoteAdapter extends FirestoreRecyclerAdapter<Note,NoteAdapter.ViewH
             dateDescription= view.findViewById(R.id.image_item_Description);
             tag = view.findViewById(R.id.image_item_Tag);
 
-            //textDescription = view.findViewById(R.id.image_item_Description);
-            img.setOnClickListener(new View.OnClickListener() {
+            img.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    int position = getAdapterPosition();
+                    if(position != RecyclerView.NO_POSITION && listener != null){
+                        longlistener.onItemClick(getSnapshots().getSnapshot(position),position);
+                    }
+                    return false;
+                }
+            });
+            tag.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int position = getAdapterPosition();
                     if(position != RecyclerView.NO_POSITION && listener != null){
                         listener.onItemClick(getSnapshots().getSnapshot(position),position);
                     }
-                    //deleteItem(position);
-                    //System.out.println("test");
-                    //Log.e("Test","Name clicked : "+position);
                 }
             });
 
@@ -115,10 +123,17 @@ public class NoteAdapter extends FirestoreRecyclerAdapter<Note,NoteAdapter.ViewH
         void onItemClick(DocumentSnapshot documentSnapshot,int position);
     }
 
-
-    public void setOnItemClickListener(OnItemClickListener listener){
-        this.listener=listener;
+    public interface OnItemLongClickListener{
+        void onItemClick(DocumentSnapshot documentSnapshot,int position);
     }
+
+
+
+
+    public void setLongClickListener(OnItemLongClickListener longlistener){
+        this.longlistener=longlistener;
+    }
+    public void TagClickLisentner(OnItemClickListener listener){this.listener=listener;}
 
 
 
