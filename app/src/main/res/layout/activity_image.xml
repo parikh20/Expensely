@@ -17,13 +17,13 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_marginStart="8dp"
-        android:layout_marginLeft="31dp"
-        android:layout_marginTop="257dp"
+        android:layout_marginLeft="27dp"
+        android:layout_marginTop="113dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginRight="17dp"
+        android:layout_marginRight="21dp"
         android:text="camera" />
 
-    <ImageView
+    <!--<ImageView
         android:layout_width="wrap_content"
         android:layout_height="150dp"
         android:layout_alignParentStart="true"
@@ -34,7 +34,7 @@
         android:layout_marginEnd="16dp"
         android:background="@null"
         android:contentDescription="@string/login_activity_logo"
-        android:src="@mipmap/logo_transparent_cropped" />
+        android:src="@mipmap/logo_transparent_cropped" />-->
 
     <Button
         android:id="@+id/ImageActivity_Choose"
@@ -45,10 +45,10 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_marginStart="8dp"
-        android:layout_marginLeft="29dp"
-        android:layout_marginTop="191dp"
+        android:layout_marginLeft="26dp"
+        android:layout_marginTop="40dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginRight="19dp"
+        android:layout_marginRight="22dp"
         android:text="@string/image_activity_choose" />
 
     <Button
@@ -60,25 +60,44 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_marginStart="8dp"
-        android:layout_marginLeft="24dp"
-        android:layout_marginTop="89dp"
+        android:layout_marginLeft="21dp"
+        android:layout_marginTop="94dp"
         android:layout_marginEnd="8dp"
 
-        android:layout_marginRight="24dp"
+        android:layout_marginRight="27dp"
         android:layout_marginBottom="32dp"
         android:text="@string/image_activity_upload" />
 
+    <TextView
+        android:id="@+id/ImageActivity_Tag"
+        android:layout_width="387dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ImageActivity_Choose"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="157dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="24dp"
+        android:layout_marginBottom="32dp"
+        android:clickable="true"
+        android:gravity="center"
+        android:text="upload"
+        android:textColor="@android:color/holo_green_dark" />
+
     <ImageView
         android:id="@+id/ImageActivity_imgView"
-        android:layout_width="277dp"
-        android:layout_height="504dp"
+        android:layout_width="395dp"
+        android:layout_height="256dp"
         android:layout_below="@id/ImageActivity_Upload"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="77dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="73dp"
-        android:layout_marginBottom="41dp" />
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="36dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginBottom="77dp" />
+
 
 </RelativeLayout>

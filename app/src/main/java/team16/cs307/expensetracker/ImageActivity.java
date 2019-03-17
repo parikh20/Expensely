@@ -3,6 +3,7 @@ package team16.cs307.expensetracker;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -13,11 +14,15 @@ import android.provider.MediaStore;
 
 import android.support.annotation.NonNull;
 import android.support.v4.content.FileProvider;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
@@ -50,6 +55,7 @@ import java.util.Map;
 
 public class ImageActivity extends AppCompatActivity {
     private Button choose,upload,camera;
+    private TextView tag;
     private ImageView imageview;
     private Uri filePath;
     ProgressDialog pd;
@@ -57,7 +63,8 @@ public class ImageActivity extends AppCompatActivity {
     private Date date;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
-    File photofile;
+    private String textTag= "";
+
 
 
 
@@ -77,10 +84,13 @@ public class ImageActivity extends AppCompatActivity {
         upload = (Button) findViewById(R.id.ImageActivity_Upload);
         camera = (Button) findViewById(R.id.ImageActivity_Camera);
         imageview = (ImageView) findViewById(R.id.ImageActivity_imgView);
+        tag = (TextView) findViewById(R.id.ImageActivity_Tag);
         pd = new ProgressDialog(this);
         pd.setMessage("Uploading...");
         storage  = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
+        tag.setText("Tag: None");
+
 
         //camera need
 
@@ -105,7 +115,40 @@ public class ImageActivity extends AppCompatActivity {
                 imageCamera();
             }
         });
+        tag.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeTag();
+            }
+        });
     }
+
+
+
+        //change tag
+        private void changeTag(){
+            final EditText edittext = new EditText(ImageActivity.this);
+            edittext.setFilters(new InputFilter[]{new InputFilter.LengthFilter(6)});
+            new AlertDialog.Builder( ImageActivity.this )
+                    .setTitle( "Tag" )
+                    .setMessage( "Change your tag (Max Length: 6)" )
+                    .setView(edittext)
+                    .setPositiveButton( "Change", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            textTag = edittext.getText().toString();
+                            tag.setText("Tag:"+textTag);
+
+                        }
+                    })
+                    .setNegativeButton( "Cancel", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    } )
+                    .show();
+
+
+        }
         //choose image from gallery
         private void chooseImage(){
              //choose images from gallery
@@ -175,7 +218,7 @@ public class ImageActivity extends AppCompatActivity {
         private void uploadImage(){
                 if(filePath!=null){
                     pd.show();
-                    timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+                    timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
                     final StorageReference ref = storageReference.child(mAuth.getUid()+"/"+timeStamp);
                     final UploadTask uploadTask = ref.putFile(filePath);
 
@@ -190,6 +233,7 @@ public class ImageActivity extends AppCompatActivity {
                                 Map<String, Object> map = new HashMap<>();
                                 map.put("imgurl", imgurl);
                                 map.put("date",timeStamp);
+                                map.put("tag",textTag);
                                 db.collection("users").document(mAuth.getUid()).collection("images").document(imgurl).set(map);
 
                             }

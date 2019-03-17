@@ -48,9 +48,10 @@ public class NoteAdapter extends FirestoreRecyclerAdapter<Note,NoteAdapter.ViewH
     @Override
     protected void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull Note model) {
         holder.dateDescription.setText(model.getDate());
+        holder.tag.setText(model.getTag());
         downloadUrl = "https://firebasestorage.googleapis.com/v0/b/expensely-cs307.appspot.com/o/"+model.getImgurl();
-        Picasso.get().load(downloadUrl).resize(800, 600).centerCrop().into(holder.img);
-        //Log.e("Test",downloadUrl);
+        Picasso.get().load(downloadUrl).resize(1920,1080).centerCrop().into(holder.img);
+
 
     }
 
@@ -84,11 +85,14 @@ public class NoteAdapter extends FirestoreRecyclerAdapter<Note,NoteAdapter.ViewH
     public class ViewHolder extends RecyclerView.ViewHolder {
         private ImageView img;
         private TextView dateDescription;
+        private TextView tag;
 
         public ViewHolder(View view) {
             super(view);
             img = view.findViewById(R.id.image_item_ImageView);
             dateDescription= view.findViewById(R.id.image_item_Description);
+            tag = view.findViewById(R.id.image_item_Tag);
+
             //textDescription = view.findViewById(R.id.image_item_Description);
             img.setOnClickListener(new View.OnClickListener() {
                 @Override
