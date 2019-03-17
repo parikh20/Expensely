@@ -5,6 +5,16 @@
     android:orientation="vertical"
     android:background="@color/dollarGreen">
 
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="Change tag: single click   Delete: long click "
+        android:textColor="@android:color/white"/>
+
+
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/image_access_recyclerView"
         android:layout_width="match_parent"
