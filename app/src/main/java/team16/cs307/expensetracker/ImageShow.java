@@ -2,13 +2,17 @@ package team16.cs307.expensetracker;
 
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -33,6 +37,7 @@ public class ImageShow extends AppCompatActivity {
     private CollectionReference mRef;
     private NoteAdapter adapter;
     private StorageReference mStore;
+    private FloatingActionButton add;
 
 
     @Override
@@ -44,6 +49,13 @@ public class ImageShow extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         mRef = db.collection("users").document(mAuth.getUid()).collection("images");
+        add = (FloatingActionButton) findViewById(R.id.image_access_addButton);
+        add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                uploadImage();
+            }
+        });
         setUpRecyclerView();
 
 
@@ -117,6 +129,13 @@ public class ImageShow extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         adapter.stopListening();
+    }
+
+    private void uploadImage(){
+        Intent intent = new Intent(ImageShow.this,ImageActivity.class);
+        startActivity(intent);
+
+
     }
 
 

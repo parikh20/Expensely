@@ -46,7 +46,7 @@ import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
     private TextView mStats;
-    private Button uploadpic;
+
     private Button selectbudg;
     private Button addExp;
     private Button imageAccess;
@@ -67,7 +67,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mStats = findViewById(R.id.quick_stats);
         mGraph = findViewById(R.id.main_graph);
-        uploadpic = (Button) findViewById(R.id.MainActivity_photoupload);
         selectbudg = findViewById(R.id.MainActivity_select_budg);
         addExp = findViewById(R.id.main_new_expense);
         imageAccess = findViewById(R.id.MainActivity_ImageAccess);
@@ -187,14 +186,8 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        //upload photo
 
-        uploadpic.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                uploadImage();
-            }
-        });
+
 
         selectbudg.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -240,10 +233,7 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(getApplicationContext(), CustomExpense.class);
             startActivity(intent);
         }
-        private void uploadImage(){
-            Intent intent = new Intent(getApplicationContext(),ImageActivity.class);
-            startActivityForResult(intent,1);
-        }
+
         private void selectBudget() {
             Intent intent = new Intent(getApplicationContext(), BudgetDownloadActivity.class);
             startActivity(intent);

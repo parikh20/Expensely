@@ -36,7 +36,8 @@
         <activity
             android:name=".ResetPasswordActivity"
             android:theme="@style/LightTheme.NoActionBar" />
-        <activity android:name=".ImageActivity" />
+        <activity android:name=".ImageActivity"
+            android:parentActivityName=".ImageShow" />
         <activity
             android:name=".CreateNewAccountActivity"
             android:theme="@style/LightTheme.NoActionBar" />

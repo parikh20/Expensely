@@ -77,6 +77,7 @@ public class ImageActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image);
+
         mAuth = FirebaseAuth.getInstance();
         //Initialize
         db = FirebaseFirestore.getInstance();
@@ -292,6 +293,11 @@ public class ImageActivity extends AppCompatActivity {
         return new File(mediaStorageDir.getPath() + File.separator +
                 "IMG_"+ timeStamp + ".jpg");
     }*/
+    @Override
+    public void onBackPressed(){
+        onSupportNavigateUp();
+        finish();
+    }
 
 
 }
