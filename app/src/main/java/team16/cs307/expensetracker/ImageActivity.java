@@ -296,7 +296,7 @@ public class ImageActivity extends AppCompatActivity {
     @Override
     public void onBackPressed(){
         onSupportNavigateUp();
-        finish();
+
     }
 
 

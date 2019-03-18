@@ -49,18 +49,23 @@ public class ImageShow extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         mRef = db.collection("users").document(mAuth.getUid()).collection("images");
+        setUpRecyclerView();
         add = (FloatingActionButton) findViewById(R.id.image_access_addButton);
+
+
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 uploadImage();
             }
         });
-        setUpRecyclerView();
-
 
     }
+
     private void setUpRecyclerView() {
+        System.out.println("test!!!!!!!!!!!!!!!!!!!!!!!!");
+        System.out.println();
+        System.out.println();
         Query query = mRef;
         FirestoreRecyclerOptions<Note> options = new FirestoreRecyclerOptions.Builder<Note>().setQuery(query,Note.class).build();
         adapter = new NoteAdapter(options);
