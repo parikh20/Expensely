@@ -1,6 +1,8 @@
 package team16.cs307.expensetracker;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.ColorSpace;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
@@ -15,6 +17,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -40,8 +46,10 @@ import org.threeten.bp.ZonedDateTime;
 
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -55,6 +63,9 @@ public class MainActivity extends AppCompatActivity {
     private GraphView mGraph;
     private FirebaseFirestore db;
     private String statBlock;
+    private PieChart mChart;
+    private Button mSwap;
+
 
     private Budget curr_budg;
 
@@ -73,6 +84,27 @@ public class MainActivity extends AppCompatActivity {
         logout = findViewById(R.id.main_logout);
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
+        mChart = findViewById(R.id.main_chart);
+        mSwap = findViewById(R.id.main_swapchart);
+
+
+
+
+        //set up mchart
+        mChart.setVisibility(View.INVISIBLE); //Invisible at start, to be added here: check user settings for default graph, make that one visible
+        List<PieEntry> entries = new ArrayList<>();
+        entries.add(new PieEntry(18.5f, "Green"));
+        entries.add(new PieEntry(26.7f, "Brown"));
+        entries.add(new PieEntry(24.0f, "Red"));
+        entries.add(new PieEntry(30.8f, "Blue"));
+
+
+        PieDataSet set = new PieDataSet(entries, "Your Monthly Categories");
+        int [] colors = new int[]{Color.GREEN,  Color.rgb(128, 100, 10), Color.RED, Color.BLUE, Color.MAGENTA, Color.CYAN};
+        set.setColors(colors);
+        PieData data = new PieData(set);
+        mChart.setData(data);
+        mChart.invalidate();//This will refresh the chartview
 
 
 
@@ -216,6 +248,20 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        mSwap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mGraph.getVisibility() == View.INVISIBLE) {
+                    mGraph.setVisibility(View.VISIBLE);
+                    mChart.setVisibility(View.INVISIBLE);
+                } else {
+                    mGraph.setVisibility(View.INVISIBLE);
+                    mChart.setVisibility(View.VISIBLE);
+                }
+                mChart.invalidate();
+
+            }
+        });
 
 
 
