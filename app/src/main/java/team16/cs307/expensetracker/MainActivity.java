@@ -41,6 +41,7 @@ import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
 import org.threeten.bp.Instant;
+import org.threeten.bp.LocalDate;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;
 
@@ -141,7 +142,17 @@ public class MainActivity extends AppCompatActivity {
                     mGraph.setTitle("Your Weekly Budget: " + curr_budg.getName());
                     mStats.setText(statBlock);
                     //all changes to the graph here will take effect after first interaction: Might have to move whole graph element in here
-
+                    int startday = 1;
+                    int endday = LocalDate.now().lengthOfMonth();
+                    double monthlim = curr_budg.getLimitMonthly();
+                    double perday = monthlim / endday;
+                    ArrayList<DataPoint> points = new ArrayList<>();
+                    for (int x = 0; x < endday; x++) {
+                        points.add(new DataPoint(ZonedDateTime.now().withDayOfMonth(x + 1).toEpochSecond(), perday * (x+1)));
+                    }
+                    DataPoint [] parray = new DataPoint[points.size()];
+                    LineGraphSeries<DataPoint> currBudget = new LineGraphSeries<>(points.toArray(parray));
+                    mGraph.addSeries(currBudget);
                 } else {
                     Toast.makeText(MainActivity.this, "No current budget", Toast.LENGTH_LONG).show();
                     mStats.setText("No Current Budget: Try creating one or downloading a template!\n" +
@@ -196,7 +207,8 @@ public class MainActivity extends AppCompatActivity {
         mGraph.addSeries(series);
         mGraph.getViewport().setMinX(ZonedDateTime.now().withDayOfMonth(1).toEpochSecond() );
         mGraph.getViewport().setMaxX(d2);
-        mGraph.getGridLabelRenderer().setNumHorizontalLabels(3);
+        mGraph.getGridLabelRenderer().setNumHorizontalLabels(0);
+        mGraph.getGridLabelRenderer().setTextSize(12);
 
         mGraph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
             @Override
