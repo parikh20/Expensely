@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.camera2"/>
+    <uses-permission android:name="android.permission.camera2" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.read_external_storage" />
 
@@ -19,10 +19,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/LightTheme">
+        <activity android:name=".AccountInfo"></activity>
         <activity
             android:name=".ImageShow"
             android:label="@string/title_activity_image_show"
-            android:theme="@style/LightTheme.NoActionBar"></activity>
+            android:theme="@style/LightTheme.NoActionBar" />
         <activity android:name=".CustomExpense" />
         <activity android:name=".CustomLimitCreation" />
         <activity android:name=".CustomBudgetCreation" />
@@ -36,7 +37,8 @@
         <activity
             android:name=".ResetPasswordActivity"
             android:theme="@style/LightTheme.NoActionBar" />
-        <activity android:name=".ImageActivity"
+        <activity
+            android:name=".ImageActivity"
             android:parentActivityName=".ImageShow" />
         <activity
             android:name=".CreateNewAccountActivity"
@@ -52,7 +54,5 @@
         </activity>
         <activity android:name=".MainActivity" />
     </application>
-
-
 
 </manifest>

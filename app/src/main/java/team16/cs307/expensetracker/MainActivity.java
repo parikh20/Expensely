@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
     private Button selectbudg;
     private Button addExp;
     private Button imageAccess;
-    private Button logout;
+    private Button account;
     private FirebaseAuth mAuth;
     private GraphView mGraph;
     private FirebaseFirestore db;
@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
         selectbudg = findViewById(R.id.MainActivity_select_budg);
         addExp = findViewById(R.id.main_new_expense);
         imageAccess = findViewById(R.id.MainActivity_ImageAccess);
-        logout = findViewById(R.id.main_logout);
+        account = findViewById(R.id.main_account);
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         mChart = findViewById(R.id.main_chart);
@@ -301,13 +301,13 @@ public class MainActivity extends AppCompatActivity {
                 accessImage();
             }
         });
-        logout.setOnClickListener(new View.OnClickListener() {
+
+        account.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                logout();
+                accountInfo();
             }
         });
-
         mSwap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -335,7 +335,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void addExpense() {
+        private void addExpense() {
             Intent intent = new Intent(getApplicationContext(), CustomExpense.class);
             startActivity(intent);
             finish();
@@ -348,14 +348,13 @@ public class MainActivity extends AppCompatActivity {
         }
         private void accessImage(){
             Intent intent = new Intent(getApplicationContext(),ImageShow.class);
-            startActivityForResult(intent,1);
-        }
-        private void logout() {
-            mAuth.signOut();
-            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(intent);
-            finish();
         }
+        private void accountInfo(){
+            Intent intent = new Intent(getApplicationContext(),AccountInfo.class);
+            startActivity(intent);
+        }
+
 
 
     public ArrayList<DataPoint> DataSort (ArrayList<DataPoint> ie ) {

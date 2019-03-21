@@ -86,5 +86,6 @@
     <!-- FinancialInfo Custom Strings-->
     <string name="financial_info_intro">Welcome to Expensely!\nEnter your Current Salary and Number of Dependants,\nso we can get a custom budget for you:</string>
     <string name="financial_info_continue"> Continue to Expensely</string>
+    <string name="title_activity_account_management">AccountManagement</string>
 
 </resources>
