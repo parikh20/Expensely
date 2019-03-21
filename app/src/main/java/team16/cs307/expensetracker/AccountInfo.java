@@ -2,21 +2,29 @@ package team16.cs307.expensetracker;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.renderscript.ScriptGroup;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class AccountInfo extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private Button logout,removal;
+    private TextView emailText;
+    private Button emailChange,resetPassword;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,7 +32,10 @@ public class AccountInfo extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         logout = (Button)findViewById(R.id.AccountInfo_logout);
         removal = (Button)findViewById(R.id.AccountInfo_removal);
-
+        emailChange = (Button)findViewById(R.id.AccountInfo_Email);
+        resetPassword = (Button)findViewById(R.id.AccountInfo_resetPassword);
+        emailText = (TextView)findViewById(R.id.AccountInfo_text);
+        emailText.setText(mAuth.getCurrentUser().getEmail().toString());
 
 
 
@@ -41,7 +52,21 @@ public class AccountInfo extends AppCompatActivity {
                 removeAccount();
             }
         });
+        emailChange.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeEmail();
+            }
+        });
+
+        resetPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    resetPassword();
+            }
+        });
     }
+
 
 
 
@@ -66,6 +91,7 @@ public class AccountInfo extends AppCompatActivity {
                                 .setPositiveButton( "Remove", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
                                         if(edittext.getText().toString().toLowerCase().equals("delete")){
+
                                             mAuth.getCurrentUser().delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void aVoid) {
@@ -85,6 +111,91 @@ public class AccountInfo extends AppCompatActivity {
                                     }
                                 } )
                                 .show();
+
+                    }
+                })
+                .setNegativeButton( "Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                } )
+                .show();
+
+    }
+
+
+    private void changeEmail(){
+        final EditText emailtext = new EditText(AccountInfo.this);
+        new AlertDialog.Builder( AccountInfo.this )
+                .setTitle( "Email change" )
+                .setMessage( "Current email:"+mAuth.getCurrentUser().getEmail().toString() )
+                .setView(emailtext)
+                .setPositiveButton( "Change", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                       mAuth.getCurrentUser().updateEmail(emailtext.getText().toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                           @Override
+                           public void onComplete(@NonNull Task<Void> task) {
+                               if(task.isSuccessful()){
+                                   Toast.makeText(AccountInfo.this,"Email updated",Toast.LENGTH_SHORT).show();
+                                   emailText.setText(mAuth.getCurrentUser().getEmail().toString());
+                               }else{
+                                   Toast.makeText(AccountInfo.this,"Fail to update your email: "+task.getException().getLocalizedMessage(),Toast.LENGTH_SHORT).show();
+                               }
+                           }
+                       });
+
+                    }
+                })
+                .setNegativeButton( "Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                } )
+                .show();
+
+    }
+
+
+    private void resetPassword(){
+        final EditText emailtext = new EditText(AccountInfo.this);
+        LinearLayout layout = new LinearLayout(AccountInfo.this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        final EditText newpswd = new EditText(this);
+        newpswd.setHint("New password");
+        newpswd.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        final EditText confirmpswd = new EditText(this);
+        confirmpswd.setHint("Confirm your password");
+        confirmpswd.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        layout.addView(newpswd);
+        layout.addView(confirmpswd);
+        new AlertDialog.Builder( AccountInfo.this )
+                .setTitle( "Password reset" )
+                .setMessage( "Please enter your current password. You password will be reset through email" )
+                .setView(layout)
+                .setPositiveButton( "Change", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        if(newpswd.getText().toString().equals(confirmpswd.getText().toString())){
+                            if(newpswd.getText().toString().length()<8){
+                                Toast.makeText(AccountInfo.this,"Password length less than 8",Toast.LENGTH_SHORT).show();
+                            }else{
+                                mAuth=FirebaseAuth.getInstance();
+                                mAuth.getCurrentUser().updatePassword(newpswd.getText().toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if(task.isSuccessful()){
+                                            Toast.makeText(AccountInfo.this,"Password updated",Toast.LENGTH_SHORT).show();
+                                        }else{
+                                            Toast.makeText(AccountInfo.this,task.getException().getLocalizedMessage(),Toast.LENGTH_SHORT).show();
+
+                                        }
+                                    }
+                                });
+                            }
+
+
+                        }else{
+                            Toast.makeText(AccountInfo.this,"Different password",Toast.LENGTH_SHORT).show();
+                        }
 
                     }
                 })
