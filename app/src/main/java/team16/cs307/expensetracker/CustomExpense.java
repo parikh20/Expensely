@@ -69,6 +69,7 @@ public class CustomExpense extends AppCompatActivity implements AdapterView.OnIt
         mCategory = findViewById(R.id.custom_expense_category);
         mPriority = findViewById(R.id.custom_expense_priority);
         mOutlier = findViewById(R.id.custom_expense_outlier);
+        tags = new ArrayList<>();
 
         mOutlier.setOnItemSelectedListener(this);
 
@@ -173,6 +174,18 @@ public class CustomExpense extends AppCompatActivity implements AdapterView.OnIt
 
             }
         });
+
+
+        mCategory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Toast.makeText(CustomExpense.this, "Button Clicked", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getApplicationContext(), CustomCategoryCreation.class);
+                startActivityForResult(intent, 100);
+
+            }
+        });
     }
 
     @Override
@@ -191,6 +204,27 @@ public class CustomExpense extends AppCompatActivity implements AdapterView.OnIt
 
     public void onNothingSelected(AdapterView<?> arg0) {
         //do nothing
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == 100) {
+            if (resultCode == Activity.RESULT_OK) {
+                String type = data.getStringExtra("type");
+                if (!type.equals("")) {
+                    tags.add(type);
+                }
+
+                /*String listLimits = "Current Limits: ";
+                for (Limit lim : limits) {
+                    listLimits += lim.getCategory();
+                    listLimits += ", ";
+                }
+                mLimits.setText(listLimits.substring(0, listLimits.lastIndexOf(",")));*/
+            }
+
+        }
     }
     
 }
