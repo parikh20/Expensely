@@ -88,4 +88,7 @@
     <string name="financial_info_continue"> Continue to Expensely</string>
     <string name="title_activity_account_management">AccountManagement</string>
 
+    <!-- Custom Category Strings -->
+    <string name="custom_category_intro">Add a category to your new expense:</string>
+
 </resources>

@@ -56,6 +56,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -105,19 +106,6 @@ public class MainActivity extends AppCompatActivity {
 
         //set up mchart
         mChart.setVisibility(View.INVISIBLE); //Invisible at start, to be added here: check user settings for default graph, make that one visible
-        List<PieEntry> entries = new ArrayList<>();
-        entries.add(new PieEntry(18.5f, "Green"));
-        entries.add(new PieEntry(26.7f, "Brown"));
-        entries.add(new PieEntry(24.0f, "Red"));
-        entries.add(new PieEntry(30.8f, "Blue"));
-
-
-        PieDataSet set = new PieDataSet(entries, "Your Monthly Categories");
-        int [] colors = new int[]{Color.GREEN,  Color.rgb(128, 100, 10), Color.RED, Color.BLUE, Color.MAGENTA, Color.CYAN};
-        set.setColors(colors);
-        PieData data = new PieData(set);
-        mChart.setData(data);
-        mChart.invalidate();//This will refresh the chartview
 
 
 
@@ -134,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
                 curr_budg = documentSnapshot.toObject(Budget.class);
                 if (curr_budg != null) {
                     Toast.makeText(MainActivity.this, "found a current budget: " + curr_budg.getName(), Toast.LENGTH_SHORT).show();
-
+                    //setting quick stat block here
                     statBlock += "Current Budget Limits:\n";
                     statBlock += "Weekly: $" + NumberFormat.getNumberInstance().format((int) curr_budg.getLimitWeekly());
                     statBlock += "\nMonthly: $" + NumberFormat.getNumberInstance().format((int) curr_budg.getLimitMonthly());
@@ -151,10 +139,11 @@ public class MainActivity extends AppCompatActivity {
 
                         statBlock += statB;
                     }
-                    mGraph.setTitle("Your Weekly Budget: " + curr_budg.getName());
+                    //Now setting up line graph to display monthly budget
+                    mGraph.setTitle("Your Monthly Budget: " + curr_budg.getName());
                     mStats.setText(statBlock);
-                    //all changes to the graph here will take effect after first interaction: Might have to move whole graph element in here
-                    int startday = 1;
+                    //all changes to the graph here will take effect after first interaction
+
                     int endday = LocalDate.now().lengthOfMonth();
                     double monthlim = curr_budg.getLimitMonthly();
                     perday = monthlim / endday;
@@ -166,6 +155,7 @@ public class MainActivity extends AppCompatActivity {
                     LineGraphSeries<DataPoint> currBudget = new LineGraphSeries<>(points.toArray(parray));
                     currBudget.setTitle("Your Budget");
                     mGraph.addSeries(currBudget);
+                    //Performing a double check here in case the other series completed first.  (usual case)
                     if (amt > perday * LocalDate.now().getDayOfMonth()) {
                         currBudget.setColor(Color.RED);
                         currBudget.setTitle("Your Budget (Over Budget!)");
@@ -184,7 +174,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
+        //Get expenses, and add them to the line graph and pie chart
         CollectionReference refE = db.collection("users").document(mAuth.getUid()).collection("Expenses");
         refE.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
@@ -194,21 +184,30 @@ public class MainActivity extends AppCompatActivity {
                 for (QueryDocumentSnapshot doc : querySnapshot) {
                     x++;
                 }
-                isAboveLimit = false;
+                isAboveLimit = false;  //Tracks if you're currently above your limit (depends on other task finishing first, checked in both and acted upon)
 
-                amt = 0;
+                amt = 0;  //Total amount spent monthly to date
                 ArrayList<DataPoint> ie = new ArrayList<>();
                 ArrayList<Expense> ei = new ArrayList<>();
                 for (QueryDocumentSnapshot doc : querySnapshot) {
+                    //Adding each expense to an expense array, so we can sort the array by date before even worrying about adding it to graphs
                     Expense e = doc.toObject(Expense.class);
                     ei.add(e);
 
                 }
-                Collections.sort(ei);
+                Collections.sort(ei);  //Sorting by custom compare in Expense.java (by date, not by amount!!!)
+                ArrayList<String> categoryList= new ArrayList<>(); //list of monthly categories
+                ArrayList<Double> categoryValues = new ArrayList<>(); //list of monthly totals
+                //Note: We only care about the primary category of each expense for the purposes of the pie chart.  Limit calculation and comparison might produce different results
+                //TODO If we change our mind here, this will have to change
+
                 for (Expense e : ei) {
+
                     Instant inst = Instant.ofEpochSecond(e.getTime());
                     ZonedDateTime zdt = ZonedDateTime.ofInstant(inst, ZonedDateTime.now().getZone());
+                    //if it's in the current month and isn't an outlier (Behaved weirdly when i tried just checking getMonthvalue == getMonthValue.  This wasn't much harder)
                     if (zdt.isAfter(ZonedDateTime.now().withDayOfMonth(1)) && !e.getOutlierMonthly() && zdt.isBefore(ZonedDateTime.now().withDayOfMonth(LocalDate.now().lengthOfMonth()).plusDays(1))) {
+                        //Add it to the line graph
                         double am = e.getAmount();
                         amt += am;
                         long tim = e.getTime();
@@ -218,8 +217,41 @@ public class MainActivity extends AppCompatActivity {
                         ZonedDateTime z = ZonedDateTime.ofInstant(i, ZonedDateTime.now().getZone());
                         double budgetcheck = perday * (z.getDayOfMonth() - 1);
                         isAboveLimit = (budgetcheck < amt) && budgetcheck != 0;
+
+                        //Add it to the category list
+                        if (e.getTags() == null || e.getTags().isEmpty()) {
+                            boolean found = false;
+                            int itr = 0;
+                            for (String str : categoryList) {
+                                if (str.equals("Unassigned")) {
+                                    categoryValues.set(itr, categoryValues.get(itr) + am);
+                                    found = true;
+                                }
+                                itr++;
+                            }
+                            if (!found) {
+                                categoryList.add("Unassigned");
+                                categoryValues.add(am);
+                            }
+                        } else {
+                            String cat = e.getTags().get(0);
+                            boolean found = false;
+                            int itr = 0;
+                            for (String str : categoryList) {
+                                if (cat.equals(str)) {
+                                    categoryValues.set(itr, categoryValues.get(itr) + am);
+                                    found = true;
+                                }
+                                itr++;
+                            }
+                            if (!found) {
+                                categoryList.add(cat);
+                                categoryValues.add(am);
+                            }
+                        }
                     }
                 }
+                //set up and complete series for line graph
                 ie.add(new DataPoint(ZonedDateTime.now().toEpochSecond(), amt));
                 ie.add(new DataPoint(ZonedDateTime.now().withDayOfMonth(1).toEpochSecond(),0));
                 DataSort(ie);
@@ -232,8 +264,31 @@ public class MainActivity extends AppCompatActivity {
                 series.setTitle("Your Spending");
                 mGraph.addSeries(series);
 
+                //set up and complete series for pie chart
+                List<PieEntry> entries = new ArrayList<>();
+                int itr = 0;
+                for (String str : categoryList) {
+                    entries.add(new PieEntry((float) (amt / categoryValues.get(itr)) , str));
+                    itr++;
+                }
+
+
+
+
+                PieDataSet set = new PieDataSet(entries, "Your Monthly Categories");
+                int [] colors = new int[]{Color.GREEN,  Color.rgb(128, 100, 10), Color.RED, Color.BLUE, Color.MAGENTA, Color.CYAN};
+                if (categoryList.contains("Unassigned")) {
+                    colors[categoryList.indexOf("Unassigned") % 6] = Color.GRAY;
+                }
+                set.setColors(colors);
+                PieData data = new PieData(set);
+                mChart.setData(data);
+                mChart.invalidate();//This will refresh the chartview
+
+
             }
          });
+
 
         //graph settings
         GridLabelRenderer glr = mGraph.getGridLabelRenderer();
