@@ -28,7 +28,7 @@ note: For dealing with repeating purchases, we will generate 1 payment into the 
 //          Thus, we will always have 2 repeating purchases for each instance
 
  */
-public class Expense {
+public class Expense implements Comparable<Expense>{
     private String name;
     private String location;
     private boolean repeating;
@@ -161,5 +161,10 @@ public class Expense {
                 this.tags.remove(s);
             }
         }
+    }
+
+    @Override
+    public int compareTo(Expense e) {
+        return (Long.compare(this.getTime(), e.getTime()));
     }
 }

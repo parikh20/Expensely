@@ -165,6 +165,8 @@ public class CustomExpense extends AppCompatActivity implements AdapterView.OnIt
                     db.collection("users").document(mAuth.getUid()).collection("Expenses").document("next " + name ).set(next);
 
                 }
+                Intent intent = new Intent(CustomExpense.this, MainActivity.class);
+                CustomExpense.this.startActivity(intent);
 
 
                 finish();

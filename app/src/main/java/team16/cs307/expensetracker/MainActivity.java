@@ -22,6 +22,8 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -36,6 +38,7 @@ import com.google.firebase.storage.StorageReference;
 import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.GridLabelRenderer;
+import com.jjoe64.graphview.LegendRenderer;
 import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
@@ -49,8 +52,11 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -70,6 +76,10 @@ public class MainActivity extends AppCompatActivity {
 
     private Budget curr_budg;
 
+    private double perday;
+    private boolean isAboveLimit;
+    private double amt;
+
 
 
 
@@ -87,7 +97,8 @@ public class MainActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         mChart = findViewById(R.id.main_chart);
         mSwap = findViewById(R.id.main_swapchart);
-
+        perday = 0;
+        amt = 0;
 
 
 
@@ -145,14 +156,20 @@ public class MainActivity extends AppCompatActivity {
                     int startday = 1;
                     int endday = LocalDate.now().lengthOfMonth();
                     double monthlim = curr_budg.getLimitMonthly();
-                    double perday = monthlim / endday;
+                    perday = monthlim / endday;
                     ArrayList<DataPoint> points = new ArrayList<>();
                     for (int x = 0; x < endday; x++) {
                         points.add(new DataPoint(ZonedDateTime.now().withDayOfMonth(x + 1).toEpochSecond(), perday * (x+1)));
                     }
                     DataPoint [] parray = new DataPoint[points.size()];
                     LineGraphSeries<DataPoint> currBudget = new LineGraphSeries<>(points.toArray(parray));
+                    currBudget.setTitle("Your Budget");
                     mGraph.addSeries(currBudget);
+                    if (amt > perday * LocalDate.now().getDayOfMonth()) {
+                        currBudget.setColor(Color.RED);
+                    } else if (amt != 0){
+                        currBudget.setColor(Color.GREEN);
+                    }
                 } else {
                     Toast.makeText(MainActivity.this, "No current budget", Toast.LENGTH_LONG).show();
                     mStats.setText("No Current Budget: Try creating one or downloading a template!\n" +
@@ -163,6 +180,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
         CollectionReference refE = db.collection("users").document(mAuth.getUid()).collection("Expenses");
         refE.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
@@ -172,16 +190,43 @@ public class MainActivity extends AppCompatActivity {
                 for (QueryDocumentSnapshot doc : querySnapshot) {
                     x++;
                 }
-                DataPoint[] jd = new DataPoint[x];
+                isAboveLimit = false;
+
+                amt = 0;
+                ArrayList<DataPoint> ie = new ArrayList<>();
+                ArrayList<Expense> ei = new ArrayList<>();
                 for (QueryDocumentSnapshot doc : querySnapshot) {
                     Expense e = doc.toObject(Expense.class);
-                    //add expense data point on date
+                    ei.add(e);
 
                 }
-
-
-                //LineGraphSeries<DataPoint> series = new LineGraphSeries<>(jd);
-                //mGraph.addSeries(series);
+                Collections.sort(ei);
+                for (Expense e : ei) {
+                    Instant inst = Instant.ofEpochSecond(e.getTime());
+                    ZonedDateTime zdt = ZonedDateTime.ofInstant(inst, ZonedDateTime.now().getZone());
+                    if (zdt.isAfter(ZonedDateTime.now().withDayOfMonth(1))) {
+                        double am = e.getAmount();
+                        amt += am;
+                        long tim = e.getTime();
+                        //add expense data point on date
+                        ie.add(new DataPoint(tim, amt));
+                        Instant i = Instant.ofEpochSecond(tim);
+                        ZonedDateTime z = ZonedDateTime.ofInstant(i, ZonedDateTime.now().getZone());
+                        double budgetcheck = perday * (z.getDayOfMonth() - 1);
+                        isAboveLimit = (budgetcheck < amt) && budgetcheck != 0;
+                    }
+                }
+                ie.add(new DataPoint(ZonedDateTime.now().toEpochSecond(), amt));
+                ie.add(new DataPoint(ZonedDateTime.now().withDayOfMonth(1).toEpochSecond(),0));
+                DataSort(ie);
+                DataPoint[] de = new DataPoint[ie.size()];
+                LineGraphSeries<DataPoint> series = new LineGraphSeries<>(ie.toArray(de));
+                //series.setColor(Color.GREEN);
+                if (isAboveLimit) {
+                    series.setColor(Color.RED);
+                }
+                series.setTitle("Your Spending");
+                mGraph.addSeries(series);
 
             }
          });
@@ -204,11 +249,14 @@ public class MainActivity extends AppCompatActivity {
                 new DataPoint(d1, 1),
                 new DataPoint(d2, 2)
         });
-        mGraph.addSeries(series);
+        //mGraph.addSeries(series);
         mGraph.getViewport().setMinX(ZonedDateTime.now().withDayOfMonth(1).toEpochSecond() );
         mGraph.getViewport().setMaxX(d2);
         mGraph.getGridLabelRenderer().setNumHorizontalLabels(0);
         mGraph.getGridLabelRenderer().setTextSize(12);
+        mGraph.getLegendRenderer().setVisible(true);
+        mGraph.getLegendRenderer().setFixedPosition(0, 0);
+        mGraph.getLegendRenderer().setWidth(500);
 
         mGraph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
             @Override
@@ -290,6 +338,7 @@ public class MainActivity extends AppCompatActivity {
     private void addExpense() {
             Intent intent = new Intent(getApplicationContext(), CustomExpense.class);
             startActivity(intent);
+            finish();
         }
 
         private void selectBudget() {
@@ -307,5 +356,24 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         }
+
+
+    public ArrayList<DataPoint> DataSort (ArrayList<DataPoint> ie ) {
+
+        for (int i = 0; i < ie.size(); i++) {
+            for (int j = 0; j < ie.size() - i - 1; j++) {
+                if (ie.get(j).getX() > ie.get(j + 1).getX()) {
+                    DataPoint temp = ie.get(j);
+                    ie.set(j, ie.get(j + 1));
+                    ie.set(j + 1, temp);
+                }
+            }
+        }
+
+
+        return ie;
     }
+}
+
+
 
