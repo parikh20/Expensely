@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
     private String statBlock;
     private PieChart mChart;
     private Button mSwap;
+    private Button editBudget;
 
 
     private Budget curr_budg;
@@ -92,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
         mStats = findViewById(R.id.quick_stats);
         mGraph = findViewById(R.id.main_graph);
         selectbudg = findViewById(R.id.MainActivity_select_budg);
+        editBudget = findViewById(R.id.MainActivity_edit_budget);
         addExp = findViewById(R.id.main_new_expense);
         imageAccess = findViewById(R.id.MainActivity_ImageAccess);
         account = findViewById(R.id.main_account);
@@ -382,6 +384,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+
+        editBudget.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), EditBudgetActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
 
 
 
