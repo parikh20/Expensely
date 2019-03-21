@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
     private String statBlock;
     private PieChart mChart;
     private Button mSwap;
+    private Button editBudget;
 
 
     private Budget curr_budg;
@@ -92,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
         mStats = findViewById(R.id.quick_stats);
         mGraph = findViewById(R.id.main_graph);
         selectbudg = findViewById(R.id.MainActivity_select_budg);
+        editBudget = findViewById(R.id.MainActivity_edit_budget);
         addExp = findViewById(R.id.main_new_expense);
         imageAccess = findViewById(R.id.MainActivity_ImageAccess);
         account = findViewById(R.id.main_account);
@@ -134,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
                         for (Limit l : curr_budg.getCustomLimits()) {
 
                             statB.append(l.getCategory());
-                            statB.append(": $" + NumberFormat.getNumberInstance().format((int) l.getLimitWeekly()) + " Weekly\n");
+                            statB.append(": $" + NumberFormat.getNumberInstance().format((int) l.getLimitMonthly()) + " Monthly\n");
                         }
 
                         statBlock += statB;
@@ -252,12 +254,15 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
                 //set up and complete series for line graph
+                //add additional points for current day and first day of month.
                 ie.add(new DataPoint(ZonedDateTime.now().toEpochSecond(), amt));
                 ie.add(new DataPoint(ZonedDateTime.now().withDayOfMonth(1).toEpochSecond(),0));
                 DataSort(ie);
                 DataPoint[] de = new DataPoint[ie.size()];
                 LineGraphSeries<DataPoint> series = new LineGraphSeries<>(ie.toArray(de));
                 //series.setColor(Color.GREEN);
+
+                //watch for being above limit, set graph line to red if so.  If isabovelimit is true here, we know this task finished second (edge case, not usual)
                 if (isAboveLimit) {
                     series.setColor(Color.RED);
                 }
@@ -274,7 +279,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
+                //colors used are on a rotating array designed for a maximum of 6 categories.  We can add other colors to the array to prevent color clash on larger sets
                 PieDataSet set = new PieDataSet(entries, "Your Monthly Categories");
                 int [] colors = new int[]{Color.GREEN,  Color.rgb(128, 100, 10), Color.RED, Color.BLUE, Color.MAGENTA, Color.CYAN};
                 if (categoryList.contains("Unassigned")) {
@@ -382,6 +387,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+
+        editBudget.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), EditBudgetActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
 
 
 

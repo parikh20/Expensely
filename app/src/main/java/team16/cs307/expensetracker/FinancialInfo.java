@@ -84,6 +84,8 @@ public class FinancialInfo extends AppCompatActivity {
                 map.put("Number", dependants);
                 db.collection("users").document(mAuth.getUid()).collection("Preferences").document("Dependants").set(map);
 
+                generateBudget();
+
                 Intent i = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(i);
             }
@@ -111,5 +113,17 @@ public class FinancialInfo extends AppCompatActivity {
             return false;
         }
         return true;
+    }
+
+    public void generateBudget() {
+        int sal = Integer.parseInt(mSalary.getText().toString());
+        Budget budget = new Budget();
+        budget.setLimitYearly(sal * 0.70);
+        budget.setLimitMonthly(sal/12 * 0.70);
+        budget.setLimitWeekly(sal/55 * 0.70);
+        budget.setName("Suggested Budget");
+
+        db.collection("users").document(mAuth.getUid()).collection("Budgets").document("Suggested Budget").set(budget);
+        db.collection("users").document(mAuth.getUid()).collection("Preferences").document("Current Budget").set(budget);
     }
 }

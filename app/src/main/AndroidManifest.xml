@@ -19,7 +19,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/LightTheme">
-        <activity android:name=".CustomCategoryCreation"></activity>
+        <activity android:name=".EditBudgetActivity"></activity>
+        <activity android:name=".CustomCategoryCreation" />
         <activity android:name=".AccountInfo" />
         <activity
             android:name=".ImageShow"
