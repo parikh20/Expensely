@@ -53,12 +53,7 @@ public class CustomBudgetCreation extends AppCompatActivity {
         mAddLimit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*HashMap <String,Object> lims = new HashMap<>();
-                int i = 0;
-                for (Limit l : limits) {
-                    lims.put(String.valueOf(i), l);
-                }*/
-                //db.collection("users").document(mAuth.getUid()).collection("Preferences").document("Working Limits").set(lims);
+                
                 Toast.makeText(CustomBudgetCreation.this, "Buttom Clicked", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getApplicationContext(), CustomLimitCreation.class);
                 startActivityForResult(intent, 100);

@@ -61,7 +61,6 @@ public class EditBudgetActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         //get current budget
-
         //set starting values of text fields to current budget values
         DocumentReference ref = db.collection("users").document(mAuth.getUid()).collection("Preferences").document("Current Budget");
         ref.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -76,10 +75,11 @@ public class EditBudgetActivity extends AppCompatActivity {
                     mMonthly.setText(String.valueOf(curr_budg.getLimitMonthly()));
                     mWeekly.setText(String.valueOf(curr_budg.getLimitWeekly()));
                     mYearly.setText(String.valueOf(curr_budg.getLimitYearly()));
-
+                    //add all already created limits to the limit tracker
                     for (Limit l : curr_budg.getCustomLimits()) {
                         limits.add(l);
                     }
+                    //add limits to limit list
                     String listLimits = "Current Limits: ";
                     for (Limit lim : limits) {
                         listLimits += lim.getCategory();
@@ -104,12 +104,7 @@ public class EditBudgetActivity extends AppCompatActivity {
         mAddLimit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*HashMap <String,Object> lims = new HashMap<>();
-                int i = 0;
-                for (Limit l : limits) {
-                    lims.put(String.valueOf(i), l);
-                }*/
-                //db.collection("users").document(mAuth.getUid()).collection("Preferences").document("Working Limits").set(lims);
+                //jump to custom limit creation with result fetch to pick up new limit and update
                 Toast.makeText(EditBudgetActivity.this, "Button Clicked", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getApplicationContext(), CustomLimitCreation.class);
                 startActivityForResult(intent, 100);
@@ -141,11 +136,13 @@ public class EditBudgetActivity extends AppCompatActivity {
 
                 Budget budget = new Budget(mName.getText().toString(), w, m, y, limits);
                 Toast.makeText(EditBudgetActivity.this, "Budget Created", Toast.LENGTH_SHORT).show();
-                //Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+
                 db.collection("users").document(mAuth.getUid()).collection("Budgets").document(mName.getText().toString()).set(budget);
                 /*HashMap<String, Object> map = new HashMap<>();
                 map.put("current budget", budget);*/
                 db.collection("users").document(mAuth.getUid()).collection("Preferences").document("Current Budget").set(budget);
+
+                //restarting main activity to update graphs and quickstats page
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
                 finish();
