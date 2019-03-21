@@ -65,7 +65,7 @@ public class AccountInfo extends AppCompatActivity {
                                 .setView(edittext)
                                 .setPositiveButton( "Remove", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
-                                        if(edittext.getText().toString().toLowerCase()=="delete"){
+                                        if(edittext.getText().toString().toLowerCase().equals("delete")){
                                             mAuth.getCurrentUser().delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void aVoid) {
