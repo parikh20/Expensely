@@ -45,6 +45,7 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 
 import org.threeten.bp.Instant;
 import org.threeten.bp.LocalDate;
+import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;
 
@@ -167,8 +168,11 @@ public class MainActivity extends AppCompatActivity {
                     mGraph.addSeries(currBudget);
                     if (amt > perday * LocalDate.now().getDayOfMonth()) {
                         currBudget.setColor(Color.RED);
+                        currBudget.setTitle("Your Budget (Over Budget!)");
+
                     } else if (amt != 0){
                         currBudget.setColor(Color.GREEN);
+                        currBudget.setTitle("Your Budget (Under Budget)");
                     }
                 } else {
                     Toast.makeText(MainActivity.this, "No current budget", Toast.LENGTH_LONG).show();
@@ -204,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
                 for (Expense e : ei) {
                     Instant inst = Instant.ofEpochSecond(e.getTime());
                     ZonedDateTime zdt = ZonedDateTime.ofInstant(inst, ZonedDateTime.now().getZone());
-                    if (zdt.isAfter(ZonedDateTime.now().withDayOfMonth(1))) {
+                    if (zdt.isAfter(ZonedDateTime.now().withDayOfMonth(1)) && !e.getOutlierMonthly() && zdt.isBefore(ZonedDateTime.now().withDayOfMonth(LocalDate.now().lengthOfMonth()).plusDays(1))) {
                         double am = e.getAmount();
                         amt += am;
                         long tim = e.getTime();
