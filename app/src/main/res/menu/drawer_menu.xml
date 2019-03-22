@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+    <group android:checkableBehavior="single">
+        <item android:id="@+id/dashboard"
+            android:title="Summary"/>
+        <item android:id="@+id/access_image"
+            android:title="Access Images"/>
+        <item android:title="Manage Budget">
+            <menu>
+                <item android:id="@+id/edit_curr_budget"
+                    android:title="Edit Current Budget"/>
+                <item android:id="@+id/edit_past_budget"
+                    android:title="Edit Past Budget"/>
+                <item android:id="@+id/select_download_budget"
+                    android:title="Select/Download Budget"/>
+            </menu>
+        </item>
+        <item android:id="@+id/settings"
+            android:title="Settings"/>
+        <item android:id="@+id/logout"
+            android:title="Logout"/>
+    </group>
+</menu>
