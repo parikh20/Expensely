@@ -277,7 +277,7 @@ public class MainActivity extends AppCompatActivity {
                 List<PieEntry> entries = new ArrayList<>();
                 int itr = 0;
                 for (String str : categoryList) {
-                    entries.add(new PieEntry((float) (amt / categoryValues.get(itr)) , str));
+                    entries.add(new PieEntry((float) ((categoryValues.get(itr))/amt) , str));
                     itr++;
                 }
 

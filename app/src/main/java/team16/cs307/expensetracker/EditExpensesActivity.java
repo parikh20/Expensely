@@ -241,7 +241,9 @@ public class EditExpensesActivity extends AppCompatActivity implements AdapterVi
 
                     expense = documentSnapshot.toObject(Expense.class);
                     if (expense != null) {
-
+                        for (String tag : expense.getTags()) {
+                            tags.add(tag);
+                        }
                         oldtime = expense.getTime();
                         mLocation.setText(expense.getLocation());
                         mLocation.setVisibility(View.VISIBLE);
