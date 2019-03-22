@@ -9,9 +9,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +27,9 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class AccountInfo extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
@@ -32,6 +37,7 @@ public class AccountInfo extends AppCompatActivity {
     private Button logout,removal;
     private TextView emailText;
     private Button emailChange,resetPassword,supportEmail;
+    private Spinner graphSpinner;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,9 +53,13 @@ public class AccountInfo extends AppCompatActivity {
         supportEmail = (Button)findViewById(R.id.AccountInfo_SupportEmail);
         emailText = (TextView)findViewById(R.id.AccountInfo_text);
         emailText.setText(mAuth.getCurrentUser().getEmail().toString());
+        graphSpinner = (Spinner)findViewById(R.id.graph_spinner);
 
-
-
+        List<String> graphs = new ArrayList<>();
+        graphs.add("Line Graph");
+        graphs.add("Pie Chart");
+        ArrayAdapter<String> graphAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, graphs);
+        graphSpinner.setAdapter(graphAdapter);
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -83,9 +93,6 @@ public class AccountInfo extends AppCompatActivity {
             }
         });
     }
-
-
-
 
     private void logout() {
         mAuth.signOut();

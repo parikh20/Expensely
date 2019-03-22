@@ -96,6 +96,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="395dp"
         android:prompt="@string/custom_expense_priority_prompt" />
+
     <Spinner
         android:id="@+id/custom_expense_outlier"
         android:layout_width="match_parent"

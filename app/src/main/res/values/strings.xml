@@ -93,4 +93,7 @@
     <!-- Edit expense strings -->
     <string name="edit_expense_choose">Choose an Expense:</string>
 
+    <!-- Custom Settings Strings -->
+    <string name="custom_settings_default_graph">Default Graph</string>
+
 </resources>

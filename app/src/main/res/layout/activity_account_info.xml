@@ -16,9 +16,14 @@
         android:gravity="center"
         android:textSize="22dp"
         android:textColor="@color/Grey"
-        android:text="expense@purdue.edu"
+        android:text="expense@purdue.edu" />
 
-         />
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/graph_spinner"
+        android:prompt="@string/custom_settings_default_graph"/>
+
 
     <Button
         android:id="@+id/AccountInfo_Email"
@@ -29,7 +34,6 @@
         android:layout_marginBottom="10dp"
         android:layout_gravity="center"
         android:text="Change Email"
-
          />
 
     <Button
@@ -40,8 +44,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
         android:layout_gravity="center"
-        android:text="Chaneg password"
-
+        android:text="Change password"
         />
 
     <Button
@@ -55,18 +58,17 @@
         android:layout_gravity="center"
         android:text="Logout"
        />
+
     <Button
         android:id="@+id/AccountInfo_removal"
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="150dp"
         android:layout_height="50dp"
-
-
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
         android:layout_gravity="center"
         android:background="@color/fui_bgEmail"
-        android:text="Removal"
+        android:text="Delete Account"
         />
 
 

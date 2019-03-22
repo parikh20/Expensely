@@ -10,6 +10,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -84,9 +86,6 @@ public class MainActivity extends AppCompatActivity {
     private boolean isAboveLimit;
     private double amt;
 
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,14 +105,8 @@ public class MainActivity extends AppCompatActivity {
         amt = 0;
         editExpenses = findViewById(R.id.MainActivity_edit_expenses);
 
-
-
         //set up mchart
         mChart.setVisibility(View.INVISIBLE); //Invisible at start, to be added here: check user settings for default graph, make that one visible
-
-
-
-
 
         //mGraph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(getApplicationContext()));
         statBlock = "";
@@ -420,7 +413,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-        private void addExpense() {
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        MenuInflater inflater = getMenuInflater();
+//        inflater.inflate(R.menu.settings, menu);
+//        return true;
+//    }
+
+
+    private void addExpense() {
             Intent intent = new Intent(getApplicationContext(), CustomExpense.class);
             startActivity(intent);
             finish();

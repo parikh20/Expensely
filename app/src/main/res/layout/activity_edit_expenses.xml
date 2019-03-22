@@ -17,9 +17,6 @@
         android:contentDescription="@string/login_activity_logo"
         android:src="@mipmap/logo_transparent_cropped" />
 
-
-
-
     <EditText
         android:id="@+id/custom_expense_location"
         android:layout_width="match_parent"
