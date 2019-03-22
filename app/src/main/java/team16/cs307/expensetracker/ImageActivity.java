@@ -46,6 +46,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -193,8 +194,9 @@ public class ImageActivity extends AppCompatActivity {
                 if(data.getData() != null){
                     filePath = data.getData();
                     try {
-                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
-                        imageview.setImageBitmap(bitmap);
+                        Picasso.get().load(filePath).fit().centerCrop().into(imageview);
+                        //Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
+                        //imageview.setImageBitmap(bitmap);
                     } catch (Exception e) {
                         e.printStackTrace();
 

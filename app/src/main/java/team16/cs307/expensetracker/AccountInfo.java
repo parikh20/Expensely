@@ -39,7 +39,7 @@ public class AccountInfo extends AppCompatActivity {
         getSupportActionBar().setTitle("Account Info");
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
-        mDoc = db.collection("users").document(mAuth.getUid());
+
         logout = (Button)findViewById(R.id.AccountInfo_logout);
         removal = (Button)findViewById(R.id.AccountInfo_removal);
         emailChange = (Button)findViewById(R.id.AccountInfo_Email);
@@ -109,6 +109,8 @@ public class AccountInfo extends AppCompatActivity {
                                     public void onClick(DialogInterface dialog, int which) {
                                         if(edittext.getText().toString().toLowerCase().equals("delete")){
 
+                                            mDoc = db.collection("users").document(mAuth.getUid());
+
                                             mDoc.delete();
                                             mAuth.getCurrentUser().delete().addOnCompleteListener(new OnCompleteListener<Void>() {
                                                 @Override
@@ -160,6 +162,9 @@ public class AccountInfo extends AppCompatActivity {
                            @Override
                            public void onComplete(@NonNull Task<Void> task) {
                                if(task.isSuccessful()){
+
+                                   mDoc = db.collection("users").document(mAuth.getUid());
+                                    mDoc.update("email",emailtext.getText().toString());
                                    Toast.makeText(AccountInfo.this,"Email updated",Toast.LENGTH_SHORT).show();
                                    emailText.setText(mAuth.getCurrentUser().getEmail().toString());
                                }else{
