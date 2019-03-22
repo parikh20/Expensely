@@ -138,6 +138,7 @@ public class ImageActivity extends AppCompatActivity {
                     .setPositiveButton( "Change", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             textTag = edittext.getText().toString();
+                            if(textTag.length()==0){textTag="None";}
                             tag.setText("Tag:"+textTag);
 
                         }
@@ -236,7 +237,11 @@ public class ImageActivity extends AppCompatActivity {
                                 Map<String, Object> map = new HashMap<>();
                                 map.put("imgurl", imgurl);
                                 map.put("date",timeStamp);
-                                map.put("tag",textTag);
+                                if (textTag.length()==0){
+                                    map.put("tag","None");
+                                } else{
+                                    map.put("tag",textTag);
+                                }
                                 db.collection("users").document(mAuth.getUid()).collection("images").document(imgurl).set(map);
 
                             }

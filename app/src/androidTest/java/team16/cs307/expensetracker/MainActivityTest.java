@@ -32,7 +32,7 @@ public class MainActivityTest {
     }
     @Test
     public void testLaunch(){
-        View upload = mActivity.findViewById(R.id.MainActivity_photoupload);
+        View upload = mActivity.findViewById(R.id.MainActivity_ImageAccess);
         View budget = mActivity.findViewById(R.id.MainActivity_select_budg);
         assertNotNull(upload);
         assertNotNull(budget);
@@ -43,9 +43,9 @@ public class MainActivityTest {
     public void testLaunchImageActivity(){
         monitor = getInstrumentation().addMonitor(ImageActivity.class.getName(),null,false);
 
-        assertNotNull(mActivity.findViewById(R.id.MainActivity_photoupload));
+        assertNotNull(mActivity.findViewById(R.id.MainActivity_ImageAccess));
 
-        onView(withId(R.id.MainActivity_photoupload)) .perform(click());
+        onView(withId(R.id.MainActivity_ImageAccess)) .perform(click());
 
         Activity imageActivity = getInstrumentation().waitForMonitorWithTimeout(monitor,5000);
 

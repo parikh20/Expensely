@@ -1,6 +1,7 @@
 package team16.cs307.expensetracker;
 
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -39,6 +40,7 @@ public class ImageShow extends AppCompatActivity {
     private NoteAdapter adapter;
     private StorageReference mStore;
     private FloatingActionButton add;
+    ProgressDialog pd;
 
 
     @Override
@@ -53,6 +55,7 @@ public class ImageShow extends AppCompatActivity {
         mRef = db.collection("users").document(mAuth.getUid()).collection("images");
         setUpRecyclerView();
         add = (FloatingActionButton) findViewById(R.id.image_access_addButton);
+        pd = new ProgressDialog(this);
 
 
         add.setOnClickListener(new View.OnClickListener() {
@@ -84,7 +87,10 @@ public class ImageShow extends AppCompatActivity {
                         .setView(edittext)
                         .setPositiveButton( "Change", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                documentSnapshot.getReference().update("tag",edittext.getText().toString());
+                                pd.setMessage("updating...");
+                                pd.show();
+                                if(edittext.getText().toString().length()>0){documentSnapshot.getReference().update("tag",edittext.getText().toString());}
+                                pd.dismiss();
                             }
                         })
                         .setNegativeButton( "Cancel", new DialogInterface.OnClickListener() {
@@ -104,15 +110,19 @@ public class ImageShow extends AppCompatActivity {
                         .setMessage( "Are you sure?" )
                         .setPositiveButton( "Yes", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
+                                pd.setMessage("deleting...");
+                                pd.show();
                                 String uri = "https://firebasestorage.googleapis.com/v0/b/expensely-cs307.appspot.com/o/"+documentSnapshot.toObject(Note.class).getImgurl();
                                 adapter.deleteItem(position);
                                 mStore = FirebaseStorage.getInstance().getReferenceFromUrl(uri);
                                 mStore.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
+                                        pd.dismiss();
                                         Toast.makeText(ImageShow.this,"Deleted",Toast.LENGTH_SHORT).show();
                                     }
                                 });
+
 
                             }
                         })
@@ -129,6 +139,7 @@ public class ImageShow extends AppCompatActivity {
     protected void onStart(){
         super.onStart();
         adapter.startListening();
+
     }
     @Override
     protected void onStop() {
