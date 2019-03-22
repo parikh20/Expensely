@@ -52,7 +52,7 @@ public class AccountInfo extends AppCompatActivity {
         resetPassword = (Button)findViewById(R.id.AccountInfo_resetPassword);
         supportEmail = (Button)findViewById(R.id.AccountInfo_SupportEmail);
         emailText = (TextView)findViewById(R.id.AccountInfo_text);
-        emailText.setText(mAuth.getCurrentUser().getEmail().toString());
+        emailText.setText(mAuth.getCurrentUser().getEmail());
         graphSpinner = (Spinner)findViewById(R.id.graph_spinner);
 
         List<String> graphs = new ArrayList<>();
