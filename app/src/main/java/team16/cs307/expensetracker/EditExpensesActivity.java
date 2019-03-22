@@ -19,9 +19,14 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.jjoe64.graphview.series.DataPoint;
+
 import android.widget.AdapterView.OnItemSelectedListener;
 import org.threeten.bp.Instant;
 import org.threeten.bp.LocalDateTime;
@@ -38,37 +43,57 @@ import static org.threeten.bp.temporal.ChronoUnit.MONTHS;
 import static org.threeten.bp.temporal.ChronoUnit.WEEKS;
 import static org.threeten.bp.temporal.ChronoUnit.YEARS;
 
-public class CustomExpense extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class EditExpensesActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener  {
     private EditText mLocation;
     private EditText mName;
     private EditText mRepeating;
     private Button mFinish;
-    private EditText mFrequency;
+
     private EditText mAmount;
     private Button mCategory;
     private Spinner mPriority;
     private Spinner mOutlier;
+    private Spinner mExpense;
     private int priority;
     private int outlier;
     private ArrayList<String> tags;
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
+    private Expense expense;
+    private long oldtime;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_custom_expense);
+        setContentView(R.layout.activity_edit_expenses);
 
         mLocation = findViewById(R.id.custom_expense_location);
         mName = findViewById(R.id.custom_expense_name);
         mRepeating = findViewById(R.id.custom_expense_repeating);
         mFinish = findViewById(R.id.custom_expense_finish);
-        mFrequency = findViewById(R.id.custom_expense_frequency);
+
         mAmount = findViewById(R.id.custom_expense_amount);
         mCategory = findViewById(R.id.custom_expense_category);
         mPriority = findViewById(R.id.custom_expense_priority);
         mOutlier = findViewById(R.id.custom_expense_outlier);
+        mExpense = findViewById(R.id.edit_expense_selector);
+        mExpense.setOnItemSelectedListener(this);
+        mLocation.setVisibility(View.INVISIBLE);
+        mName.setVisibility(View.INVISIBLE);
+        mRepeating.setVisibility(View.INVISIBLE);
+        mFinish.setVisibility(View.INVISIBLE);
+
+        mCategory.setVisibility(View.INVISIBLE);
+        mPriority.setVisibility(View.INVISIBLE);
+        mOutlier.setVisibility(View.INVISIBLE);
+        mAmount.setVisibility(View.INVISIBLE);
+
+
+
+        //set to visible and populated when user selects an expense
+
+
         tags = new ArrayList<>();
 
         mOutlier.setOnItemSelectedListener(this);
@@ -80,6 +105,41 @@ public class CustomExpense extends AppCompatActivity implements AdapterView.OnIt
 
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
+
+
+        //populate expense spinner from db
+        CollectionReference refE = db.collection("users").document(mAuth.getUid()).collection("Expenses");
+        refE.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot querySnapshot) {
+
+                int x = 0;
+                for (QueryDocumentSnapshot doc : querySnapshot) {
+                    x++;
+                }
+
+                ArrayList<Expense> ei = new ArrayList<>();
+                for (QueryDocumentSnapshot doc : querySnapshot) {
+
+                    Expense e = doc.toObject(Expense.class);
+                    ei.add(e);
+
+                }
+                String[] arraySpinner = new String[x + 1];
+                arraySpinner[0] = "Choose Your Expense";
+                int itr = 1;
+                for (Expense e : ei) {
+
+                    arraySpinner[itr] = e.getName();
+                    itr++;
+                }
+
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, arraySpinner);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                mExpense.setAdapter(adapter);
+            }
+        });
+
 
         List<String> priorities = new ArrayList<String>();
         priorities.add("How important was this purchase?");
@@ -109,65 +169,30 @@ public class CustomExpense extends AppCompatActivity implements AdapterView.OnIt
             @Override
             public void onClick(View v) {
                 if(mName.getText() == null || mRepeating.getText() == null || mAmount.getText() == null || mLocation.getText() == null) {
-                    Toast.makeText(CustomExpense.this, "Please enter your purchase's values", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Please enter your purchase's values", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if(priority == 0) {
-                    Toast.makeText(CustomExpense.this, "Please select your purchase's priority", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Please select your purchase's priority", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 String name = mName.getText().toString();
                 String location = mLocation.getText().toString();
                 String repeating = mRepeating.getText().toString();
                 double amount = Double.parseDouble(mAmount.getText().toString());
-                boolean weekly = false;
-                boolean monthly = false;
-                boolean yearly = false;
-                if (repeating.equals("Y")) {
-                    if (mFrequency.getText() == null) {
-                        Toast.makeText(CustomExpense.this, "Please select your repeating purchase's frequency", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    String freq = mFrequency.getText().toString();
-                    if (freq.equals("weekly")) {
-                        weekly = true;
-                    } else if (freq.equals("monthly") ) {
-                        monthly = true;
-                    } else {
-                        yearly = true;
-                    }
 
-                }
+
                 boolean outlierW = outlier == 1;
                 boolean outlierM = outlier == 2;
-                long time = LocalDateTime.now().atZone(ZoneId.systemDefault()).toEpochSecond();
-                Expense e = new Expense(name, location, repeating.equals("Y"), time, amount, tags, priority, outlierM, outlierW);
+
+                Expense e = new Expense(name, location, repeating.equals("Y"), oldtime, amount, tags, priority, outlierM, outlierW);
                 db.collection("users").document(mAuth.getUid()).collection("Expenses").document(name).set(e);
                 //TODO: update total monthly/weekly/yearly, update category totals m/y/w
 
-                if(weekly) {
 
-                    LocalDateTime nextTime = LocalDateTime.now().plus(7, DAYS);
-                    Expense next = new Expense("next " + name, location, repeating.equals("Y"), nextTime.atZone(ZoneId.systemDefault()).toEpochSecond(), amount, tags, priority, outlierM, outlierW);
-                    db.collection("users").document(mAuth.getUid()).collection("Expenses").document("next " + name).set(next);
-
-                }
-                if(monthly) {
-
-                    LocalDateTime nextTime = LocalDateTime.now().plus(1, MONTHS);
-                    Expense next = new Expense("next " + name, location, repeating.equals("Y"), nextTime.atZone(ZoneId.systemDefault()).toEpochSecond(), amount, tags, priority, outlierM, outlierW);
-                    db.collection("users").document(mAuth.getUid()).collection("Expenses").document("next " + name).set(next);
-
-                }
-                if(yearly) {
-
-                    LocalDateTime nextTime = LocalDateTime.now().plus(1, YEARS);
-                    Expense next = new Expense("next " + name, location, repeating.equals("Y"), nextTime.atZone(ZoneId.systemDefault()).toEpochSecond(), amount, tags, priority, outlierM, outlierW);
-                    db.collection("users").document(mAuth.getUid()).collection("Expenses").document("next " + name ).set(next);
-
-                }
-                Intent intent = new Intent(CustomExpense.this, MainActivity.class);
-                CustomExpense.this.startActivity(intent);
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getApplicationContext().startActivity(intent);
 
 
                 finish();
@@ -180,20 +205,91 @@ public class CustomExpense extends AppCompatActivity implements AdapterView.OnIt
             @Override
             public void onClick(View v) {
 
-                Toast.makeText(CustomExpense.this, "Button Clicked", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Button Clicked", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getApplicationContext(), CustomCategoryCreation.class);
                 startActivityForResult(intent, 100);
 
             }
         });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-
         String item = parent.getItemAtPosition(position).toString();
-        if (parent.getCount() > 5) {
+        if (parent.getId() == R.id.edit_expense_selector && !item.equals("Choose Your Expense")) {
+            //make all else visible and populate it with retrieved values
+            DocumentReference ref = db.collection("users").document(mAuth.getUid()).collection("Expenses").document(item);
+            ref.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+
+                    expense = documentSnapshot.toObject(Expense.class);
+                    if (expense != null) {
+
+                        oldtime = expense.getTime();
+                        mLocation.setText(expense.getLocation());
+                        mLocation.setVisibility(View.VISIBLE);
+                        mName.setText(expense.getName());
+                        mName.setVisibility(View.VISIBLE);
+                        String rep;
+                        if (expense.getRepeating()) {
+                            rep = "Y";
+                        } else {
+                            rep = "N";
+                        }
+                        mRepeating.setText(rep);
+                        mRepeating.setVisibility(View.VISIBLE);
+
+                        mFinish.setVisibility(View.VISIBLE);
+
+
+
+
+                        mCategory.setVisibility(View.VISIBLE);
+                        mPriority.setSelection(expense.getPriority());
+                        mPriority.setVisibility(View.VISIBLE);
+                        if (expense.getOutlierMonthly()) {
+                            mOutlier.setSelection(2);
+                        } else if (expense.getOutlierWeekly()) {
+                            mOutlier.setSelection(1);
+                        } else {
+                            mOutlier.setSelection(3);
+                        }
+
+
+                        mOutlier.setVisibility(View.VISIBLE);
+                        mAmount.setText(String.valueOf(expense.getAmount()));
+                        mAmount.setVisibility(View.VISIBLE);
+                    }
+
+
+
+
+
+
+
+                }
+            });
+
+
+
+        } else if (parent.getCount() > 5) {
             priority = position;
             Toast.makeText(getApplicationContext(), "id = " + priority, Toast.LENGTH_SHORT).show();
         } else {
@@ -226,5 +322,5 @@ public class CustomExpense extends AppCompatActivity implements AdapterView.OnIt
 
         }
     }
-    
+
 }

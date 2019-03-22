@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView mStats;
 
     private Button selectbudg;
+    private Button editExpenses;
     private Button addExp;
     private Button imageAccess;
     private Button account;
@@ -103,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
         mSwap = findViewById(R.id.main_swapchart);
         perday = 0;
         amt = 0;
+        editExpenses = findViewById(R.id.MainActivity_edit_expenses);
 
 
 
@@ -265,6 +267,8 @@ public class MainActivity extends AppCompatActivity {
                 //watch for being above limit, set graph line to red if so.  If isabovelimit is true here, we know this task finished second (edge case, not usual)
                 if (isAboveLimit) {
                     series.setColor(Color.RED);
+                } else if (perday != 0) {
+                    series.setColor(Color.GREEN);
                 }
                 series.setTitle("Your Spending");
                 mGraph.addSeries(series);
@@ -342,7 +346,14 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
+        editExpenses.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), EditExpensesActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
 
 
         selectbudg.setOnClickListener(new View.OnClickListener() {

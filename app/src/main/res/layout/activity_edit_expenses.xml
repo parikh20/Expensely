@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    tools:ignore="ExtraText"
+    >
+
+    <ImageView
+        android:id="@+id/custom_expense_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="150dp"
+        android:layout_marginTop="15dp"
+        android:background="@null"
+        android:contentDescription="@string/login_activity_logo"
+        android:src="@mipmap/logo_transparent_cropped" />
+
+
+
+
+    <EditText
+        android:id="@+id/custom_expense_location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="225dp"
+        android:ems="10"
+        android:hint="@string/custom_expense_location"
+        android:inputType="textPersonName" />
+
+    <EditText
+        android:id="@+id/custom_expense_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="185dp"
+        android:ems="10"
+        android:hint="@string/custom_expense_name"
+        android:inputType="textPersonName" />
+
+    <EditText
+        android:id="@+id/custom_expense_repeating"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="265dp"
+        android:ems="10"
+        android:hint="@string/custom_expense_repeating"
+        android:inputType="textPersonName" />
+
+    <Button
+        android:id="@+id/custom_expense_finish"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+
+        android:layout_marginTop="645dp"
+        android:text="@string/custom_expense_finish" />
+
+    <Button
+        android:id="@+id/custom_expense_category"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+
+        android:layout_marginTop="605dp"
+        android:text="@string/custom_expense_category" />
+
+    <EditText
+        android:id="@+id/custom_expense_amount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="345dp"
+        android:ems="10"
+        android:hint="@string/custom_expense_amount"
+        android:inputType="textPersonName" />
+
+    <Spinner
+        android:id="@+id/custom_expense_priority"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="395dp"
+        android:prompt="@string/custom_expense_priority_prompt" />
+    <Spinner
+        android:id="@+id/custom_expense_outlier"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="435dp"
+        android:prompt="@string/custom_expense_outlier" />
+
+    <Spinner
+        android:id="@+id/edit_expense_selector"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="165dp"
+        android:prompt="@string/edit_expense_choose" />
+
+</RelativeLayout>

@@ -90,5 +90,7 @@
 
     <!-- Custom Category Strings -->
     <string name="custom_category_intro">Add a category to your new expense:</string>
+    <!-- Edit expense strings -->
+    <string name="edit_expense_choose">Choose an Expense:</string>
 
 </resources>
