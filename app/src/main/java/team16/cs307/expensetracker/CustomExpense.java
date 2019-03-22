@@ -60,6 +60,7 @@ public class CustomExpense extends AppCompatActivity implements AdapterView.OnIt
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_custom_expense);
 
+
         mLocation = findViewById(R.id.custom_expense_location);
         mName = findViewById(R.id.custom_expense_name);
         mRepeating = findViewById(R.id.custom_expense_repeating);

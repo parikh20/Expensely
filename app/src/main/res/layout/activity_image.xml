@@ -1,86 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
+    android:orientation="vertical"
     tools:context=".ImageActivity"
     tools:ignore="ExtraText">
 
-    <Button
-        android:id="@+id/ImageActivity_Camera"
-        style="@style/Widget.AppCompat.Button.Colored"
-        android:layout_width="150dp"
-        android:layout_height="50dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="27dp"
-        android:layout_marginTop="113dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="21dp"
-        android:text="camera" />
 
-    <!--<ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="150dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="16dp"
-        android:background="@null"
-        android:contentDescription="@string/login_activity_logo"
-        android:src="@mipmap/logo_transparent_cropped" />-->
+
+
 
     <Button
         android:id="@+id/ImageActivity_Choose"
         style="@style/Widget.AppCompat.Button.Colored"
-        android:layout_width="150dp"
+        android:layout_width="200dp"
         android:layout_height="50dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="26dp"
-        android:layout_marginTop="40dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="22dp"
+
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_gravity="center"
         android:text="@string/image_activity_choose" />
+
+
+    <Button
+        android:id="@+id/ImageActivity_Camera"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_gravity="center"
+        android:text="camera" />
 
     <Button
         android:id="@+id/ImageActivity_Upload"
         style="@style/Widget.AppCompat.Button.Colored"
-        android:layout_width="150dp"
+        android:layout_width="200dp"
         android:layout_height="50dp"
-        android:layout_below="@id/ImageActivity_Choose"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="21dp"
-        android:layout_marginTop="94dp"
-        android:layout_marginEnd="8dp"
-
-        android:layout_marginRight="27dp"
-        android:layout_marginBottom="32dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_gravity="center"
         android:text="@string/image_activity_upload" />
 
     <TextView
         android:id="@+id/ImageActivity_Tag"
-        android:layout_width="387dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/ImageActivity_Choose"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="24dp"
-        android:layout_marginTop="157dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="24dp"
-        android:layout_marginBottom="32dp"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_gravity="center"
         android:clickable="true"
         android:gravity="center"
         android:text="upload"
@@ -88,16 +59,13 @@
 
     <ImageView
         android:id="@+id/ImageActivity_imgView"
-        android:layout_width="395dp"
+        android:layout_width="match_parent"
         android:layout_height="256dp"
-        android:layout_below="@id/ImageActivity_Upload"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="0dp"
-        android:layout_marginTop="36dp"
-        android:layout_marginEnd="0dp"
-        android:layout_marginBottom="77dp" />
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_gravity="center"/>
 
 
-</RelativeLayout>
+</LinearLayout>

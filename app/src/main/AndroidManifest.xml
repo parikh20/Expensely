@@ -18,11 +18,16 @@
         android:largeHeap="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:hardwareAccelerated="true"
         android:theme="@style/LightTheme">
-        <activity android:name=".EditExpensesActivity"></activity>
-        <activity android:name=".EditBudgetActivity" />
+        <activity android:name=".EditBudgetActivity"
+            android:parentActivityName=".MainActivity"></activity>
         <activity android:name=".CustomCategoryCreation" />
-        <activity android:name=".AccountInfo" />
+        <activity android:name=".EditExpensesActivity" />
+        <activity android:name=".AccountInfo"
+            android:parentActivityName=".MainActivity"/>
+        <activity android:name=".SupportEmail"
+            android:parentActivityName=".AccountInfo"/>
         <activity
             android:name=".ImageShow"
             android:label="@string/title_activity_image_show"

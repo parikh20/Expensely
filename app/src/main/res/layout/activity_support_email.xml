@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".SupportEmail">
+
+    <TextView
+        android:id="@+id/SupportEmail_Title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="To: Expensely Team"
+        android:textSize="20dp"
+        android:textColor="#000000" />
+
+    <EditText
+
+        android:layout_marginTop="8dp"
+
+        android:id="@+id/SupportEmail_Subject"
+        android:hint="Subject"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <EditText
+        android:id="@+id/SupportEmail_Content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="200dp"
+        android:gravity="top"
+        android:hint="Enter message here..."/>
+
+    <Button
+        android:id="@+id/SupportEmail_Send"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_margin="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:textColor="#FFFFFF"
+        android:text="Send"/>
+</LinearLayout>

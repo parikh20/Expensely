@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import android.text.InputFilter;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -46,6 +47,7 @@ public class ImageShow extends AppCompatActivity {
         setContentView(R.layout.image_access);
 
 
+
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         mRef = db.collection("users").document(mAuth.getUid()).collection("images");
@@ -63,9 +65,6 @@ public class ImageShow extends AppCompatActivity {
     }
 
     private void setUpRecyclerView() {
-        System.out.println("test!!!!!!!!!!!!!!!!!!!!!!!!");
-        System.out.println();
-        System.out.println();
         Query query = mRef;
         FirestoreRecyclerOptions<Note> options = new FirestoreRecyclerOptions.Builder<Note>().setQuery(query,Note.class).build();
         adapter = new NoteAdapter(options);
@@ -78,6 +77,7 @@ public class ImageShow extends AppCompatActivity {
             @Override
             public void onItemClick(final DocumentSnapshot documentSnapshot, final int position) {
                 final EditText edittext = new EditText(ImageShow.this);
+                edittext.setFilters(new InputFilter[]{ new InputFilter.LengthFilter(6) });
                 new AlertDialog.Builder( ImageShow.this )
                         .setTitle( "Tag" )
                         .setMessage( "Change your tag (Max Length: 6)" )

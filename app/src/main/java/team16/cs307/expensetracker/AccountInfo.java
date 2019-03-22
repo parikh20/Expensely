@@ -19,21 +19,32 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.StorageReference;
 
 public class AccountInfo extends AppCompatActivity {
     private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
+    private DocumentReference mDoc;
     private Button logout,removal;
     private TextView emailText;
-    private Button emailChange,resetPassword;
+    private Button emailChange,resetPassword,supportEmail;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account_info);
+        getSupportActionBar().setTitle("Account Info");
         mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
+        mDoc = db.collection("users").document(mAuth.getUid());
         logout = (Button)findViewById(R.id.AccountInfo_logout);
         removal = (Button)findViewById(R.id.AccountInfo_removal);
         emailChange = (Button)findViewById(R.id.AccountInfo_Email);
         resetPassword = (Button)findViewById(R.id.AccountInfo_resetPassword);
+        supportEmail = (Button)findViewById(R.id.AccountInfo_SupportEmail);
         emailText = (TextView)findViewById(R.id.AccountInfo_text);
         emailText.setText(mAuth.getCurrentUser().getEmail().toString());
 
@@ -65,6 +76,12 @@ public class AccountInfo extends AppCompatActivity {
                     resetPassword();
             }
         });
+        supportEmail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(AccountInfo.this,SupportEmail.class));
+            }
+        });
     }
 
 
@@ -92,13 +109,19 @@ public class AccountInfo extends AppCompatActivity {
                                     public void onClick(DialogInterface dialog, int which) {
                                         if(edittext.getText().toString().toLowerCase().equals("delete")){
 
-                                            mAuth.getCurrentUser().delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            mDoc.delete();
+                                            mAuth.getCurrentUser().delete().addOnCompleteListener(new OnCompleteListener<Void>() {
                                                 @Override
-                                                public void onSuccess(Void aVoid) {
-                                                    Toast.makeText(AccountInfo.this,"Account removed",Toast.LENGTH_SHORT).show();
-                                                    logout();
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    if(task.isSuccessful()){
+                                                        Toast.makeText(AccountInfo.this,"Account removed",Toast.LENGTH_SHORT).show();
+                                                        logout();
+                                                    }else{
+                                                        Toast.makeText(AccountInfo.this,task.getException().getLocalizedMessage(),Toast.LENGTH_SHORT).show();
+                                                    }
+
                                                 }
-                                            });
+                                            }) ;
                                         }else{
                                             Toast.makeText(AccountInfo.this,"Incorrect!",Toast.LENGTH_SHORT).show();
                                         }
@@ -126,6 +149,7 @@ public class AccountInfo extends AppCompatActivity {
 
     private void changeEmail(){
         final EditText emailtext = new EditText(AccountInfo.this);
+        emailtext.setHint("Enter your new emaill address");
         new AlertDialog.Builder( AccountInfo.this )
                 .setTitle( "Email change" )
                 .setMessage( "Current email:"+mAuth.getCurrentUser().getEmail().toString() )
@@ -170,7 +194,7 @@ public class AccountInfo extends AppCompatActivity {
         layout.addView(confirmpswd);
         new AlertDialog.Builder( AccountInfo.this )
                 .setTitle( "Password reset" )
-                .setMessage( "Please enter your current password. You password will be reset through email" )
+                .setMessage( "Please enter your new password" )
                 .setView(layout)
                 .setPositiveButton( "Change", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
