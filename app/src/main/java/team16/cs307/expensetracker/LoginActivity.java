@@ -198,7 +198,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         });
 
         // OnClickListener for when the Try the app is clicked
-        mTryButton.setOnClickListener(new View.OnClickListener() {
+        mTryClickable.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
