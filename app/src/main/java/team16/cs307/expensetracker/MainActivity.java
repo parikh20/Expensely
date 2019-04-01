@@ -78,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
     private PieChart mChart;
     private Button mSwap;
     private Button editBudget;
+    private Button becomeUser;
 
 
     private Budget curr_budg;
