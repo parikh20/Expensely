@@ -1,13 +1,16 @@
 package team16.cs307.expensetracker;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 
 import android.provider.MediaStore;
@@ -71,6 +74,7 @@ public class ImageActivity extends AppCompatActivity {
 
     private final int PICK_IMAGE_REQUEST = 1;
     private final int CAMERA_REQUEST = 2;
+    private final int PERMISSION_CODE = 1000;
     FirebaseStorage storage;
     StorageReference storageReference;
 
@@ -114,7 +118,18 @@ public class ImageActivity extends AppCompatActivity {
         camera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                imageCamera();
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+                    if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)==PackageManager.PERMISSION_DENIED){
+
+                        String[] permission = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
+                        requestPermissions(permission,PERMISSION_CODE);
+                    }else{
+                        imageCamera();
+                    }
+                }else{
+                    imageCamera();
+                }
+
             }
         });
         tag.setOnClickListener(new View.OnClickListener() {
@@ -156,27 +171,18 @@ public class ImageActivity extends AppCompatActivity {
         private void chooseImage(){
              //choose images from gallery
             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
-            //startActivityForResult(intent,PICK_IMAGE_REQUEST);
-
-            //Choose multiple images from file explorer
-            //Intent intent = new Intent();
-            //intent.setType("image/*");
-            //intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE,true);
-            //intent.setAction(intent.ACTION_GET_CONTENT);
             startActivityForResult(intent,PICK_IMAGE_REQUEST);
         }
 
         //camera
         private void imageCamera(){
-                /*value = new ContentValues();
-                value.put(MediaStore.Images.Media.TITLE, "New Picture");
-                value.put(MediaStore.Images.Media.DESCRIPTION, "From your Camera");
-                cameraImgUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,value);*/
-
+                //set filepath and camera setting
+                ContentValues values = new ContentValues();
+                values.put(MediaStore.Images.Media.TITLE,"New Picture");
+                values.put(MediaStore.Images.Media.DESCRIPTION,"Camera");
+                filePath= getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,values);
                 Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                //if(cameraFile !=null){
-                    //cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT,Uri.fromFile(cameraFile));
-
+                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT,filePath);
                 startActivityForResult(cameraIntent, CAMERA_REQUEST);
 
 
@@ -196,8 +202,6 @@ public class ImageActivity extends AppCompatActivity {
                     filePath = data.getData();
                     try {
                         Picasso.get().load(filePath).fit().centerCrop().into(imageview);
-                        //Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
-                        //imageview.setImageBitmap(bitmap);
                     } catch (Exception e) {
                         e.printStackTrace();
 
@@ -207,13 +211,13 @@ public class ImageActivity extends AppCompatActivity {
 
             }
             else if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK ){
-                Bitmap bmp = (Bitmap) data.getExtras().get("data");
-                imageview.setImageBitmap(bmp);
-                //filePath = getImageUri(getApplicationContext(),bmp);
-                //imageview.setImageURI(filePath);
-                //imageview.setImageBitmap(bmp);
-                //filePath=getRealPathFromURI()
-                //filePath=getImageUri(getApplicationContext(),bmp);
+
+                try {
+                    Picasso.get().load(filePath).fit().centerCrop().into(imageview);
+                } catch (Exception e) {
+                    e.printStackTrace();
+
+                }
 
 
             }
@@ -261,45 +265,20 @@ public class ImageActivity extends AppCompatActivity {
                 }
 
     }
-    /*public Uri getImageUri(Context inContext, Bitmap inImage) {
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
-        return Uri.parse(path);
-    }
 
-    private File createImageFile() throws IOException {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,
-                ".jpg",
-                storageDir
-        );
-
-        // Save a file: path for use with ACTION_VIEW intents
-        mCurrentPhotoPath = image.getAbsolutePath();
-        return image;
-    }
-    //delete photo
-
-
-    private static File getOutputMediaFile(){
-        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES), "CameraDemo");
-
-        if (!mediaStorageDir.exists()){
-            if (!mediaStorageDir.mkdirs()){
-                return null;
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode){
+            case PERMISSION_CODE:{
+                if(grantResults.length>0 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
+                    imageCamera();
+                }else{
+                    Toast.makeText(this,"Permission denied",Toast.LENGTH_SHORT).show();
+                }
             }
         }
+    }
 
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        return new File(mediaStorageDir.getPath() + File.separator +
-                "IMG_"+ timeStamp + ".jpg");
-    }*/
     @Override
     public void onBackPressed(){
         onSupportNavigateUp();
