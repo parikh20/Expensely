@@ -145,10 +145,10 @@ public class BudgetDownloadActivity extends AppCompatActivity {
     }
 
     private void browseBudgets() {
-        /* TODO: redirect to budget browse screen
+        //TODO: redirect to budget browse screen
         Intent intent = new Intent(getApplicationContext(), BrowseBudgets.class);
         startActivity(intent);
-        */
+
     }
     private void createCustomBudget() {
 

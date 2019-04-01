@@ -45,6 +45,7 @@ public class EditBudgetActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private Budget curr_budg;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
