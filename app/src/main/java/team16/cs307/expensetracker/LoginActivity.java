@@ -51,6 +51,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private SignInButton mGoogleSignInButton;
     private FirebaseAuth mAuth;
     private GoogleApiClient mGoogleApiClient;
+    private Button mTryButton;
     FirebaseFirestore db;
     //private ProgressDialog pd;
 
@@ -193,6 +194,15 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             public void onClick(View v) {
                 Intent forgotPasswordIntent = new Intent(getApplicationContext(), ResetPasswordActivity.class);
                 startActivity(forgotPasswordIntent);
+            }
+        });
+
+        // OnClickListener for when the Try the app is clicked
+        mTryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                LoginActivity.this.startActivity(intent);
             }
         });
 

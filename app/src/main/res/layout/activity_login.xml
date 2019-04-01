@@ -87,6 +87,14 @@
                 android:textSize="@dimen/text_size_normal"
                 android:layout_alignParentRight="true"
                 android:paddingRight="30dp"/>
+
+            <Button
+                android:id="@+id/mTryButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="onClick"
+
+                android:text="Try our app" />
         </RelativeLayout>
     </RelativeLayout>
 
