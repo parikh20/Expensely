@@ -29,72 +29,85 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/login_panel"
         android:layout_width="match_parent"
         android:layout_height="400dp"
-        android:layout_marginTop="-50dp"
+        android:layout_below="@id/banner"
+        android:layout_marginTop="-48dp"
         android:gravity="center"
-        android:orientation="vertical"
-        android:id="@+id/login_panel"
-        android:layout_below="@id/banner">
+        android:orientation="vertical">
+
         <RelativeLayout
-            android:layout_height="350dp"
             android:layout_width="300dp"
+            android:layout_height="350dp"
             android:background="@drawable/rounded_layout"
             android:elevation="6dp">
+
             <TextView
+                android:id="@+id/login_tag"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:id="@+id/login_tag"
+                android:layout_marginTop="30dp"
                 android:text="Sign In"
-                android:textSize="22sp"
-                android:layout_marginTop="30dp"/>
+                android:textSize="22sp" />
 
             <EditText
-                android:layout_below="@id/login_tag"
                 android:id="@+id/username_exitText"
                 android:layout_width="270dp"
                 android:layout_height="60dp"
+                android:layout_below="@id/login_tag"
                 android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp"
                 android:hint="@string/login_activity_email_address"
-                android:paddingLeft="10dp"
                 android:inputType="textEmailAddress"
-                android:layout_marginTop="20dp"/>
+                android:paddingLeft="10dp" />
 
             <EditText
-                android:layout_marginTop="5dp"
-                android:paddingLeft="10dp"
                 android:id="@+id/password_editText"
-                android:layout_below="@id/username_exitText"
                 android:layout_width="270dp"
                 android:layout_height="60dp"
+                android:layout_below="@id/username_exitText"
                 android:layout_centerHorizontal="true"
+                android:layout_marginTop="5dp"
                 android:hint="@string/login_activity_password"
-                android:inputType="textPassword"/>
+                android:inputType="textPassword"
+                android:paddingLeft="10dp" />
 
             <TextView
                 android:id="@+id/forgot_password_clickable"
-                android:layout_below="@id/password_editText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/password_editText"
+                android:layout_alignParentRight="true"
                 android:layout_gravity="center"
                 android:layout_marginTop="40dp"
                 android:clickable="true"
                 android:focusable="true"
                 android:onClick="onClick"
+                android:paddingRight="30dp"
                 android:text="Forgot password?"
                 android:textColor="@color/Grey"
-                android:textSize="@dimen/text_size_normal"
-                android:layout_alignParentRight="true"
-                android:paddingRight="30dp"/>
+                android:textSize="@dimen/text_size_normal" />
 
-            <Button
-                android:id="@+id/mTryButton"
+            <TextView
+                android:id="@+id/mTryClickable"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/password_editText"
+                android:layout_alignParentRight="true"
+                android:layout_gravity="center"
+                android:layout_marginTop="40dp"
+                android:layout_marginRight="159dp"
+                android:clickable="true"
+                android:focusable="true"
                 android:onClick="onClick"
+                android:paddingRight="30dp"
+                android:text="Try our app"
+                android:textColor="@color/Grey"
+                android:textSize="@dimen/text_size_normal" />
 
-                android:text="Try our app" />
+            android:text="Try our app" />
         </RelativeLayout>
     </RelativeLayout>
 
