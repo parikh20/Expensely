@@ -67,6 +67,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         mCreateNewAccountClickable = (TextView) findViewById(R.id.create_new_account_clickable);
         mLoginButton = (Button) findViewById(R.id.login_button);
         mGoogleSignInButton = (SignInButton) findViewById(R.id.google_sign_in_button);
+        mTryClickable = (TextView) findViewById(R.id.mTryClickable);
         //pd = new ProgressDialog(this);
         //pd.setMessage("Logging in...");
 

@@ -105,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
         perday = 0;
         amt = 0;
         editExpenses = findViewById(R.id.MainActivity_edit_expenses);
+        becomeUser = findViewById(R.id.becomeUser);
 
         //set up mchart
         mChart.setVisibility(View.INVISIBLE); //Invisible at start, to be added here: check user settings for default graph, make that one visible
@@ -398,6 +399,18 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), EditBudgetActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+        //Become a new user for anonymous user
+
+
+        becomeUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), CreateNewAccountActivity.class);
                 startActivity(intent);
                 finish();
             }
