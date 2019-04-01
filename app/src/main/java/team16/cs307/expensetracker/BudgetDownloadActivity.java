@@ -38,10 +38,13 @@ public class BudgetDownloadActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
     public Budget curr_budg;
+    private Button mBudg_upload;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_budget_download);
+        mBudg_upload = findViewById(R.id.budg_upload_budget);
         mBudg_browse =  findViewById(R.id.budg_browse);
         mBudg_curr =  findViewById(R.id.budg_curr);
         mBudg_curr_details = findViewById(R.id.budg_curr_details);
@@ -53,7 +56,7 @@ public class BudgetDownloadActivity extends AppCompatActivity {
 
 
         /*
-        TODO:
+
         if (user already has a budget attached to their account & active)
             get name of budget
             get details of budget
@@ -100,6 +103,41 @@ public class BudgetDownloadActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 createCustomBudget();
+            }
+        });
+
+        mBudg_upload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (curr_budg == null) {
+                    Toast.makeText(getApplicationContext(), "No Current Budget", Toast.LENGTH_SHORT).show();
+                } else {
+                    DocumentReference ref = db.collection("PublicBudgets").document(curr_budg.getName());
+                    ref.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            //Defaults
+
+                            Budget b = documentSnapshot.toObject(Budget.class);
+                            if (b != null) {
+                                Toast.makeText(BudgetDownloadActivity.this, "A Budget already exists for that name.  Try renaming it." + curr_budg.getName(), Toast.LENGTH_LONG).show();
+
+
+
+                            } else {
+                                
+                                db.collection("PublicBudgets").document(curr_budg.getName()).set(curr_budg);
+                                Toast.makeText(getApplicationContext(), "Uploaded publicly!", Toast.LENGTH_SHORT);
+                            }
+
+
+
+
+
+                        }
+                    });
+                }
+
             }
         });
 
