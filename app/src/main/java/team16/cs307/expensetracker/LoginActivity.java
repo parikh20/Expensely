@@ -1,6 +1,12 @@
 package team16.cs307.expensetracker;
 
 
+import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.PendingIntent;
+import android.os.SystemClock;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -100,13 +106,14 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                             newUser.put("email", mAuth.getCurrentUser().getEmail());
                             db.collection("users").document(mAuth.getUid()).set(newUser);
                         }
+
                     } else {
                         Toast.makeText(LoginActivity.this, "Failure to check db", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
 
-
+            alertSet();
             //Toast.makeText(LoginActivity.this,"user path = " + mAuth.getCurrentUser().getUid(), Toast.LENGTH_SHORT).show();
           Intent i = new Intent(LoginActivity.this, MainActivity.class);
           startActivity(i);
@@ -171,6 +178,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                         }
                                     }
                                 });
+                                alertSet();
                                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                 LoginActivity.this.startActivity(intent);
                                 finish();
@@ -202,6 +210,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         mTryClickable.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //Due to alerts being generally long term, alerts are to be turned off by default for trial users
+                //No alerts are to be set up here, or on future login!  will need to check if a user is a trial user when they log in, and avoid enabling alerts
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 LoginActivity.this.startActivity(intent);
             }
@@ -263,6 +273,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                             }
                                         }
                                     });
+                                    alertSet();
                                     Toast.makeText(LoginActivity.this, "Google Login Successful", Toast.LENGTH_SHORT).show();
                                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                     LoginActivity.this.startActivity(intent);
@@ -321,5 +332,70 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         return true;
     }
 
+    public void alertSet() {
+        /*alertSet is called on every log in, it will
+        1. check if alerts are already configured and running
+            A. if they are, nothing to see here, all operating as normal.  continues out of function to login
+            B. if not, we check if the user has turned off alerts in preferences
+                a. if they did, all operating as normal, proceeds to login
+                b. if they didn't, we know alerts are not configured yet, continues to point 2
+            C. if the fields for "alertsSetUp" or "alertsTurnedOff" are missing in firebase, we know that alerts have not yet been configured for this user
+                a. continues to point 2, creating the fields with values of "false"
+        2. if we're here, it means alerts are not configured, or turned off by something other than the user
+            A. schedule a repeating budget alert
+                a. details: triggers every day, at the time which it was configured (we want to avoid exact time alerts, they're generally bad practice)
+                b. The alert will trigger a call to BudgetNotification, which checks if the user is over their projected budget and/or total budget
+                c. the alert then displays this information, allowing the user to click it and enter the app (main screen redirect)
+
+        */
+        DocumentReference docRef = db.collection("users").document(mAuth.getUid());
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document != null && document.exists()) {
+                        if (document.get("alertsSetUp") == null || document.get("alertsTurnedOff") == null) {
+                            Map<String,String> alerts = new HashMap<>();
+                            alerts.put("alertsSetUp", "false");
+                            alerts.put("alertsTurnedOff","false");
+                            alerts.put("email", mAuth.getCurrentUser().getEmail());
+                            db.collection("users").document(mAuth.getUid()).set(alerts);
+                            //set up alerts
+
+                        }
+                        Boolean setup = Boolean.parseBoolean(document.getString("alertsSetUp"));
+                        Boolean exempt = Boolean.parseBoolean(document.getString("alertsTurnedOff"));
+                        if (setup  == null || exempt == null) {
+                            //this is just here to prevent the android studio warning about nullpointer.  These variables should never result in null, as they are only placed as a boolean
+                            //if we ever reach this statement, it is likely due to one of these variables being updated incorrectly, as a non-boolean
+                            return;
+                        }
+                        if (setup || exempt) {
+                            //continue as planned
+                            return;
+                        } else {
+                            if (!exempt) {
+                                //set up alerts
+                                Toast.makeText(getApplicationContext(), "Setting up alerts", Toast.LENGTH_SHORT).show();
+
+                                Map<String,Boolean> alerts = new HashMap<>();
+                                alerts.put("alertsSetUp", true);
+                                return;
+                            }
+                        }
+
+
+
+
+
+                    }
+                }
+            }
+        });
+
+
+
+    }
 
 }
