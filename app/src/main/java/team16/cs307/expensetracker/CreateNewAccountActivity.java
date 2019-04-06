@@ -84,6 +84,7 @@ public class CreateNewAccountActivity extends AppCompatActivity {
                                         userPref.put("defaultBudgetNum",defPref.getDefaultBudgetNum());
                                         db.collection("users").document(mAuth.getUid()).collection("Preference").document("userPreference").set(userPref);
                                         Toast.makeText(CreateNewAccountActivity.this, "moving to financial info", Toast.LENGTH_SHORT).show();
+                                        alertSet();
                                         Intent financialInfoIntent = new Intent(getApplicationContext(), FinancialInfo.class);
                                         startActivity(financialInfoIntent);
                                         finish();
@@ -156,5 +157,69 @@ public class CreateNewAccountActivity extends AppCompatActivity {
             return false;
         }
         return true;
+    }
+
+    public void alertSet() {
+        /*alertSet is called on every log in, it will
+        1. check if alerts are already configured and running
+            A. if they are, nothing to see here, all operating as normal.  continues out of function to login
+            B. if not, we check if the user has turned off alerts in preferences
+                a. if they did, all operating as normal, proceeds to login
+                b. if they didn't, we know alerts are not configured yet, continues to point 2
+            C. if the fields for "alertsSetUp" or "alertsTurnedOff" are missing in firebase, we know that alerts have not yet been configured for this user
+                a. continues to point 2, creating the fields with values of "false"
+        2. if we're here, it means alerts are not configured, or turned off by something other than the user
+            A. schedule a repeating budget alert
+                a. details: triggers every day, at the time which it was configured (we want to avoid exact time alerts, they're generally bad practice)
+                b. The alert will trigger a call to BudgetNotification, which checks if the user is over their projected budget and/or total budget
+                c. the alert then displays this information, allowing the user to click it and enter the app (main screen redirect)
+
+        */
+        DocumentReference docRef = db.collection("users").document(mAuth.getUid());
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document != null && document.exists()) {
+                        if (document.get("alertsSetUp") == null || document.get("alertsTurnedOff") == null) {
+                            Map<String,Boolean> alerts = new HashMap<>();
+                            alerts.put("alertsSetUp", false);
+                            alerts.put("alertsTurnedOff",false);
+                            db.collection("users").document(mAuth.getUid()).set(alerts);
+                            //set up alerts
+
+                        }
+                        Boolean setup = document.getBoolean("alertsSetUp");
+                        Boolean exempt = document.getBoolean("alertsTurnedOff");
+                        if (setup  == null || exempt == null) {
+                            //this is just here to prevent the android studio warning about nullpointer.  These variables should never result in null, as they are only placed as a boolean
+                            //if we ever reach this statement, it is likely due to one of these variables being updated incorrectly, as a non-boolean
+                            return;
+                        }
+                        if (setup || exempt) {
+                            //continue as planned
+                            return;
+                        } else {
+                            if (!exempt) {
+                                //set up alerts
+                                Toast.makeText(getApplicationContext(), "Setting up alerts for the first time", Toast.LENGTH_SHORT).show();
+
+
+                                return;
+                            }
+                        }
+
+
+
+
+
+                    }
+                }
+            }
+        });
+
+
+
     }
 }
