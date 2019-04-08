@@ -4,6 +4,7 @@ package team16.cs307.expensetracker;
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.os.SystemClock;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -43,6 +44,12 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 
+import org.threeten.bp.Instant;
+import org.threeten.bp.LocalDateTime;
+import org.threeten.bp.ZonedDateTime;
+import org.threeten.bp.temporal.ChronoUnit;
+
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -361,7 +368,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                             alerts.put("alertsTurnedOff","false");
                             alerts.put("email", mAuth.getCurrentUser().getEmail());
                             db.collection("users").document(mAuth.getUid()).set(alerts);
-                            //set up alerts
+                            //set up alerts (achieved in function)
 
                         }
                         Boolean setup = Boolean.parseBoolean(document.getString("alertsSetUp"));
@@ -378,9 +385,33 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                             if (!exempt) {
                                 //set up alerts
                                 Toast.makeText(getApplicationContext(), "Setting up alerts", Toast.LENGTH_SHORT).show();
+/*
+                                AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                                Intent intent = new Intent(getApplicationContext(), AlertReceiver.class);
+                                PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),1,intent,0);
+                                alarmManager.setExact(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis() + 10000,pendingIntent);
+*/
 
-                                Map<String,Boolean> alerts = new HashMap<>();
-                                alerts.put("alertsSetUp", true);
+                                Intent notificationIntent = new Intent(getApplicationContext(),AlertReceiver.class);
+                                notificationIntent.putExtra(AlertReceiver.NOTIFICATION_ID,1);
+                                Notification n;
+                                Notification.Builder builder = new Notification.Builder(getApplicationContext());
+                                builder.setContentTitle("Budget Checkup");
+                                builder.setContentText("placeholder info about budget here");
+                                builder.setSmallIcon(R.drawable.ic_logo);
+                                n = builder.build();
+                                notificationIntent.putExtra(AlertReceiver.NOTIFICATION,n);
+                                PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),0,notificationIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+                                long futureMillis = SystemClock.elapsedRealtime() + 20000;
+                                AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                                alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,futureMillis,pendingIntent);
+                                System.out.println("Set up alarm for " + (SystemClock.elapsedRealtime() + 20000));
+
+                                Map<String,String> alerts = new HashMap<>();
+                                alerts.put("alertsSetUp", "false");//TODO set back to true
+                                alerts.put("alertsTurnedOff","false");
+                                alerts.put("email", mAuth.getCurrentUser().getEmail());
+                                db.collection("users").document(mAuth.getUid()).set(alerts);
                                 return;
                             }
                         }
