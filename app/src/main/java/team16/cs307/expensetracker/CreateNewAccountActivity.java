@@ -1,5 +1,8 @@
 package team16.cs307.expensetracker;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -19,6 +22,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import org.threeten.bp.Instant;
+import org.threeten.bp.temporal.ChronoUnit;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -204,8 +210,19 @@ public class CreateNewAccountActivity extends AppCompatActivity {
                             if (!exempt) {
                                 //set up alerts
                                 Toast.makeText(getApplicationContext(), "Setting up alerts for the first time", Toast.LENGTH_SHORT).show();
+                                AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                                Intent intent = new Intent(getApplicationContext(), AlertReceiver.class);
+                                PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),1,intent,0);
+                                alarmManager.setExact(AlarmManager.RTC_WAKEUP, Instant.now().plus(1, ChronoUnit.DAYS).toEpochMilli(),pendingIntent);
 
 
+
+
+                                Map<String,String> alerts = new HashMap<>();
+                                alerts.put("alertsSetUp", "true");
+                                alerts.put("alertsTurnedOff","false");
+                                alerts.put("email", mAuth.getCurrentUser().getEmail());
+                                db.collection("users").document(mAuth.getUid()).set(alerts);
                                 return;
                             }
                         }

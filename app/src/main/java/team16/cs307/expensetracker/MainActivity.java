@@ -1,9 +1,13 @@
 package team16.cs307.expensetracker;
 
+import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.ColorSpace;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -106,6 +110,22 @@ public class MainActivity extends AppCompatActivity {
         amt = 0;
         editExpenses = findViewById(R.id.MainActivity_edit_expenses);
         becomeUser = findViewById(R.id.becomeUser);
+
+
+        Intent notificationIntent = new Intent(this,AlertReceiver.class);
+        notificationIntent.putExtra(AlertReceiver.NOTIFICATION_ID,1);
+        Notification n;
+        Notification.Builder builder = new Notification.Builder(this);
+        builder.setContentTitle("Budget Checkup");
+        builder.setContentText("placeholder info about budget here");
+        //builder.setSmallIcon(R.drawable.ic_logo);
+        n = builder.build();
+        notificationIntent.putExtra(AlertReceiver.NOTIFICATION,n);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),0,notificationIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+        long futureMillis = SystemClock.elapsedRealtime() + 20000;
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,futureMillis,pendingIntent);
+        System.out.println("Set up alarm for " + (SystemClock.elapsedRealtime() + 20000));
 
         //set up mchart
         mChart.setVisibility(View.INVISIBLE); //Invisible at start, to be added here: check user settings for default graph, make that one visible
