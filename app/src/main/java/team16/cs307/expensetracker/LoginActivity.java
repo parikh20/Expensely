@@ -3,8 +3,10 @@ package team16.cs307.expensetracker;
 
 import android.app.AlarmManager;
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.os.Build;
 import android.os.SystemClock;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -398,7 +400,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                 Notification.Builder builder = new Notification.Builder(getApplicationContext());
                                 builder.setContentTitle("Budget Checkup");
                                 builder.setContentText("placeholder info about budget here");
-                                builder.setSmallIcon(R.drawable.ic_logo);
+                                builder.setSmallIcon(R.drawable.ic_launcher_background);
+
                                 n = builder.build();
                                 notificationIntent.putExtra(AlertReceiver.NOTIFICATION,n);
                                 PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),0,notificationIntent,PendingIntent.FLAG_UPDATE_CURRENT);
