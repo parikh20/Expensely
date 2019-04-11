@@ -8,6 +8,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.os.Build;
 import android.os.SystemClock;
+import android.support.v4.app.NotificationCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.content.Intent;
@@ -397,7 +398,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                 Intent notificationIntent = new Intent(getApplicationContext(),AlertReceiver.class);
                                 notificationIntent.putExtra(AlertReceiver.NOTIFICATION_ID,1);
                                 Notification n;
-                                Notification.Builder builder = new Notification.Builder(getApplicationContext());
+                                NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(),"BudgetAlert");
                                 builder.setContentTitle("Budget Checkup");
                                 builder.setContentText("placeholder info about budget here");
                                 builder.setSmallIcon(R.drawable.ic_launcher_background);
@@ -405,10 +406,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                 n = builder.build();
                                 notificationIntent.putExtra(AlertReceiver.NOTIFICATION,n);
                                 PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),0,notificationIntent,PendingIntent.FLAG_UPDATE_CURRENT);
-                                long futureMillis = SystemClock.elapsedRealtime() + 20000;
+                                long futureMillis = SystemClock.elapsedRealtime() + 10000;
                                 AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
                                 alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,futureMillis,pendingIntent);
-                                System.out.println("Set up alarm for " + (SystemClock.elapsedRealtime() + 20000));
+                                System.out.println("Set up alarm for " + (SystemClock.elapsedRealtime() + 10000));
 
                                 Map<String,String> alerts = new HashMap<>();
                                 alerts.put("alertsSetUp", "false");//TODO set back to true
