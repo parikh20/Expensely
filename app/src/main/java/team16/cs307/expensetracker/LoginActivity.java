@@ -398,10 +398,13 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                 Intent notificationIntent = new Intent(getApplicationContext(),AlertReceiver.class);
                                 notificationIntent.putExtra(AlertReceiver.NOTIFICATION_ID,1);
                                 Notification n;
+                                Intent budgRedirect = new Intent(getApplicationContext(),LoginActivity.class);
+                                PendingIntent mainIntent = PendingIntent.getActivity(getApplicationContext(),1,budgRedirect,PendingIntent.FLAG_UPDATE_CURRENT);
                                 NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(),"BudgetAlert");
                                 builder.setContentTitle("Budget Checkup");
                                 builder.setContentText("placeholder info about budget here");
                                 builder.setSmallIcon(R.drawable.ic_launcher_background);
+                                builder.setContentIntent(mainIntent);
 
                                 n = builder.build();
                                 notificationIntent.putExtra(AlertReceiver.NOTIFICATION,n);
