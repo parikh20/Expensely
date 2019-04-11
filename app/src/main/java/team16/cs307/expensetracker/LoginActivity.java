@@ -413,16 +413,17 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                 builder.setAutoCancel(true);
                                 n = builder.build();
                                 notificationIntent.putExtra(AlertReceiver.NOTIFICATION,n);
-                                PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),0,notificationIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+                                PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),0,notificationIntent,PendingIntent.FLAG_CANCEL_CURRENT);
                                 //!!!!!!!!!!!!FOR TESTING NOTIFICATIONS==== SET FUTUREMILLIS TO elapsed time + 10000 for a ten second notification
-                                long futureMillis = SystemClock.elapsedRealtime() + 10000;//TimeUnit.DAYS.toMillis(1);
+                                long futureMillis = SystemClock.elapsedRealtime() + TimeUnit.DAYS.toMillis(1);
                                 AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-                                alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,futureMillis,pendingIntent);
+                                alarmManager.cancel(pendingIntent);
+                                alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,futureMillis, AlarmManager.INTERVAL_DAY,pendingIntent);
                                 System.out.println("Set up alarm for " + (SystemClock.elapsedRealtime() + TimeUnit.DAYS.toMillis(1)));
 
                                 Map<String,String> alerts = new HashMap<>();
-                                alerts.put("alertsSetUp", "false");//TODO set back to true
-                                alerts.put("alertsTurnedOff","false");
+                                alerts.put("alertsSetUp", "true");//TODO set back to true
+                                alerts.put("alertsTurnedOff","false"); //7:55 test time
                                 alerts.put("email", mAuth.getCurrentUser().getEmail());
                                 db.collection("users").document(mAuth.getUid()).set(alerts, SetOptions.merge());
                                 return;
