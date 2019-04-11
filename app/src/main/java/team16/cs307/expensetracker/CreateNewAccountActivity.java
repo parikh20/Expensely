@@ -1,10 +1,13 @@
 package team16.cs307.expensetracker;
 
 import android.app.AlarmManager;
+import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Patterns;
@@ -29,6 +32,7 @@ import org.threeten.bp.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 public class CreateNewAccountActivity extends AppCompatActivity {
 
@@ -189,16 +193,16 @@ public class CreateNewAccountActivity extends AppCompatActivity {
                     DocumentSnapshot document = task.getResult();
                     if (document != null && document.exists()) {
                         if (document.get("alertsSetUp") == null || document.get("alertsTurnedOff") == null) {
-                            Map<String,Boolean> alerts = new HashMap<>();
+                            Map<String, Boolean> alerts = new HashMap<>();
                             alerts.put("alertsSetUp", false);
-                            alerts.put("alertsTurnedOff",false);
+                            alerts.put("alertsTurnedOff", false);
                             db.collection("users").document(mAuth.getUid()).set(alerts);
                             //set up alerts
 
                         }
                         Boolean setup = document.getBoolean("alertsSetUp");
                         Boolean exempt = document.getBoolean("alertsTurnedOff");
-                        if (setup  == null || exempt == null) {
+                        if (setup == null || exempt == null) {
                             //this is just here to prevent the android studio warning about nullpointer.  These variables should never result in null, as they are only placed as a boolean
                             //if we ever reach this statement, it is likely due to one of these variables being updated incorrectly, as a non-boolean
                             return;
@@ -209,34 +213,48 @@ public class CreateNewAccountActivity extends AppCompatActivity {
                         } else {
                             if (!exempt) {
                                 //set up alerts
-                                Toast.makeText(getApplicationContext(), "Setting up alerts for the first time", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), "Setting up alerts", Toast.LENGTH_SHORT).show();
+/*
                                 AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
                                 Intent intent = new Intent(getApplicationContext(), AlertReceiver.class);
                                 PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),1,intent,0);
-                                alarmManager.setExact(AlarmManager.RTC_WAKEUP, Instant.now().plus(1, ChronoUnit.DAYS).toEpochMilli(),pendingIntent);
+                                alarmManager.setExact(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis() + 10000,pendingIntent);
+*/
 
+                                Intent notificationIntent = new Intent(getApplicationContext(), AlertReceiver.class);
+                                notificationIntent.putExtra(AlertReceiver.NOTIFICATION_ID, 1);
+                                Notification n;
+                                Intent budgRedirect = new Intent(getApplicationContext(), LoginActivity.class);
+                                PendingIntent mainIntent = PendingIntent.getActivity(getApplicationContext(), 1, budgRedirect, PendingIntent.FLAG_UPDATE_CURRENT);
+                                NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), "BudgetAlert");
+                                builder.setContentTitle("Budget Checkup");
+                                builder.setContentText("placeholder info about budget here");
+                                builder.setSmallIcon(R.drawable.ic_launcher_background);
+                                builder.setContentIntent(mainIntent);
+                                builder.setAutoCancel(true);
+                                n = builder.build();
+                                notificationIntent.putExtra(AlertReceiver.NOTIFICATION, n);
+                                PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                                long futureMillis = SystemClock.elapsedRealtime() + TimeUnit.DAYS.toMillis(1);
+                                AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                                alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureMillis, pendingIntent);
+                                System.out.println("Set up alarm for " + (SystemClock.elapsedRealtime() + TimeUnit.DAYS.toMillis(1)));
 
-
-
-                                Map<String,String> alerts = new HashMap<>();
-                                alerts.put("alertsSetUp", "true");
-                                alerts.put("alertsTurnedOff","false");
+                                Map<String, String> alerts = new HashMap<>();
+                                alerts.put("alertsSetUp", "false");//TODO set back to true
+                                alerts.put("alertsTurnedOff", "false");
                                 alerts.put("email", mAuth.getCurrentUser().getEmail());
                                 db.collection("users").document(mAuth.getUid()).set(alerts);
                                 return;
                             }
+
+
                         }
-
-
-
-
-
                     }
                 }
             }
+
+
         });
-
-
-
     }
 }
