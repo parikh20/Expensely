@@ -46,6 +46,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import com.google.firebase.firestore.SetOptions;
 
 import org.threeten.bp.Instant;
 import org.threeten.bp.LocalDateTime;
@@ -115,7 +116,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                             //Toast.makeText(LoginActivity.this, "User does not exist in db", Toast.LENGTH_SHORT).show();
                             Map<String, Object> newUser = new HashMap<>();
                             newUser.put("email", mAuth.getCurrentUser().getEmail());
-                            db.collection("users").document(mAuth.getUid()).set(newUser);
+                            db.collection("users").document(mAuth.getUid()).set(newUser, SetOptions.merge());
                         }
 
                     } else {
@@ -174,7 +175,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                                 Toast.makeText(LoginActivity.this, "User does not exist in db", Toast.LENGTH_SHORT).show();
                                                 Map<String, Object> newUser = new HashMap<>();
                                                 newUser.put("email", mAuth.getCurrentUser().getEmail());
-                                                db.collection("users").document(mAuth.getUid()).set(newUser);
+                                                db.collection("users").document(mAuth.getUid()).set(newUser, SetOptions.merge());
                                                 Preferences defPref = new Preferences();
                                                 Map<String,Object> userPref = new HashMap<>();
                                                 userPref.put("darkMode",defPref.isDarkMode());
@@ -277,7 +278,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                                     Toast.makeText(LoginActivity.this, "User does not exist in db", Toast.LENGTH_SHORT).show();
                                                     Map<String, Object> newUser = new HashMap<>();
                                                     newUser.put("email", mAuth.getCurrentUser().getEmail());
-                                                    db.collection("users").document(mAuth.getUid()).set(newUser);
+                                                    db.collection("users").document(mAuth.getUid()).set(newUser, SetOptions.merge());
                                                 }
                                             } else {
                                                 Toast.makeText(LoginActivity.this, "Failure to check db", Toast.LENGTH_SHORT).show();
@@ -371,7 +372,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                             alerts.put("alertsSetUp", "false");
                             alerts.put("alertsTurnedOff","false");
                             alerts.put("email", mAuth.getCurrentUser().getEmail());
-                            db.collection("users").document(mAuth.getUid()).set(alerts);
+                            db.collection("users").document(mAuth.getUid()).set(alerts, SetOptions.merge());
                             //set up alerts (achieved in function)
 
                         }
@@ -388,6 +389,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                         } else {
                             if (!exempt) {
                                 //set up alerts
+                                //Here we make a sample notification, and set an alert one day from now. (TODO: change to repeating alert)
+                                //We will specify what the notification is looking for, and get fresh data, when the alert receiver is called
+                                //
                                 Toast.makeText(getApplicationContext(), "Setting up alerts", Toast.LENGTH_SHORT).show();
 /*
                                 AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
@@ -410,6 +414,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                 n = builder.build();
                                 notificationIntent.putExtra(AlertReceiver.NOTIFICATION,n);
                                 PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),0,notificationIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+                                //!!!!!!!!!!!!FOR TESTING NOTIFICATIONS==== SET FUTUREMILLIS TO elapsed time + 10000 for a ten second notification
                                 long futureMillis = SystemClock.elapsedRealtime() + 10000;//TimeUnit.DAYS.toMillis(1);
                                 AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
                                 alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,futureMillis,pendingIntent);
@@ -419,7 +424,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                 alerts.put("alertsSetUp", "false");//TODO set back to true
                                 alerts.put("alertsTurnedOff","false");
                                 alerts.put("email", mAuth.getCurrentUser().getEmail());
-                                db.collection("users").document(mAuth.getUid()).set(alerts);
+                                db.collection("users").document(mAuth.getUid()).set(alerts, SetOptions.merge());
                                 return;
                             }
                         }

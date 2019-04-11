@@ -39,6 +39,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.jjoe64.graphview.DefaultLabelFormatter;
@@ -64,6 +65,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 
@@ -126,6 +128,31 @@ public class MainActivity extends AppCompatActivity {
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,futureMillis,pendingIntent);
         System.out.println("Set up alarm for " + (SystemClock.elapsedRealtime() + 20000));
+
+        //update Time and monthly totals
+        DocumentReference refM = db.collection("users").document(mAuth.getUid());
+        refM.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                //NOTE:  THIS IMPLEMENTATION RELIES ON A ONCE A YEAR LOGIN
+                //IF THE  USER DOES NOT LOG IN FOR A YEAR, MONTHLY TOTALS WILL NOT UPDATE UNTIL THE FIRST EXPENSE OF THAT YEAR  on a different month IS RECORDED
+                //todo: fix this - add a year to lastupdated
+                if (documentSnapshot.get("LastUpdated") == null || (!documentSnapshot.get("LastUpdated").equals(LocalDateTime.now().getMonth().toString())) ) {
+
+
+
+
+                    Map<String, String> userinfo = new HashMap<>();
+                    userinfo.put("Monthly Total", String.valueOf(0));
+                    userinfo.put("LastUpdated", LocalDateTime.now().getMonth().toString());
+                    db.collection("users").document(mAuth.getUid()).set(userinfo, SetOptions.merge());
+                }
+            }
+        });
+
+
+
+
 
         //set up mchart
         mChart.setVisibility(View.INVISIBLE); //Invisible at start, to be added here: check user settings for default graph, make that one visible
