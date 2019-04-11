@@ -25,6 +25,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 
 import org.threeten.bp.Instant;
 import org.threeten.bp.temporal.ChronoUnit;
@@ -83,7 +84,7 @@ public class CreateNewAccountActivity extends AppCompatActivity {
 
 
 
-                                        db.collection("users").document(mAuth.getUid()).set(newUser);
+                                        db.collection("users").document(mAuth.getUid()).set(newUser, SetOptions.merge());
                                         //default user preference
                                         Preferences defPref = new Preferences();
                                         Map<String,Object> userPref = new HashMap<>();
@@ -196,7 +197,7 @@ public class CreateNewAccountActivity extends AppCompatActivity {
                             Map<String, Boolean> alerts = new HashMap<>();
                             alerts.put("alertsSetUp", false);
                             alerts.put("alertsTurnedOff", false);
-                            db.collection("users").document(mAuth.getUid()).set(alerts);
+                            db.collection("users").document(mAuth.getUid()).set(alerts, SetOptions.merge());
                             //set up alerts
 
                         }
@@ -244,7 +245,7 @@ public class CreateNewAccountActivity extends AppCompatActivity {
                                 alerts.put("alertsSetUp", "false");//TODO set back to true
                                 alerts.put("alertsTurnedOff", "false");
                                 alerts.put("email", mAuth.getCurrentUser().getEmail());
-                                db.collection("users").document(mAuth.getUid()).set(alerts);
+                                db.collection("users").document(mAuth.getUid()).set(alerts, SetOptions.merge());
                                 return;
                             }
 

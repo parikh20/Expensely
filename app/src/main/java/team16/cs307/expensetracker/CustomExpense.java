@@ -22,6 +22,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
+
 import android.widget.AdapterView.OnItemSelectedListener;
 import org.threeten.bp.Instant;
 import org.threeten.bp.LocalDateTime;
@@ -120,7 +122,7 @@ public class CustomExpense extends AppCompatActivity implements AdapterView.OnIt
                 String name = mName.getText().toString();
                 String location = mLocation.getText().toString();
                 String repeating = mRepeating.getText().toString();
-                double amount = Double.parseDouble(mAmount.getText().toString());
+                final double amount = Double.parseDouble(mAmount.getText().toString());
                 boolean weekly = false;
                 boolean monthly = false;
                 boolean yearly = false;
@@ -144,6 +146,42 @@ public class CustomExpense extends AppCompatActivity implements AdapterView.OnIt
                 long time = LocalDateTime.now().atZone(ZoneId.systemDefault()).toEpochSecond();
                 Expense e = new Expense(name, location, repeating.equals("Y"), time, amount, tags, priority, outlierM, outlierW);
                 db.collection("users").document(mAuth.getUid()).collection("Expenses").document(name).set(e);
+
+
+                    //TODO: update total monthly/weekly/yearly, update category totals m/y/w
+
+
+
+                    DocumentReference ref = db.collection("users").document(mAuth.getUid());
+                    ref.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            if (documentSnapshot.get("LastUpdated") != null && documentSnapshot.get("LastUpdated").equals(LocalDateTime.now().getMonth().toString())) {
+
+
+                                if (documentSnapshot.get("Monthly Total") != null) {
+                                    Map<String, String> userinfo = new HashMap<>();
+                                    userinfo.put("Monthly Total", String.valueOf(Double.valueOf(documentSnapshot.getString("Monthly Total")) + amount));
+                                    userinfo.put("LastUpdated", LocalDateTime.now().getMonth().toString());
+                                    db.collection("users").document(mAuth.getUid()).set(userinfo, SetOptions.merge());
+                                } else {
+                                    Map<String, String> userinfo = new HashMap<>();
+                                    userinfo.put("Monthly Total", String.valueOf(amount));
+                                    userinfo.put("LastUpdated", LocalDateTime.now().getMonth().toString());
+                                    db.collection("users").document(mAuth.getUid()).set(userinfo, SetOptions.merge());
+                                }
+                            } else {
+                                Map<String, String> userinfo = new HashMap<>();
+                                userinfo.put("Monthly Total", String.valueOf(amount));
+                                userinfo.put("LastUpdated", LocalDateTime.now().getMonth().toString());
+                                db.collection("users").document(mAuth.getUid()).set(userinfo, SetOptions.merge());
+                            }
+                        }
+                    });
+
+
+
+
                 //TODO: update total monthly/weekly/yearly, update category totals m/y/w
 
                 if(weekly) {
