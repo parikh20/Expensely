@@ -192,7 +192,7 @@ public class EditExpensesActivity extends AppCompatActivity implements AdapterVi
                 final double difference = amount - oldAmount;
                 db.collection("users").document(mAuth.getUid()).collection("Expenses").document(name).set(e);
 
-                if (LocalDateTime.now().getMonth() == LocalDateTime.ofInstant(Instant.ofEpochSecond(oldtime), ZoneId.systemDefault()).getMonth() &&
+                if (!outlierM && LocalDateTime.now().getMonth() == LocalDateTime.ofInstant(Instant.ofEpochSecond(oldtime), ZoneId.systemDefault()).getMonth() &&
                         LocalDateTime.now().getYear() == LocalDateTime.ofInstant(Instant.ofEpochSecond(oldtime), ZoneId.systemDefault()).getYear()) {
 
                     //TODO: update total monthly/weekly/yearly, update category totals m/y/w

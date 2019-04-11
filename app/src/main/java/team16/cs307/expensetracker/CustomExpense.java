@@ -151,7 +151,7 @@ public class CustomExpense extends AppCompatActivity implements AdapterView.OnIt
                     //TODO: update total monthly/weekly/yearly, update category totals m/y/w
 
 
-
+                if (!outlierM) {
                     DocumentReference ref = db.collection("users").document(mAuth.getUid());
                     ref.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                         @Override
@@ -178,6 +178,7 @@ public class CustomExpense extends AppCompatActivity implements AdapterView.OnIt
                             }
                         }
                     });
+                }
 
 
 
