@@ -55,6 +55,7 @@ import org.threeten.bp.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
@@ -405,14 +406,14 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                 builder.setContentText("placeholder info about budget here");
                                 builder.setSmallIcon(R.drawable.ic_launcher_background);
                                 builder.setContentIntent(mainIntent);
-
+                                builder.setAutoCancel(true);
                                 n = builder.build();
                                 notificationIntent.putExtra(AlertReceiver.NOTIFICATION,n);
                                 PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),0,notificationIntent,PendingIntent.FLAG_UPDATE_CURRENT);
-                                long futureMillis = SystemClock.elapsedRealtime() + 10000;
+                                long futureMillis = SystemClock.elapsedRealtime() + 10000;//TimeUnit.DAYS.toMillis(1);
                                 AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
                                 alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,futureMillis,pendingIntent);
-                                System.out.println("Set up alarm for " + (SystemClock.elapsedRealtime() + 10000));
+                                System.out.println("Set up alarm for " + (SystemClock.elapsedRealtime() + TimeUnit.DAYS.toMillis(1)));
 
                                 Map<String,String> alerts = new HashMap<>();
                                 alerts.put("alertsSetUp", "false");//TODO set back to true
