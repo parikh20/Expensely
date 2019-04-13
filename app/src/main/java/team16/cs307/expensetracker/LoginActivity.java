@@ -423,11 +423,11 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                 notificationIntent.putExtra(AlertReceiver.NOTIFICATION,n);
                                 PendingIntent pendingIntent = PendingIntent.getBroadcast(context,0,notificationIntent,PendingIntent.FLAG_CANCEL_CURRENT);
                                 //!!!!!!!!!!!!FOR TESTING NOTIFICATIONS==== SET FUTUREMILLIS TO elapsed time + 10000 for a ten second notification
-                                long futureMillis = SystemClock.elapsedRealtime() + 10000;//TimeUnit.DAYS.toMillis(1);
+                                long futureMillis = SystemClock.elapsedRealtime() + TimeUnit.DAYS.toMillis(1);//10000;
                                 //AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
                                 alarmManager.cancel(pendingIntent);
-                                alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,futureMillis, 10000,pendingIntent);//AlarmManager.INTERVAL_DAY,pendingIntent);
-                                System.out.println("Set up alarm for " + (SystemClock.elapsedRealtime() + 10000));//TimeUnit.DAYS.toMillis(1)));
+                                alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,futureMillis, AlarmManager.INTERVAL_DAY,pendingIntent);//,pendingIntent);10000
+                                System.out.println("Set up alarm for " + (SystemClock.elapsedRealtime() + TimeUnit.DAYS.toMillis(1)));//10000));//
 
                                 Map<String,String> alerts = new HashMap<>();
                                 alerts.put("alertsSetUp", "true");
