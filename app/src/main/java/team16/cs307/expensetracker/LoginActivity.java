@@ -5,7 +5,9 @@ import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.PendingIntent;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
@@ -125,7 +127,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 }
             });
 
-            alertSet();
+            alertSet(mAuth, db, getApplicationContext(), (AlarmManager) getSystemService(Context.ALARM_SERVICE));
             //Toast.makeText(LoginActivity.this,"user path = " + mAuth.getCurrentUser().getUid(), Toast.LENGTH_SHORT).show();
           Intent i = new Intent(LoginActivity.this, MainActivity.class);
           startActivity(i);
@@ -190,7 +192,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                         }
                                     }
                                 });
-                                alertSet();
+                                alertSet(mAuth, db, getApplicationContext(), (AlarmManager) getSystemService(Context.ALARM_SERVICE));
                                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                 LoginActivity.this.startActivity(intent);
                                 finish();
@@ -285,7 +287,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                             }
                                         }
                                     });
-                                    alertSet();
+                                    alertSet(mAuth, db, getApplicationContext(), (AlarmManager) getSystemService(Context.ALARM_SERVICE));
                                     Toast.makeText(LoginActivity.this, "Google Login Successful", Toast.LENGTH_SHORT).show();
                                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                     LoginActivity.this.startActivity(intent);
@@ -344,7 +346,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         return true;
     }
 
-    public void alertSet() {
+    public static void alertSet(final FirebaseAuth mAuth, final FirebaseFirestore db, final Context context, final AlarmManager alarmManager) {
         /*alertSet is called on every log in, it will
         1. check if alerts are already configured and running
             A. if they are, nothing to see here, all operating as normal.  continues out of function to login
@@ -392,7 +394,13 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                 //Here we make a sample notification, and set an alert one day from now. (TODO: change to repeating alert)
                                 //We will specify what the notification is looking for, and get fresh data, when the alert receiver is called
                                 //
-                                Toast.makeText(getApplicationContext(), "Setting up alerts", Toast.LENGTH_SHORT).show();
+                                ComponentName receiver = new ComponentName(context, AlertReceiver.class);
+                                PackageManager pm = context.getPackageManager();
+
+                                pm.setComponentEnabledSetting(receiver,
+                                        PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                                        PackageManager.DONT_KILL_APP);
+                                Toast.makeText(context, "Setting up alerts", Toast.LENGTH_SHORT).show();
 /*
                                 AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
                                 Intent intent = new Intent(getApplicationContext(), AlertReceiver.class);
@@ -400,12 +408,12 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                 alarmManager.setExact(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis() + 10000,pendingIntent);
 */
 
-                                Intent notificationIntent = new Intent(getApplicationContext(),AlertReceiver.class);
+                                Intent notificationIntent = new Intent(context,AlertReceiver.class);
                                 notificationIntent.putExtra(AlertReceiver.NOTIFICATION_ID,1);
                                 Notification n;
-                                Intent budgRedirect = new Intent(getApplicationContext(),LoginActivity.class);
-                                PendingIntent mainIntent = PendingIntent.getActivity(getApplicationContext(),1,budgRedirect,PendingIntent.FLAG_UPDATE_CURRENT);
-                                NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(),"BudgetAlert");
+                                Intent budgRedirect = new Intent(context,LoginActivity.class);
+                                PendingIntent mainIntent = PendingIntent.getActivity(context,1,budgRedirect,PendingIntent.FLAG_UPDATE_CURRENT);
+                                NotificationCompat.Builder builder = new NotificationCompat.Builder(context,"BudgetAlert");
                                 builder.setContentTitle("Budget Checkup");
                                 builder.setContentText("placeholder info about budget here");
                                 builder.setSmallIcon(R.drawable.ic_launcher_background);
@@ -413,20 +421,20 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                 builder.setAutoCancel(true);
                                 n = builder.build();
                                 notificationIntent.putExtra(AlertReceiver.NOTIFICATION,n);
-                                PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),0,notificationIntent,PendingIntent.FLAG_CANCEL_CURRENT);
+                                PendingIntent pendingIntent = PendingIntent.getBroadcast(context,0,notificationIntent,PendingIntent.FLAG_CANCEL_CURRENT);
                                 //!!!!!!!!!!!!FOR TESTING NOTIFICATIONS==== SET FUTUREMILLIS TO elapsed time + 10000 for a ten second notification
-                                long futureMillis = SystemClock.elapsedRealtime() + TimeUnit.DAYS.toMillis(1);
-                                AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                                long futureMillis = SystemClock.elapsedRealtime() + 10000;//TimeUnit.DAYS.toMillis(1);
+                                //AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
                                 alarmManager.cancel(pendingIntent);
-                                alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,futureMillis, AlarmManager.INTERVAL_DAY,pendingIntent);
-                                System.out.println("Set up alarm for " + (SystemClock.elapsedRealtime() + TimeUnit.DAYS.toMillis(1)));
+                                alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,futureMillis, 10000,pendingIntent);//AlarmManager.INTERVAL_DAY,pendingIntent);
+                                System.out.println("Set up alarm for " + (SystemClock.elapsedRealtime() + 10000));//TimeUnit.DAYS.toMillis(1)));
 
                                 Map<String,String> alerts = new HashMap<>();
-                                alerts.put("alertsSetUp", "true");//TODO set back to true
+                                alerts.put("alertsSetUp", "true");
                                 alerts.put("alertsTurnedOff","false"); //7:55 test time
                                 alerts.put("email", mAuth.getCurrentUser().getEmail());
                                 db.collection("users").document(mAuth.getUid()).set(alerts, SetOptions.merge());
-                                return;
+
                             }
                         }
 

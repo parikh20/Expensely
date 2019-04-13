@@ -1,5 +1,6 @@
 package team16.cs307.expensetracker;
 
+import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -15,11 +16,14 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 
 import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.Year;
 
 import java.text.NumberFormat;
+import java.util.HashMap;
+import java.util.Map;
 
 
 //ALERTRECEIVER: to be used for Budget daily notifications
@@ -32,6 +36,30 @@ public class AlertReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
+        if (mAuth.getUid() == null ) {
+            //not logged in yet
+            return;
+        }
+        if (intent.getAction() != null && intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
+            final Context c = context;
+            DocumentReference ref = db.collection("users").document(mAuth.getUid());
+            ref.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    if (documentSnapshot.get("alertsTurnedOff") != null && documentSnapshot.getString("alertsTurnedOff").equals("false")) {
+                        Map<String, String> alerts = new HashMap<>();
+                        alerts.put("alertsSetUp", "false");
+                        db.collection("users").document(mAuth.getUid()).set(alerts, SetOptions.merge());
+                    }
+
+
+                    LoginActivity.alertSet(FirebaseAuth.getInstance(),FirebaseFirestore.getInstance(),c,(AlarmManager)c.getSystemService(Context.ALARM_SERVICE));
+                }
+            });
+            return;
+        }
+
+
         System.out.println("triggered!!!!!!!!!!!!!!!!!!!!");
         //called when alarm is triggered
         final Context fcontext = context;

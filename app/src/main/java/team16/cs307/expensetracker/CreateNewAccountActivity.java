@@ -95,7 +95,7 @@ public class CreateNewAccountActivity extends AppCompatActivity {
                                         userPref.put("defaultBudgetNum",defPref.getDefaultBudgetNum());
                                         db.collection("users").document(mAuth.getUid()).collection("Preference").document("userPreference").set(userPref);
                                         Toast.makeText(CreateNewAccountActivity.this, "moving to financial info", Toast.LENGTH_SHORT).show();
-                                        alertSet();
+                                        LoginActivity.alertSet(mAuth,db,getApplicationContext(),(AlarmManager)getSystemService(Context.ALARM_SERVICE));
                                         Intent financialInfoIntent = new Intent(getApplicationContext(), FinancialInfo.class);
                                         startActivity(financialInfoIntent);
                                         finish();
@@ -170,7 +170,7 @@ public class CreateNewAccountActivity extends AppCompatActivity {
         return true;
     }
 
-    public void alertSet() {
+    public void alertSet() {//DISABLED 4-13-19 DUE TO REPLACEMENT BY STATIC LOGIN ACTIVITY FUNCTION!  No need to re-enable
         /*alertSet is called on every log in, it will
         1. check if alerts are already configured and running
             A. if they are, nothing to see here, all operating as normal.  continues out of function to login
