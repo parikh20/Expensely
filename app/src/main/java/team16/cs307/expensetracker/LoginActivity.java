@@ -38,6 +38,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.firestore.DocumentReference;
@@ -58,6 +59,7 @@ import org.threeten.bp.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
@@ -227,6 +229,40 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 //Due to alerts being generally long term, alerts are to be turned off by default for trial users
                 //No alerts are to be set up here, or on future login!  will need to check if a user is a trial user when they log in, and avoid enabling alerts
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                mAuth.signInAnonymously().
+                        addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if (!task.isSuccessful()) {
+                                    try {
+                                        throw Objects.requireNonNull(task.getException());
+
+                                    } catch(FirebaseAuthUserCollisionException exception) {
+                                        mEmail.setError("Account already exists");
+                                    } catch (Exception ignored) {
+                                    }
+                                } else {
+
+                                    Map<String, Object> newUser = new HashMap<>();
+                                    newUser.put("email", mAuth.getCurrentUser().getEmail());
+
+
+
+                                    db.collection("users").document(mAuth.getUid()).set(newUser, SetOptions.merge());
+                                    //default user preference
+                                    Preferences defPref = new Preferences();
+                                    Map<String,Object> userPref = new HashMap<>();
+                                    userPref.put("darkMode",defPref.isDarkMode());
+                                    userPref.put("fontSize",defPref.getFontSize());
+                                    userPref.put("colorScheme",defPref.getColorScheme());
+                                    userPref.put("defaultGraph",defPref.getDefaultGraph());
+                                    userPref.put("defaultBudgetNum",defPref.getDefaultBudgetNum());
+                                    db.collection("users").document(mAuth.getUid()).collection("Preference").document("userPreference").set(userPref);
+                                    Toast.makeText(LoginActivity.this, "moving to financial info", Toast.LENGTH_SHORT).show();
+                                    LoginActivity.alertSet(mAuth,db,getApplicationContext(),(AlarmManager)getSystemService(Context.ALARM_SERVICE));
+                                    Intent financialInfoIntent = new Intent(getApplicationContext(), FinancialInfo.class);
+                                    startActivity(financialInfoIntent);
+                                    finish();
                 LoginActivity.this.startActivity(intent);
             }
         });
