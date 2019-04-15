@@ -17,6 +17,8 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -41,6 +43,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.core.Tag;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -74,6 +77,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private FirebaseAuth mAuth;
     private GoogleApiClient mGoogleApiClient;
     private TextView mTryClickable;
+    private String log;
     FirebaseFirestore db;
     //private ProgressDialog pd;
 
@@ -233,39 +237,47 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                         addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
-                                if (!task.isSuccessful()) {
-                                    try {
-                                        throw Objects.requireNonNull(task.getException());
+                                    // Create an anonymous user
+                                    mAuth.signInAnonymously().
+                                            addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                                    if (!task.isSuccessful()) {
+                                                        try {
+                                                            throw Objects.requireNonNull(task.getException());
 
-                                    } catch(FirebaseAuthUserCollisionException exception) {
-                                        mEmail.setError("Account already exists");
-                                    } catch (Exception ignored) {
-                                    }
-                                } else {
+                                                        } catch(FirebaseAuthUserCollisionException exception) {
+                                                            mUsername.setError("Account already exists");
+                                                        } catch (Exception ignored) {
+                                                        }
+                                                    } else {
 
-                                    Map<String, Object> newUser = new HashMap<>();
-                                    newUser.put("email", mAuth.getCurrentUser().getEmail());
+                                                        Map<String, Object> newUser = new HashMap<>();
+                                                        newUser.put("email", mAuth.getCurrentUser().getEmail());
 
+                                                        db.collection("users").document(mAuth.getUid()).set(newUser, SetOptions.merge());
+                                                        //default user preference
+                                                        Preferences defPref = new Preferences();
+                                                        Map<String,Object> userPref = new HashMap<>();
+                                                        userPref.put("darkMode",defPref.isDarkMode());
+                                                        userPref.put("fontSize",defPref.getFontSize());
+                                                        userPref.put("colorScheme",defPref.getColorScheme());
+                                                        userPref.put("defaultGraph",defPref.getDefaultGraph());
+                                                        userPref.put("defaultBudgetNum",defPref.getDefaultBudgetNum());
+                                                        db.collection("users").document(mAuth.getUid()).collection("Preference").document("userPreference").set(userPref);
+                                                        Toast.makeText(LoginActivity.this, "moving to financial info", Toast.LENGTH_SHORT).show();
+                                                        LoginActivity.alertSet(mAuth,db,getApplicationContext(),(AlarmManager)getSystemService(Context.ALARM_SERVICE));
+                                                        Intent financialInfoIntent = new Intent(getApplicationContext(), FinancialInfo.class);
+                                                        startActivity(financialInfoIntent);
+                                                        finish();
+                                                    }
+                                                }
+                                            });
 
+                                }
+                            });
+                        };
 
-                                    db.collection("users").document(mAuth.getUid()).set(newUser, SetOptions.merge());
-                                    //default user preference
-                                    Preferences defPref = new Preferences();
-                                    Map<String,Object> userPref = new HashMap<>();
-                                    userPref.put("darkMode",defPref.isDarkMode());
-                                    userPref.put("fontSize",defPref.getFontSize());
-                                    userPref.put("colorScheme",defPref.getColorScheme());
-                                    userPref.put("defaultGraph",defPref.getDefaultGraph());
-                                    userPref.put("defaultBudgetNum",defPref.getDefaultBudgetNum());
-                                    db.collection("users").document(mAuth.getUid()).collection("Preference").document("userPreference").set(userPref);
-                                    Toast.makeText(LoginActivity.this, "moving to financial info", Toast.LENGTH_SHORT).show();
-                                    LoginActivity.alertSet(mAuth,db,getApplicationContext(),(AlarmManager)getSystemService(Context.ALARM_SERVICE));
-                                    Intent financialInfoIntent = new Intent(getApplicationContext(), FinancialInfo.class);
-                                    startActivity(financialInfoIntent);
-                                    finish();
-                LoginActivity.this.startActivity(intent);
-            }
-        });
 
         // OnClickListener for when the Create New Account text is clicked
         mCreateNewAccountClickable.setOnClickListener(new View.OnClickListener() {
