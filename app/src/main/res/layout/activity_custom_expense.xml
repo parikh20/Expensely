@@ -68,7 +68,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
 
-        android:layout_marginTop="605dp"
+        android:layout_marginTop="545dp"
         android:text="@string/custom_expense_category" />
 
     <EditText
@@ -103,6 +103,22 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="435dp"
         android:prompt="@string/custom_expense_outlier" />
+    <DatePicker
+        android:id="@+id/simpleDatePicker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:datePickerMode="spinner"
+        android:layout_below="@id/custom_expense_logo"/>
+
+    <Button
+        android:id="@+id/custom_expense_setDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_marginTop="595dp"
+        android:layout_centerHorizontal="true"
+        android:text="Set date/time" />
+
 
 
 </RelativeLayout>

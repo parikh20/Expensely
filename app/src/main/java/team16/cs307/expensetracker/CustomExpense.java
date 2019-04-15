@@ -8,9 +8,11 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -55,6 +57,10 @@ public class CustomExpense extends AppCompatActivity implements AdapterView.OnIt
     private ArrayList<String> tags;
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
+    private DatePicker mDate;
+    private TimePicker mTime;
+    private Button mSetTime;
+    private boolean timeChanged;
 
 
     @Override
@@ -62,8 +68,10 @@ public class CustomExpense extends AppCompatActivity implements AdapterView.OnIt
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_custom_expense);
 
-
+        timeChanged = false;
         mLocation = findViewById(R.id.custom_expense_location);
+        mDate = findViewById(R.id.simpleDatePicker);
+        mSetTime = findViewById(R.id.custom_expense_setDate);
         mName = findViewById(R.id.custom_expense_name);
         mRepeating = findViewById(R.id.custom_expense_repeating);
         mFinish = findViewById(R.id.custom_expense_finish);
@@ -74,9 +82,15 @@ public class CustomExpense extends AppCompatActivity implements AdapterView.OnIt
         mOutlier = findViewById(R.id.custom_expense_outlier);
         tags = new ArrayList<>();
 
+        mDate.setEnabled(false);
+        mDate.setVisibility(View.INVISIBLE);
+
+
         mOutlier.setOnItemSelectedListener(this);
 
         mPriority.setOnItemSelectedListener(this);
+
+
 
         priority = 0;
         outlier = 0;
@@ -108,6 +122,44 @@ public class CustomExpense extends AppCompatActivity implements AdapterView.OnIt
         mOutlier.setAdapter(outlierAdapter);
 
 
+        mSetTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!mDate.isEnabled()) {
+                    timeChanged = true;
+                    mLocation.setVisibility(View.INVISIBLE);
+                    mDate.setVisibility(View.VISIBLE);
+                    //mSetTime = findViewById(R.id.custom_expense_setDate);
+                    mName.setVisibility(View.INVISIBLE);
+                    mRepeating.setVisibility(View.INVISIBLE);
+                    mFinish.setVisibility(View.INVISIBLE);
+                    mFrequency.setVisibility(View.INVISIBLE);
+                    mAmount.setVisibility(View.INVISIBLE);
+                    mCategory.setVisibility(View.INVISIBLE);
+                    mPriority.setVisibility(View.INVISIBLE);
+                    mOutlier.setVisibility(View.INVISIBLE);
+                    mDate.setEnabled(true);
+
+
+                } else {
+                    mDate.setEnabled(false);
+                    mLocation.setVisibility(View.VISIBLE);
+                    mDate.setVisibility(View.INVISIBLE);
+                    //mSetTime = findViewById(R.id.custom_expense_setDate);
+                    mName.setVisibility(View.VISIBLE);
+                    mRepeating.setVisibility(View.VISIBLE);
+                    mFinish.setVisibility(View.VISIBLE);
+                    mFrequency.setVisibility(View.VISIBLE);
+                    mAmount.setVisibility(View.VISIBLE);
+                    mCategory.setVisibility(View.VISIBLE);
+                    mPriority.setVisibility(View.VISIBLE);
+                    mOutlier.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+
+
         mFinish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -119,6 +171,17 @@ public class CustomExpense extends AppCompatActivity implements AdapterView.OnIt
                     Toast.makeText(CustomExpense.this, "Please select your purchase's priority", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                long time = LocalDateTime.now().atZone(ZoneId.systemDefault()).toEpochSecond();
+                if (timeChanged) {
+                    int month = mDate.getMonth() + 1; //We need to add one because DatePicker starts at 0 with months (all hail lack of consistency in java packages)
+                    int year = mDate.getYear();
+                    int day = mDate.getDayOfMonth();
+                    time = LocalDateTime.of(year, month, day, LocalDateTime.now().getHour(), LocalDateTime.now().getMinute()).atZone(ZoneId.systemDefault()).toEpochSecond();
+
+
+
+                }
+
                 String name = mName.getText().toString();
                 String location = mLocation.getText().toString();
                 String repeating = mRepeating.getText().toString();
@@ -143,7 +206,7 @@ public class CustomExpense extends AppCompatActivity implements AdapterView.OnIt
                 }
                 boolean outlierW = outlier == 1;
                 boolean outlierM = outlier == 2;
-                long time = LocalDateTime.now().atZone(ZoneId.systemDefault()).toEpochSecond();
+
                 Expense e = new Expense(name, location, repeating.equals("Y"), time, amount, tags, priority, outlierM, outlierW);
                 db.collection("users").document(mAuth.getUid()).collection("Expenses").document(name).set(e);
 
@@ -151,7 +214,7 @@ public class CustomExpense extends AppCompatActivity implements AdapterView.OnIt
                     //TODO: update total monthly/weekly/yearly, update category totals m/y/w
 
 
-                if (!outlierM) {
+                if (!outlierM && (!timeChanged || mDate.getMonth() == LocalDateTime.now().getMonthValue() )) {
                     DocumentReference ref = db.collection("users").document(mAuth.getUid());
                     ref.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                         @Override

@@ -114,20 +114,6 @@ public class MainActivity extends AppCompatActivity {
         becomeUser = findViewById(R.id.becomeUser);
 
 
-        Intent notificationIntent = new Intent(this,AlertReceiver.class);
-        notificationIntent.putExtra(AlertReceiver.NOTIFICATION_ID,1);
-        Notification n;
-        Notification.Builder builder = new Notification.Builder(this);
-        builder.setContentTitle("Budget Checkup");
-        builder.setContentText("placeholder info about budget here");
-        //builder.setSmallIcon(R.drawable.ic_logo);
-        n = builder.build();
-        notificationIntent.putExtra(AlertReceiver.NOTIFICATION,n);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),0,notificationIntent,PendingIntent.FLAG_UPDATE_CURRENT);
-        long futureMillis = SystemClock.elapsedRealtime() + 20000;
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,futureMillis,pendingIntent);
-        System.out.println("Set up alarm for " + (SystemClock.elapsedRealtime() + 20000));
 
         //update Time and monthly totals
         DocumentReference refM = db.collection("users").document(mAuth.getUid());
@@ -245,8 +231,8 @@ public class MainActivity extends AppCompatActivity {
                 ArrayList<String> categoryList= new ArrayList<>(); //list of monthly categories
                 ArrayList<Double> categoryValues = new ArrayList<>(); //list of monthly totals
                 //Note: We only care about the primary category of each expense for the purposes of the pie chart.  Limit calculation and comparison might produce different results
-                //TODO If we change our mind here, this will have to change
 
+                boolean FutureThisMonth = false;
                 for (Expense e : ei) {
 
                     Instant inst = Instant.ofEpochSecond(e.getTime());
@@ -254,6 +240,10 @@ public class MainActivity extends AppCompatActivity {
                     //if it's in the current month and isn't an outlier (Behaved weirdly when i tried just checking getMonthvalue == getMonthValue.  This wasn't much harder)
                     if (zdt.isAfter(ZonedDateTime.now().withDayOfMonth(1)) && !e.getOutlierMonthly() && zdt.isBefore(ZonedDateTime.now().withDayOfMonth(LocalDate.now().lengthOfMonth()).plusDays(1))) {
                         //Add it to the line graph
+                        if (zdt.isAfter(ZonedDateTime.now())) {
+                            FutureThisMonth = true;
+                        }
+
                         double am = e.getAmount();
                         amt += am;
                         long tim = e.getTime();
@@ -299,7 +289,10 @@ public class MainActivity extends AppCompatActivity {
                 }
                 //set up and complete series for line graph
                 //add additional points for current day and first day of month.
-                ie.add(new DataPoint(ZonedDateTime.now().toEpochSecond(), amt));
+                if (!FutureThisMonth) {
+                    ie.add(new DataPoint(ZonedDateTime.now().toEpochSecond(), amt));
+                }
+
                 ie.add(new DataPoint(ZonedDateTime.now().withDayOfMonth(1).toEpochSecond(),0));
                 DataSort(ie);
                 DataPoint[] de = new DataPoint[ie.size()];
@@ -313,6 +306,9 @@ public class MainActivity extends AppCompatActivity {
                     series.setColor(Color.GREEN);
                 }
                 series.setTitle("Your Spending");
+                if (!FutureThisMonth) {
+                    series.setTitle("Your Spending (Projected)");
+                }
                 mGraph.addSeries(series);
 
                 //set up and complete series for pie chart
