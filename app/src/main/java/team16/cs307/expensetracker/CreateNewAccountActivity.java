@@ -18,7 +18,9 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.database.FirebaseDatabase;
@@ -41,6 +43,7 @@ public class CreateNewAccountActivity extends AppCompatActivity {
     private EditText mPassword;
     private EditText mConfirmPassword;
     private Button mCreateButton;
+    private Button mTransfer;
     private FirebaseFirestore db;
     FirebaseAuth mAuth;
 
@@ -103,6 +106,40 @@ public class CreateNewAccountActivity extends AppCompatActivity {
                                 }
                             });
 
+                }
+            }
+        });
+
+        mTransfer.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v) {
+                if (validateInputs(mEmail, mPassword, mConfirmPassword)) {
+                    AuthCredential credential = EmailAuthProvider.getCredential(mEmail.getText().toString(), mPassword.getText().toString());
+                    mAuth.getCurrentUser().linkWithCredential(credential).addOnCompleteListener(CreateNewAccountActivity.this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                Map<String, Object> newUser = new HashMap<>();
+                                newUser.put("email", mAuth.getCurrentUser().getEmail());
+                                db.collection("users").document(mAuth.getUid()).set(newUser, SetOptions.merge());
+                                //default user preference
+                                Preferences defPref = new Preferences();
+                                Map<String, Object> userPref = new HashMap<>();
+                                userPref.put("darkMode", defPref.isDarkMode());
+                                userPref.put("fontSize", defPref.getFontSize());
+                                userPref.put("colorScheme", defPref.getColorScheme());
+                                userPref.put("defaultGraph", defPref.getDefaultGraph());
+                                userPref.put("defaultBudgetNum", defPref.getDefaultBudgetNum());
+                                db.collection("users").document(mAuth.getUid()).collection("Preference").document("userPreference").set(userPref);
+                                Toast.makeText(CreateNewAccountActivity.this, "moving to financial info", Toast.LENGTH_SHORT).show();
+                                LoginActivity.alertSet(mAuth, db, getApplicationContext(), (AlarmManager) getSystemService(Context.ALARM_SERVICE));
+                                Intent CreateNewAccountActivity = new Intent(getApplicationContext(), CreateNewAccountActivity.class);
+                                startActivity(CreateNewAccountActivity);
+                                finish();
+                            } else {
+                                Toast.makeText(CreateNewAccountActivity.this, "Failure to check db", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
                 }
             }
         });
