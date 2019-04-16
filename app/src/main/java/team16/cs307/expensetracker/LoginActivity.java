@@ -77,7 +77,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private FirebaseAuth mAuth;
     private GoogleApiClient mGoogleApiClient;
     private TextView mTryClickable;
-    private String log;
     FirebaseFirestore db;
     //private ProgressDialog pd;
 
