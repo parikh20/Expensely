@@ -264,8 +264,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
                          });
                  alertSet(mAuth, db, getApplicationContext(), (AlarmManager) getSystemService(Context.ALARM_SERVICE));
-                 Intent intent2 = new Intent(LoginActivity.this, MainActivity.class);
-                 LoginActivity.this.startActivity(intent2);
+                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                 LoginActivity.this.startActivity(intent);
                  finish();
              }
          });
