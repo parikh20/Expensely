@@ -132,6 +132,8 @@ public class CreateNewAccountActivity extends AppCompatActivity {
                                 db.collection("users").document(mAuth.getUid()).collection("Preference").document("userPreference").set(userPref);
                                 Toast.makeText(CreateNewAccountActivity.this, "moving to financial info", Toast.LENGTH_SHORT).show();
                                 LoginActivity.alertSet(mAuth, db, getApplicationContext(), (AlarmManager) getSystemService(Context.ALARM_SERVICE));
+                                mCreateButton.setVisibility(View.INVISIBLE);
+                                mTransfer.setVisibility(View.VISIBLE);
                                 Intent CreateNewAccountActivity = new Intent(getApplicationContext(), CreateNewAccountActivity.class);
                                 startActivity(CreateNewAccountActivity);
                                 finish();
