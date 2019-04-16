@@ -100,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
     private double perday;
     private boolean isAboveLimit;
     private double amt;
+    private String message;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,6 +121,7 @@ public class MainActivity extends AppCompatActivity {
         amt = 0;
         editExpenses = findViewById(R.id.MainActivity_edit_expenses);
         becomeUser = findViewById(R.id.becomeUser);
+        message = "0";
 
 
         Intent notificationIntent = new Intent(this, AlertReceiver.class);
@@ -455,11 +457,12 @@ public class MainActivity extends AppCompatActivity {
         becomeUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              String message = "1";
+              message = "1";
               Intent intent = new Intent(getApplicationContext(), CreateNewAccountActivity.class);
               intent.putExtra("message", message);
               startActivity(intent);
               finish();
+              message = "0";
             }
         });
     }
