@@ -1,81 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
     tools:ignore="ExtraText">
-
-    <ImageView
-        android:id="@+id/budg_logo"
-        android:layout_width="wrap_content"
-        android:layout_height="150dp"
-        android:layout_marginTop="15dp"
-        android:background="@null"
-        android:contentDescription="@string/login_activity_logo"
-        android:src="@mipmap/logo_transparent_cropped" />
-
-    <Button
-        android:id="@+id/budg_browse"
-        style="@style/Widget.AppCompat.Button.Colored"
-        android:layout_width="150dp"
-        android:layout_height="50dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="42dp"
-        android:layout_marginTop="450dp"
-        android:layout_marginEnd="38dp"
-        android:text="@string/budget_activity_browse" />
-
-    <Button
-        android:id="@+id/budg_custom"
-        style="@style/Widget.AppCompat.Button.Colored"
-        android:layout_width="150dp"
-        android:layout_height="50dp"
-        android:layout_below="@id/budg_browse"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="43dp"
-        android:layout_marginTop="21dp"
-        android:layout_marginEnd="37dp"
-        android:layout_marginBottom="32dp"
-        android:text="@string/budget_activity_custom" />
-
-    <TextView
-        android:id="@+id/budg_curr"
-        android:layout_width="395dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/budg_logo"
-        android:layout_marginTop="21dp"
-        android:text="@string/budget_activity_current"
-        android:textAlignment="center"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/budg_curr_details"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/budg_curr"
-        android:layout_marginTop="21dp"
-        android:text="@string/budget_activity_current_details"
-        android:textAlignment="center"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+        android:layout_height="match_parent"
+        >
 
-    <Button
-        android:id="@+id/budg_upload_budget"
-        style="@style/Widget.AppCompat.Button.Colored"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="144dp"
-        android:layout_marginEnd="144dp"
-        android:layout_marginBottom="20dp"
-        android:layout_below="@id/budg_curr_details"
-        android:text="Upload"
+        <ImageView
+            android:id="@+id/budg_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="150dp"
+            android:layout_marginTop="15dp"
+            android:background="@null"
+            android:contentDescription="@string/login_activity_logo"
+            android:src="@mipmap/logo_transparent_cropped" />
 
+        <Button
+            android:id="@+id/budg_browse"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="42dp"
+            android:layout_marginTop="450dp"
+            android:layout_marginEnd="38dp"
+            android:text="@string/budget_activity_browse" />
 
-        />
+        <Button
+            android:id="@+id/budg_custom"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:layout_below="@id/budg_browse"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="43dp"
+            android:layout_marginTop="21dp"
+            android:layout_marginEnd="37dp"
+            android:layout_marginBottom="32dp"
+            android:text="@string/budget_activity_custom" />
 
-</RelativeLayout>
+        <TextView
+            android:id="@+id/budg_curr"
+            android:layout_width="395dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/budg_logo"
+            android:layout_marginTop="21dp"
+            android:text="@string/budget_activity_current"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/budg_curr_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/budg_curr"
+            android:layout_marginTop="21dp"
+            android:text="@string/budget_activity_current_details"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+        <Button
+            android:id="@+id/budg_upload_budget"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="133dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/budg_curr_details"
+            android:layout_marginStart="144dp"
+            android:layout_marginEnd="144dp"
+            android:layout_marginBottom="20dp"
+            android:text="Upload" />
+    </RelativeLayout>
+
+</ScrollView>
