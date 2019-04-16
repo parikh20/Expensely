@@ -27,10 +27,17 @@ import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.EmailAuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.CollectionReference;
@@ -66,6 +73,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
 
@@ -454,32 +462,46 @@ public class MainActivity extends AppCompatActivity {
         //Become a new user for anonymous user
 
 
-        becomeUser.setOnClickListener(new View.OnClickListener() {
+        becomeUser.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), CreateNewAccountActivity.class);
-                startActivity(intent);
-                finish();
+            public void onClick(View v)
+            {
+                String email = "";
+                String password = "";
+                AuthCredential credential  = EmailAuthProvider.getCredential(email, password);
+                mAuth.getCurrentUser().linkWithCredential(credential).addOnCompleteListener(MainActivity.this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful())
+                        {
+                            Map<String, Object> newUser = new HashMap<>();
+                            newUser.put("email", mAuth.getCurrentUser().getEmail());
+                            db.collection("users").document(mAuth.getUid()).set(newUser, SetOptions.merge());
+                            //default user preference
+                            Preferences defPref = new Preferences();
+                            Map<String, Object> userPref = new HashMap<>();
+                            userPref.put("darkMode", defPref.isDarkMode());
+                            userPref.put("fontSize", defPref.getFontSize());
+                            userPref.put("colorScheme", defPref.getColorScheme());
+                            userPref.put("defaultGraph", defPref.getDefaultGraph());
+                            userPref.put("defaultBudgetNum", defPref.getDefaultBudgetNum());
+                            db.collection("users").document(mAuth.getUid()).collection("Preference").document("userPreference").set(userPref);
+                            Toast.makeText(MainActivity.this, "moving to financial info", Toast.LENGTH_SHORT).show();
+                            LoginActivity.alertSet(mAuth, db, getApplicationContext(), (AlarmManager) getSystemService(Context.ALARM_SERVICE));
+                            Intent CreateNewAccountActivity = new Intent(getApplicationContext(), CreateNewAccountActivity.class);
+                            startActivity(CreateNewAccountActivity);
+                            finish();
+                        } else {
+                            Toast.makeText(MainActivity.this, "Failure to check db", Toast.LENGTH_SHORT).show();
+
+                        }
+                    }
+                });
             }
         });
 
 
-
-
-
-
-
-
-
-    }
-
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        MenuInflater inflater = getMenuInflater();
-//        inflater.inflate(R.menu.settings, menu);
-//        return true;
-//    }
 
 
     private void addExpense() {
