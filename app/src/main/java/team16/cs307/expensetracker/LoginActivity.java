@@ -269,6 +269,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                  finish();
              }
          });
+
         // OnClickListener for when the Create New Account text is clicked
         mCreateNewAccountClickable.setOnClickListener(new View.OnClickListener() {
             @Override
