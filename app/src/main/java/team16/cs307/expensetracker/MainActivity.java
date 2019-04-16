@@ -455,7 +455,9 @@ public class MainActivity extends AppCompatActivity {
         becomeUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+              String message = "1";
               Intent intent = new Intent(getApplicationContext(), CreateNewAccountActivity.class);
+              intent.putExtra("message", message);
               startActivity(intent);
               finish();
             }

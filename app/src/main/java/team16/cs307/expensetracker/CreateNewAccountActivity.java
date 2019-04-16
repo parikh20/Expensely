@@ -57,10 +57,27 @@ public class CreateNewAccountActivity extends AppCompatActivity {
         mPassword = (EditText) findViewById(R.id.new_account_password_editText);
         mConfirmPassword = (EditText) findViewById(R.id.confirm_password_editText);
         mCreateButton = (Button) findViewById(R.id.create_new_account_button);
+        mTransfer = findViewById(R.id.transfer_button);
 
         // Get Firebase instance
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
+
+        //Check whether it's a permanent user or an anonymous user
+        Bundle bundle = getIntent().getExtras();
+        String message = bundle.getString("message");
+        assert message != null;
+        if(message.equals("1"))
+        {
+            mCreateButton.setVisibility(View.INVISIBLE);
+            mTransfer.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            mTransfer.setVisibility(View.INVISIBLE);
+            mCreateButton.setVisibility(View.VISIBLE);
+        }
+
         // When a user clicks the create button, create a new account
         mCreateButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -109,7 +126,6 @@ public class CreateNewAccountActivity extends AppCompatActivity {
                 }
             }
         });
-
         mTransfer.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v) {
                 if (validateInputs(mEmail, mPassword, mConfirmPassword)) {
@@ -132,8 +148,8 @@ public class CreateNewAccountActivity extends AppCompatActivity {
                                 db.collection("users").document(mAuth.getUid()).collection("Preference").document("userPreference").set(userPref);
                                 Toast.makeText(CreateNewAccountActivity.this, "moving to financial info", Toast.LENGTH_SHORT).show();
                                 LoginActivity.alertSet(mAuth, db, getApplicationContext(), (AlarmManager) getSystemService(Context.ALARM_SERVICE));
-                                mCreateButton.setVisibility(View.INVISIBLE);
-                                mTransfer.setVisibility(View.VISIBLE);
+//                                mCreateButton.setVisibility(View.INVISIBLE);
+//                                mTransfer.setVisibility(View.VISIBLE);
                                 Intent CreateNewAccountActivity = new Intent(getApplicationContext(), CreateNewAccountActivity.class);
                                 startActivity(CreateNewAccountActivity);
                                 finish();
