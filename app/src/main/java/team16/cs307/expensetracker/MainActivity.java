@@ -551,6 +551,10 @@ public class MainActivity extends AppCompatActivity {
             case R.id.Menu_Image_Acess:
                 accessImage();
                 return true;
+            case R.id.Menu_Search:
+                Search();
+                return true;
+
 
         }
         return super.onOptionsItemSelected(item);
@@ -565,6 +569,10 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(getApplicationContext(), EditExpensesActivity.class);
         startActivity(intent);
 
+    }
+    void Search(){
+        Intent intent = new Intent(getApplicationContext(), SearchExpense.class);
+        startActivity(intent);
     }
 }
 

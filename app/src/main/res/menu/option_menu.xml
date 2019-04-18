@@ -7,6 +7,10 @@
         android:icon="@drawable/ic_photo"
         android:title = "Image access"
         app:showAsAction="ifRoom"/>
+    <item android:id = "@+id/Menu_Search"
+        android:icon="@drawable/ic_search_black_24dp"
+        android:title = "Search"
+        app:showAsAction="ifRoom"/>
     <item android:id = "@+id/Menu_Add_New_Expense"
             android:title="New Expense"
             app:showAsAction="never"/>
