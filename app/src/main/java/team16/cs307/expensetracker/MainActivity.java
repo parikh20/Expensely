@@ -16,6 +16,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -27,10 +28,17 @@ import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.EmailAuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.CollectionReference;
@@ -66,6 +74,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
 
@@ -92,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
     private double perday;
     private boolean isAboveLimit;
     private double amt;
+    private String message;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,6 +122,9 @@ public class MainActivity extends AppCompatActivity {
         amt = 0;
         editExpenses = findViewById(R.id.MainActivity_edit_expenses);
         becomeUser = findViewById(R.id.becomeUser);
+        message = "0";
+
+
 
 
 
@@ -123,9 +136,7 @@ public class MainActivity extends AppCompatActivity {
                 //NOTE:  THIS IMPLEMENTATION RELIES ON A ONCE A YEAR LOGIN
                 //IF THE  USER DOES NOT LOG IN FOR A YEAR, MONTHLY TOTALS WILL NOT UPDATE UNTIL THE FIRST EXPENSE OF THAT YEAR  on a different month IS RECORDED
                 //todo: fix this - add a year to lastupdated
-                if (documentSnapshot.get("LastUpdated") == null || (!documentSnapshot.get("LastUpdated").equals(LocalDateTime.now().getMonth().toString())) ) {
-
-
+                if (documentSnapshot.get("LastUpdated") == null || (!documentSnapshot.get("LastUpdated").equals(LocalDateTime.now().getMonth().toString()))) {
 
 
                     Map<String, String> userinfo = new HashMap<>();
@@ -135,9 +146,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
-
-
 
 
         //set up mchart
@@ -181,9 +189,9 @@ public class MainActivity extends AppCompatActivity {
                     perday = monthlim / endday;
                     ArrayList<DataPoint> points = new ArrayList<>();
                     for (int x = 0; x < endday; x++) {
-                        points.add(new DataPoint(ZonedDateTime.now().withDayOfMonth(x + 1).toEpochSecond(), perday * (x+1)));
+                        points.add(new DataPoint(ZonedDateTime.now().withDayOfMonth(x + 1).toEpochSecond(), perday * (x + 1)));
                     }
-                    DataPoint [] parray = new DataPoint[points.size()];
+                    DataPoint[] parray = new DataPoint[points.size()];
                     LineGraphSeries<DataPoint> currBudget = new LineGraphSeries<>(points.toArray(parray));
                     currBudget.setTitle("Your Budget");
                     mGraph.addSeries(currBudget);
@@ -192,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
                         currBudget.setColor(Color.RED);
                         currBudget.setTitle("Your Budget (Over Budget!)");
 
-                    } else if (amt != 0){
+                    } else if (amt != 0) {
                         currBudget.setColor(Color.GREEN);
                         currBudget.setTitle("Your Budget (Under Budget)");
                     }
@@ -228,7 +236,7 @@ public class MainActivity extends AppCompatActivity {
 
                 }
                 Collections.sort(ei);  //Sorting by custom compare in Expense.java (by date, not by amount!!!)
-                ArrayList<String> categoryList= new ArrayList<>(); //list of monthly categories
+                ArrayList<String> categoryList = new ArrayList<>(); //list of monthly categories
                 ArrayList<Double> categoryValues = new ArrayList<>(); //list of monthly totals
                 //Note: We only care about the primary category of each expense for the purposes of the pie chart.  Limit calculation and comparison might produce different results
 
@@ -289,11 +297,15 @@ public class MainActivity extends AppCompatActivity {
                 }
                 //set up and complete series for line graph
                 //add additional points for current day and first day of month.
+
                 if (!FutureThisMonth) {
                     ie.add(new DataPoint(ZonedDateTime.now().toEpochSecond(), amt));
                 }
 
                 ie.add(new DataPoint(ZonedDateTime.now().withDayOfMonth(1).toEpochSecond(),0));
+
+                ie.add(new DataPoint(ZonedDateTime.now().toEpochSecond(), amt));
+
                 DataSort(ie);
                 DataPoint[] de = new DataPoint[ie.size()];
                 LineGraphSeries<DataPoint> series = new LineGraphSeries<>(ie.toArray(de));
@@ -315,15 +327,14 @@ public class MainActivity extends AppCompatActivity {
                 List<PieEntry> entries = new ArrayList<>();
                 int itr = 0;
                 for (String str : categoryList) {
-                    entries.add(new PieEntry((float) ((categoryValues.get(itr))/amt) , str));
+                    entries.add(new PieEntry((float) ((categoryValues.get(itr)) / amt), str));
                     itr++;
                 }
 
 
-
                 //colors used are on a rotating array designed for a maximum of 6 categories.  We can add other colors to the array to prevent color clash on larger sets
                 PieDataSet set = new PieDataSet(entries, "Your Monthly Categories");
-                int [] colors = new int[]{Color.GREEN,  Color.rgb(128, 100, 10), Color.RED, Color.BLUE, Color.MAGENTA, Color.CYAN};
+                int[] colors = new int[]{Color.GREEN, Color.rgb(128, 100, 10), Color.RED, Color.BLUE, Color.MAGENTA, Color.CYAN};
                 if (categoryList.contains("Unassigned")) {
                     colors[categoryList.indexOf("Unassigned") % 6] = Color.GRAY;
                 }
@@ -334,7 +345,7 @@ public class MainActivity extends AppCompatActivity {
 
 
             }
-         });
+        });
 
 
         //graph settings
@@ -344,19 +355,17 @@ public class MainActivity extends AppCompatActivity {
         mGraph.getViewport().setScalableY(true);
 
 
-
-
         //test graph for purposes of messing with graph API:
 
         long d1 = ZonedDateTime.now().toEpochSecond();
         long d2 = ZonedDateTime.now().plusDays(7).toEpochSecond();
 
-        LineGraphSeries<DataPoint> series = new LineGraphSeries<>(new DataPoint[] {
+        LineGraphSeries<DataPoint> series = new LineGraphSeries<>(new DataPoint[]{
                 new DataPoint(d1, 1),
                 new DataPoint(d2, 2)
         });
         //mGraph.addSeries(series);
-        mGraph.getViewport().setMinX(ZonedDateTime.now().withDayOfMonth(1).toEpochSecond() );
+        mGraph.getViewport().setMinX(ZonedDateTime.now().withDayOfMonth(1).toEpochSecond());
         mGraph.getViewport().setMaxX(d2);
         mGraph.getGridLabelRenderer().setNumHorizontalLabels(0);
         mGraph.getGridLabelRenderer().setTextSize(12);
@@ -383,13 +392,12 @@ public class MainActivity extends AppCompatActivity {
         mGraph.getViewport().setXAxisBoundsManual(true);
 
 
-
         editExpenses.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), EditExpensesActivity.class);
                 startActivity(intent);
-                finish();
+
             }
         });
 
@@ -437,13 +445,12 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
         editBudget.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), EditBudgetActivity.class);
                 startActivity(intent);
-                finish();
+
             }
         });
 
@@ -453,40 +460,20 @@ public class MainActivity extends AppCompatActivity {
         becomeUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), CreateNewAccountActivity.class);
-                startActivity(intent);
-                finish();
+              message = "1";
+              Intent intent = new Intent(getApplicationContext(), CreateNewAccountActivity.class);
+              intent.putExtra("message", message);
+              startActivity(intent);
+              finish();
+              message = "0";
             }
         });
-
-
-
-
-
-
-
-
-
     }
-
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        MenuInflater inflater = getMenuInflater();
-//        inflater.inflate(R.menu.settings, menu);
-//        return true;
-//    }
-
 
     private void addExpense() {
             Intent intent = new Intent(getApplicationContext(), CustomExpense.class);
             startActivity(intent);
-            finish();
-        }
 
-        private void selectBudget() {
-            Intent intent = new Intent(getApplicationContext(), BudgetDownloadActivity.class);
-            startActivity(intent);
 
         }
         private void accessImage(){
@@ -500,20 +487,67 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    public ArrayList<DataPoint> DataSort (ArrayList<DataPoint> ie ) {
+        public ArrayList<DataPoint> DataSort (ArrayList<DataPoint> ie ) {
 
-        for (int i = 0; i < ie.size(); i++) {
-            for (int j = 0; j < ie.size() - i - 1; j++) {
-                if (ie.get(j).getX() > ie.get(j + 1).getX()) {
-                    DataPoint temp = ie.get(j);
-                    ie.set(j, ie.get(j + 1));
-                    ie.set(j + 1, temp);
+            for (int i = 0; i < ie.size(); i++) {
+                for (int j = 0; j < ie.size() - i - 1; j++) {
+                    if (ie.get(j).getX() > ie.get(j + 1).getX()) {
+                        DataPoint temp = ie.get(j);
+                        ie.set(j, ie.get(j + 1));
+                        ie.set(j + 1, temp);
+                    }
                 }
             }
+
+            return ie;
         }
 
+        private void selectBudget()
+        {
+            Intent intent = new Intent(getApplicationContext(), BudgetDownloadActivity.class);
+            startActivity(intent);
+        }
 
-        return ie;
+   // add option menu
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.option_menu,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.Menu_Add_New_Expense:
+                addExpense();
+                return true;
+            case R.id.Menu_Budget_Select:
+                selectBudget();
+                return true;
+            case R.id.Menu_Current_Budget:
+                editCurrentBudget();
+                return true;
+            case R.id.Menu_Past_Expense:
+                editPastExpense();
+                return true;
+            case R.id.Menu_Image_Acess:
+                accessImage();
+                return true;
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    void editCurrentBudget(){
+        Intent intent = new Intent(getApplicationContext(), EditBudgetActivity.class);
+        startActivity(intent);
+
+    }
+    void editPastExpense(){
+        Intent intent = new Intent(getApplicationContext(), EditExpensesActivity.class);
+        startActivity(intent);
+
     }
 }
 

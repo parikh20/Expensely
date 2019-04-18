@@ -77,7 +77,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private FirebaseAuth mAuth;
     private GoogleApiClient mGoogleApiClient;
     private TextView mTryClickable;
-    private String log;
     FirebaseFirestore db;
     //private ProgressDialog pd;
 
@@ -232,52 +231,45 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
              public void onClick(View v) {
                  //Due to alerts being generally long term, alerts are to be turned off by default for trial users
                  //No alerts are to be set up here, or on future login!  will need to check if a user is a trial user when they log in, and avoid enabling alerts
-                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                 //Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                 // Create an anonymous user
                  mAuth.signInAnonymously().
                          addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                              @Override
                              public void onComplete(@NonNull Task<AuthResult> task) {
-                                 // Create an anonymous user
-                                 mAuth.signInAnonymously().
-                                         addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                                             @Override
-                                             public void onComplete(@NonNull Task<AuthResult> task) {
-                                                 if (!task.isSuccessful()) {
-                                                     try {
-                                                         throw Objects.requireNonNull(task.getException());
+                                 if (!task.isSuccessful()) {
+                                     Toast.makeText(LoginActivity.this, task.getException().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                                 } else {
 
-                                                     } catch (FirebaseAuthUserCollisionException exception) {
-                                                         mUsername.setError("Account already exists");
-                                                     } catch (Exception ignored) {
-                                                     }
-                                                 } else {
+                                     Map<String, Object> newUser = new HashMap<>();
+                                     newUser.put("email", mAuth.getCurrentUser().getEmail());
 
-                                                     Map<String, Object> newUser = new HashMap<>();
-                                                     newUser.put("email", mAuth.getCurrentUser().getEmail());
-
-                                                     db.collection("users").document(mAuth.getUid()).set(newUser, SetOptions.merge());
-                                                     //default user preference
-                                                     Preferences defPref = new Preferences();
-                                                     Map<String, Object> userPref = new HashMap<>();
-                                                     userPref.put("darkMode", defPref.isDarkMode());
-                                                     userPref.put("fontSize", defPref.getFontSize());
-                                                     userPref.put("colorScheme", defPref.getColorScheme());
-                                                     userPref.put("defaultGraph", defPref.getDefaultGraph());
-                                                     userPref.put("defaultBudgetNum", defPref.getDefaultBudgetNum());
-                                                     db.collection("users").document(mAuth.getUid()).collection("Preference").document("userPreference").set(userPref);
-                                                     Toast.makeText(LoginActivity.this, "moving to financial info", Toast.LENGTH_SHORT).show();
-                                                     LoginActivity.alertSet(mAuth, db, getApplicationContext(), (AlarmManager) getSystemService(Context.ALARM_SERVICE));
-                                                     Intent financialInfoIntent = new Intent(getApplicationContext(), FinancialInfo.class);
-                                                     startActivity(financialInfoIntent);
-                                                     finish();
-                                                 }
-                                             }
-                                         });
-
+                                     db.collection("users").document(mAuth.getUid()).set(newUser, SetOptions.merge());
+                                     //default user preference
+                                     Preferences defPref = new Preferences();
+                                     Map<String, Object> userPref = new HashMap<>();
+                                     userPref.put("darkMode", defPref.isDarkMode());
+                                     userPref.put("fontSize", defPref.getFontSize());
+                                     userPref.put("colorScheme", defPref.getColorScheme());
+                                     userPref.put("defaultGraph", defPref.getDefaultGraph());
+                                     userPref.put("defaultBudgetNum", defPref.getDefaultBudgetNum());
+                                     db.collection("users").document(mAuth.getUid()).collection("Preference").document("userPreference").set(userPref);
+                                     Toast.makeText(LoginActivity.this, "moving to financial info", Toast.LENGTH_SHORT).show();
+                                     LoginActivity.alertSet(mAuth, db, getApplicationContext(), (AlarmManager) getSystemService(Context.ALARM_SERVICE));
+                                     Intent financialInfoIntent = new Intent(getApplicationContext(), FinancialInfo.class);
+                                     startActivity(financialInfoIntent);
+                                     finish();
+                                 }
                              }
+
                          });
+                 alertSet(mAuth, db, getApplicationContext(), (AlarmManager) getSystemService(Context.ALARM_SERVICE));
+                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                 LoginActivity.this.startActivity(intent);
+                 finish();
              }
          });
+
         // OnClickListener for when the Create New Account text is clicked
         mCreateNewAccountClickable.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -494,9 +486,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 }
             }
         });
-
-
-
     }
 
 }
