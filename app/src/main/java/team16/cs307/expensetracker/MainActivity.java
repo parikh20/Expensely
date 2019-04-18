@@ -16,6 +16,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -394,7 +395,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), EditExpensesActivity.class);
                 startActivity(intent);
-                finish();
+
             }
         });
 
@@ -447,7 +448,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), EditBudgetActivity.class);
                 startActivity(intent);
-                finish();
+
             }
         });
 
@@ -470,7 +471,7 @@ public class MainActivity extends AppCompatActivity {
     private void addExpense() {
             Intent intent = new Intent(getApplicationContext(), CustomExpense.class);
             startActivity(intent);
-            finish();
+
 
         }
         private void accessImage(){
@@ -504,6 +505,48 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(getApplicationContext(), BudgetDownloadActivity.class);
             startActivity(intent);
         }
+
+   // add option menu
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.option_menu,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.Menu_Add_New_Expense:
+                addExpense();
+                return true;
+            case R.id.Menu_Budget_Select:
+                selectBudget();
+                return true;
+            case R.id.Menu_Current_Budget:
+                editCurrentBudget();
+                return true;
+            case R.id.Menu_Past_Expense:
+                editPastExpense();
+                return true;
+            case R.id.Menu_Image_Acess:
+                accessImage();
+                return true;
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    void editCurrentBudget(){
+        Intent intent = new Intent(getApplicationContext(), EditBudgetActivity.class);
+        startActivity(intent);
+
+    }
+    void editPastExpense(){
+        Intent intent = new Intent(getApplicationContext(), EditExpensesActivity.class);
+        startActivity(intent);
+
+    }
 }
 
 

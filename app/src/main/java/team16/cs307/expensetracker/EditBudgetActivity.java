@@ -175,4 +175,9 @@ public class EditBudgetActivity extends AppCompatActivity {
 
         }
     }
+    @Override
+    public void onBackPressed(){
+        onSupportNavigateUp();
+
+    }
 }

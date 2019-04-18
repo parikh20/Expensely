@@ -40,7 +40,8 @@
             android:name=".ImageShow"
             android:label="@string/title_activity_image_show"
             android:theme="@style/LightTheme.NoActionBar" />
-        <activity android:name=".CustomExpense" />
+        <activity android:name=".CustomExpense"
+            android:parentActivityName=".MainActivity"/>
         <activity android:name=".CustomLimitCreation" />
         <activity android:name=".CustomBudgetCreation" />
         <activity
