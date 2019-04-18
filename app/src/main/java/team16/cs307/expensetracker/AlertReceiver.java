@@ -78,13 +78,15 @@ public class AlertReceiver extends BroadcastReceiver {
 
 
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
-                            notificationManager.getNotificationChannel("BudgetAlert") == null) {
+                            notificationManager.getNotificationChannel("ExpenseAlerts: " + name) == null) {
                         System.out.println("CORRECTING FOR OREO AND ABOVE");
                         notificationManager.createNotificationChannel(new NotificationChannel(name,
                                 "ExpenseChannel", NotificationManager.IMPORTANCE_DEFAULT));
+
+
                     }
                     //not using below line because we're creating a custom notification here, with up to date data
-                    //Notification notification = intent.getParcelableExtra(NOTIFICATION);
+                    //Notification n = fintent.getParcelableExtra(NOTIFICATION);
                     Notification n;
 
                     Intent ExRedirect = new Intent(fcontext, LoginActivity.class);
@@ -98,9 +100,34 @@ public class AlertReceiver extends BroadcastReceiver {
                     builder.setAutoCancel(true);
                     n = builder.build();
                     int id = fintent.getIntExtra(NOTIFICATION_ID, 0);
+                    System.out.println("ABOUT TO NOTIFY " + name);
                     notificationManager.notify(id, n);
                     if (name != null && ids != null) {
                         ids.remove(name);
+                        db.collection("users").document(mAuth.getUid()).collection("Preferences").document("PendingExpenseIDs").set(ids);
+                        DocumentReference refAu = db.collection("users").document(mAuth.getUid());
+                        refAu.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                            @Override
+                            public void onSuccess(final DocumentSnapshot documentSnapshot) {
+                                if (documentSnapshot.get("Monthly Total") != null);
+                                    final double total = Double.valueOf(documentSnapshot.getString("Monthly Total"));
+                                    DocumentReference refEx = db.collection("users").document(mAuth.getUid()).collection("Expenses").document(name);
+                                    refEx.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onSuccess(DocumentSnapshot documentSnapshotEx) {
+                                            Expense e = documentSnapshotEx.toObject(Expense.class);
+                                            final double newTotal = total + e.getAmount();
+                                            HashMap<String, String> map = new HashMap<>();
+                                            map.put("Monthly Total", String.valueOf(newTotal));
+                                            db.collection("users").document(mAuth.getUid()).set(map, SetOptions.merge());
+                                        }
+                                    });
+
+
+                            }
+                        });
+
+
                     }
 
 

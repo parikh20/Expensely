@@ -1,7 +1,14 @@
 package team16.cs307.expensetracker;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.PendingIntent;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -34,6 +41,7 @@ import org.threeten.bp.ZoneId;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -260,7 +268,7 @@ public class CustomExpense extends AppCompatActivity implements AdapterView.OnIt
                             IDTracker tracker = documentSnapshot.toObject(IDTracker.class);
                             int last = 0;
                             if (tracker == null) {
-                                System.out.println("NULLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL");
+
                                 tracker = new IDTracker(name);
                                 db.collection("users").document(mAuth.getUid()).collection("Preferences").document("PendingExpenseIDs").set(tracker);
                             } else {
@@ -268,14 +276,14 @@ public class CustomExpense extends AppCompatActivity implements AdapterView.OnIt
                                 ArrayList<String> ids = tracker.getIDs();
                                 System.out.println(ids);
                                 if (last == -1) {
-                                    System.out.println("EMPTY EMPTY EMPTY EMPTY EMPTY");
+
                                     //no pending expenses
                                     tracker.addID(name);
                                     //ID is 0
                                     last = 0;
                                     db.collection("users").document(mAuth.getUid()).collection("Preferences").document("PendingExpenseIDs").set(tracker);
                                 } else {
-                                    System.out.println("Has some stuff!!!!!!!!!!!!!!!!!!!!!!!");
+
                                     //one or more pending expense
                                     tracker.addID(name);
                                     last = tracker.getLastID();
@@ -286,6 +294,42 @@ public class CustomExpense extends AppCompatActivity implements AdapterView.OnIt
 
                             }
                             //last now points to the desired broadcast id of the current expense : 0 if it has been just created, or is the only entry, otherwise the index of the entry
+                            //now we will send an alert with an extra string "name" containing the expense's name, scheduled for the day of the expense.
+
+                            final Context context = getApplicationContext();
+                            ComponentName receiver = new ComponentName(context, AlertReceiver.class);
+                            PackageManager pm = context.getPackageManager();
+
+                            pm.setComponentEnabledSetting(receiver, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
+                            Toast.makeText(context, "Setting up expense alert for: " + name, Toast.LENGTH_SHORT).show();
+
+                            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                            Intent notificationIntent = new Intent(context, AlertReceiver.class);
+                            notificationIntent.putExtra(AlertReceiver.NOTIFICATION_ID, last + 100);
+                            notificationIntent.putExtra("expense", name);
+                            Notification n;
+                            Intent exRedirect = new Intent(context, LoginActivity.class); //We will send the user to the login activity page directly, to let them see their graphs.
+                            PendingIntent mainIntent = PendingIntent.getActivity(context, last + 100, exRedirect, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                            NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "ExpenseAlerts: " + name);
+                            builder.setContentTitle("Expense Triggered");
+                            builder.setContentText("placeholder info about Expense here: " + name);
+                            builder.setSmallIcon(R.drawable.ic_launcher_background);
+                            builder.setContentIntent(mainIntent);
+                            builder.setAutoCancel(true);
+                            builder.setStyle(new NotificationCompat.BigTextStyle().bigText("placeholder info about Expense here"));
+
+
+                            n = builder.build();
+                            notificationIntent.putExtra(AlertReceiver.NOTIFICATION, n);
+                            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, last + 100, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                            Calendar cal = Calendar.getInstance();
+                            cal.set(year, month, day, 0, 0, 1);
+                            //cal.set(2019,3,18,18,45,0);  TESTING PURPOSES : set specific time
+                            final int id = (int) System.currentTimeMillis();
+                            alarmManager.set(AlarmManager.RTC_WAKEUP,cal.getTimeInMillis(), pendingIntent);
+                            System.out.println("Set up alarm for " + cal.getTimeInMillis());
+
 
 
 
@@ -299,7 +343,7 @@ public class CustomExpense extends AppCompatActivity implements AdapterView.OnIt
 
 
 
-                //TODO: update total monthly/weekly/yearly, update category totals m/y/w
+                //TODO: mark these payments as future payments
 
                 if(weekly) {
 
