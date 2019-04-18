@@ -36,6 +36,7 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
@@ -387,6 +388,28 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
     public static void alertSet(final FirebaseAuth mAuth, final FirebaseFirestore db, final Context context, final AlarmManager alarmManager) {
+        //Set up pending alert IDs in preferences -
+         DocumentReference ref =   db.collection("users").document(mAuth.getUid()).collection("Preferences").document("PendingExpenseIDs");
+         ref.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+             @Override
+             public void onSuccess(DocumentSnapshot documentSnapshot) {
+                 IDTracker tracker = documentSnapshot.toObject(IDTracker.class);
+
+                 if (tracker == null) {
+                     tracker = new IDTracker();
+                     db.collection("users").document(mAuth.getUid()).collection("Preferences").document("PendingExpenseIDs").set(tracker);
+                 } else {
+                     System.out.println(tracker.getIDs());
+                     int last = tracker.getLastID();
+                     if (last == -1) {
+                         //no pending expenses
+                     } else {
+                         //one or more pending expense
+                     }
+                 }
+             }
+         });
+
         /*alertSet is called on every log in, it will
         1. check if alerts are already configured and running
             A. if they are, nothing to see here, all operating as normal.  continues out of function to login

@@ -126,7 +126,20 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
+        Intent notificationIntent = new Intent(this,AlertReceiver.class);
+        notificationIntent.putExtra(AlertReceiver.NOTIFICATION_ID,1);
+        Notification n;
+        Notification.Builder builder = new Notification.Builder(this);
+        builder.setContentTitle("Budget Checkup");
+        builder.setContentText("placeholder info about budget here");
+        //builder.setSmallIcon(R.drawable.ic_logo);
+        n = builder.build();
+        notificationIntent.putExtra(AlertReceiver.NOTIFICATION,n);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),0,notificationIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+        long futureMillis = SystemClock.elapsedRealtime() + 10000;
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,futureMillis,pendingIntent);
+        System.out.println("Set up alarm for " + (SystemClock.elapsedRealtime() + 10000));
 
         //update Time and monthly totals
         DocumentReference refM = db.collection("users").document(mAuth.getUid());
@@ -250,47 +263,50 @@ public class MainActivity extends AppCompatActivity {
                         //Add it to the line graph
                         if (zdt.isAfter(ZonedDateTime.now())) {
                             FutureThisMonth = true;
-                        }
-
-                        double am = e.getAmount();
-                        amt += am;
-                        long tim = e.getTime();
-                        //add expense data point on date
-                        ie.add(new DataPoint(tim, amt));
-                        Instant i = Instant.ofEpochSecond(tim);
-                        ZonedDateTime z = ZonedDateTime.ofInstant(i, ZonedDateTime.now().getZone());
-                        double budgetcheck = perday * (z.getDayOfMonth() - 1);
-                        isAboveLimit = (budgetcheck < amt) && budgetcheck != 0;
-
-                        //Add it to the category list
-                        if (e.getTags() == null || e.getTags().isEmpty()) {
-                            boolean found = false;
-                            int itr = 0;
-                            for (String str : categoryList) {
-                                if (str.equals("Unassigned")) {
-                                    categoryValues.set(itr, categoryValues.get(itr) + am);
-                                    found = true;
-                                }
-                                itr++;
-                            }
-                            if (!found) {
-                                categoryList.add("Unassigned");
-                                categoryValues.add(am);
-                            }
                         } else {
-                            String cat = e.getTags().get(0);
-                            boolean found = false;
-                            int itr = 0;
-                            for (String str : categoryList) {
-                                if (cat.equals(str)) {
-                                    categoryValues.set(itr, categoryValues.get(itr) + am);
-                                    found = true;
+
+
+
+                            double am = e.getAmount();
+                            amt += am;
+                            long tim = e.getTime();
+                            //add expense data point on date
+                            ie.add(new DataPoint(tim, amt));
+                            Instant i = Instant.ofEpochSecond(tim);
+                            ZonedDateTime z = ZonedDateTime.ofInstant(i, ZonedDateTime.now().getZone());
+                            double budgetcheck = perday * (z.getDayOfMonth() - 1);
+                            isAboveLimit = (budgetcheck < amt) && budgetcheck != 0;
+
+                            //Add it to the category list
+                            if (e.getTags() == null || e.getTags().isEmpty()) {
+                                boolean found = false;
+                                int itr = 0;
+                                for (String str : categoryList) {
+                                    if (str.equals("Unassigned")) {
+                                        categoryValues.set(itr, categoryValues.get(itr) + am);
+                                        found = true;
+                                    }
+                                    itr++;
                                 }
-                                itr++;
-                            }
-                            if (!found) {
-                                categoryList.add(cat);
-                                categoryValues.add(am);
+                                if (!found) {
+                                    categoryList.add("Unassigned");
+                                    categoryValues.add(am);
+                                }
+                            } else {
+                                String cat = e.getTags().get(0);
+                                boolean found = false;
+                                int itr = 0;
+                                for (String str : categoryList) {
+                                    if (cat.equals(str)) {
+                                        categoryValues.set(itr, categoryValues.get(itr) + am);
+                                        found = true;
+                                    }
+                                    itr++;
+                                }
+                                if (!found) {
+                                    categoryList.add(cat);
+                                    categoryValues.add(am);
+                                }
                             }
                         }
                     }
@@ -298,9 +314,10 @@ public class MainActivity extends AppCompatActivity {
                 //set up and complete series for line graph
                 //add additional points for current day and first day of month.
 
-                if (!FutureThisMonth) {
+                //if (!FutureThisMonth) {
                     ie.add(new DataPoint(ZonedDateTime.now().toEpochSecond(), amt));
-                }
+                //System.out.println("amount ========================================================================= " + amt);
+                //}
 
                 ie.add(new DataPoint(ZonedDateTime.now().withDayOfMonth(1).toEpochSecond(),0));
 

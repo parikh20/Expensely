@@ -58,12 +58,64 @@ public class AlertReceiver extends BroadcastReceiver {
             });
             return;
         }
+        final Context fcontext = context;
+        final Intent fintent = intent;
+        if(intent.getStringExtra("expense") != null) {
+            final String name = intent.getStringExtra("expense");
+            System.out.println("Looking at an expense" + name);
+            DocumentReference ref =  db.collection("users").document(mAuth.getUid()).collection("Preferences").document("PendingExpenseIDs");
+            ref.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    IDTracker ids = documentSnapshot.toObject(IDTracker.class);
+                    if (ids == null) {
+                        //not supposed to be getting an alert, user has no pending expenses
+                        return;
+                    }
+                    String title = "Remember to pay " + name + " today!";
+                    String content = "Find more info in the Expensely app!";
+                    NotificationManager notificationManager = (NotificationManager) fcontext.getSystemService(Context.NOTIFICATION_SERVICE);
+
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
+                            notificationManager.getNotificationChannel("BudgetAlert") == null) {
+                        System.out.println("CORRECTING FOR OREO AND ABOVE");
+                        notificationManager.createNotificationChannel(new NotificationChannel(name,
+                                "ExpenseChannel", NotificationManager.IMPORTANCE_DEFAULT));
+                    }
+                    //not using below line because we're creating a custom notification here, with up to date data
+                    //Notification notification = intent.getParcelableExtra(NOTIFICATION);
+                    Notification n;
+
+                    Intent ExRedirect = new Intent(fcontext, LoginActivity.class);
+                    PendingIntent mainIntent = PendingIntent.getActivity(fcontext, Integer.valueOf(ids.IDindexOf(name)), ExRedirect, PendingIntent.FLAG_UPDATE_CURRENT);
+                    NotificationCompat.Builder builder = new NotificationCompat.Builder(fcontext, name);
+                    builder.setContentTitle(title);
+                    builder.setContentText(content);
+                    builder.setStyle(new NotificationCompat.BigTextStyle().bigText(content));
+                    builder.setSmallIcon(R.drawable.ic_launcher_background);
+                    builder.setContentIntent(mainIntent);
+                    builder.setAutoCancel(true);
+                    n = builder.build();
+                    int id = fintent.getIntExtra(NOTIFICATION_ID, 0);
+                    notificationManager.notify(id, n);
+                    if (name != null && ids != null) {
+                        ids.remove(name);
+                    }
+
+
+
+                }
+            });
+            return;
+        }
+
+
 
 
         System.out.println("triggered!!!!!!!!!!!!!!!!!!!!");
         //called when alarm is triggered
-        final Context fcontext = context;
-        final Intent fintent = intent;
+
         DocumentReference ref = db.collection("users").document(mAuth.getUid()).collection("Preferences").document("Current Budget");
         ref.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override

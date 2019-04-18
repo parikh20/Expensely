@@ -29,6 +29,7 @@ import com.google.firebase.firestore.SetOptions;
 import android.widget.AdapterView.OnItemSelectedListener;
 import org.threeten.bp.Instant;
 import org.threeten.bp.LocalDateTime;
+import org.threeten.bp.Month;
 import org.threeten.bp.ZoneId;
 
 import java.lang.reflect.Array;
@@ -182,7 +183,7 @@ public class CustomExpense extends AppCompatActivity implements AdapterView.OnIt
 
                 }
 
-                String name = mName.getText().toString();
+                final String name = mName.getText().toString();
                 String location = mLocation.getText().toString();
                 String repeating = mRepeating.getText().toString();
                 final double amount = Double.parseDouble(mAmount.getText().toString());
@@ -214,7 +215,8 @@ public class CustomExpense extends AppCompatActivity implements AdapterView.OnIt
                     //TODO: update total monthly/weekly/yearly, update category totals m/y/w
 
 
-                if (!outlierM && (!timeChanged || mDate.getMonth() == LocalDateTime.now().getMonthValue() )) {
+                if (!outlierM && (!timeChanged || mDate.getMonth() + 1 == LocalDateTime.now().getMonthValue() && mDate.getDayOfMonth() <= LocalDateTime.now().getDayOfMonth()) ) {
+
                     DocumentReference ref = db.collection("users").document(mAuth.getUid());
                     ref.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                         @Override
@@ -241,6 +243,57 @@ public class CustomExpense extends AppCompatActivity implements AdapterView.OnIt
                             }
                         }
                     });
+                }
+                final int month = mDate.getMonth() + 1;
+                final int day = mDate.getDayOfMonth();
+                final int year = mDate.getYear();
+                final int currMonth = LocalDateTime.now().getMonthValue() ;
+                final int currDay = LocalDateTime.now().getDayOfMonth();
+                final int currYear = LocalDateTime.now().getYear();
+                if (timeChanged && ((month > currMonth && currYear == year) || (day > currDay && month == currMonth && currYear == year) || year > currYear)) {
+                    DocumentReference ref =   db.collection("users").document(mAuth.getUid()).collection("Preferences").document("PendingExpenseIDs");
+                    ref.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+
+
+                            IDTracker tracker = documentSnapshot.toObject(IDTracker.class);
+                            int last = 0;
+                            if (tracker == null) {
+                                System.out.println("NULLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL");
+                                tracker = new IDTracker(name);
+                                db.collection("users").document(mAuth.getUid()).collection("Preferences").document("PendingExpenseIDs").set(tracker);
+                            } else {
+                                last = tracker.getLastID();
+                                ArrayList<String> ids = tracker.getIDs();
+                                System.out.println(ids);
+                                if (last == -1) {
+                                    System.out.println("EMPTY EMPTY EMPTY EMPTY EMPTY");
+                                    //no pending expenses
+                                    tracker.addID(name);
+                                    //ID is 0
+                                    last = 0;
+                                    db.collection("users").document(mAuth.getUid()).collection("Preferences").document("PendingExpenseIDs").set(tracker);
+                                } else {
+                                    System.out.println("Has some stuff!!!!!!!!!!!!!!!!!!!!!!!");
+                                    //one or more pending expense
+                                    tracker.addID(name);
+                                    last = tracker.getLastID();
+                                    db.collection("users").document(mAuth.getUid()).collection("Preferences").document("PendingExpenseIDs").set(tracker);
+
+                                }
+
+
+                            }
+                            //last now points to the desired broadcast id of the current expense : 0 if it has been just created, or is the only entry, otherwise the index of the entry
+
+
+
+
+
+                        }
+                    });
+
                 }
 
 
