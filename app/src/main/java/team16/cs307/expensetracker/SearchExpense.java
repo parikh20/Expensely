@@ -1,10 +1,16 @@
 package team16.cs307.expensetracker;
 
+import android.app.DownloadManager;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.os.Environment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import android.text.InputFilter;
 import android.view.View;
 
 import android.widget.Button;
@@ -14,13 +20,22 @@ import android.widget.Toast;
 
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.storage.FirebaseStorage;
 
 import org.w3c.dom.Text;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 
 public class SearchExpense extends AppCompatActivity {
     private EditText mSearch;
@@ -117,6 +132,40 @@ public class SearchExpense extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter.startListening();
         recyclerView.setAdapter(adapter);
+
+        adapter.setLongClickListener(new SearchAdapter.OnItemLongClickListener() {
+            @Override
+            public void onItemClick(final DocumentSnapshot documentSnapshot, final int position) {
+
+                new AlertDialog.Builder( SearchExpense.this )
+                        .setTitle( "txt" )
+                        .setMessage( "Downloading Expense?" )
+                        .setPositiveButton( "Download", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                File dir = new File(Environment.getDataDirectory(),documentSnapshot.get("name").toString()+"txt");
+
+                                try{
+                                    BufferedWriter fileWriter = new BufferedWriter(new FileWriter(Environment.getDataDirectory().toString()+documentSnapshot.get("name").toString()+"txt",true));
+                                    fileWriter.append("asdsada");
+
+                                    fileWriter.close();
+                                    Toast.makeText(SearchExpense.this,Environment.getDataDirectory().toString(),Toast.LENGTH_SHORT).show();
+                                }catch (Exception e){
+                                    Toast.makeText(SearchExpense.this,"Failed",Toast.LENGTH_SHORT).show();
+                                }
+
+
+
+                            }
+                        })
+                        .setNegativeButton( "Cancel", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        } )
+                        .show();
+            }
+        });
 
     }
 
