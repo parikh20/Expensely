@@ -63,20 +63,20 @@ public class CreateNewAccountActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
-        //Check whether it's a permanent user or an anonymous user
-        Bundle bundle = getIntent().getExtras();
-        String message = bundle.getString("message");
-        assert message != null;
-        if(message.equals("1"))
-        {
-            mCreateButton.setVisibility(View.INVISIBLE);
-            mTransfer.setVisibility(View.VISIBLE);
-        }
-        else
-        {
-            mTransfer.setVisibility(View.INVISIBLE);
-            mCreateButton.setVisibility(View.VISIBLE);
-        }
+//        //Check whether it's a permanent user or an anonymous user
+//        Bundle bundle = getIntent().getExtras();
+//        String message = bundle.getString("message");
+//        assert message != null;
+//        if(message.equals("1"))
+//        {
+//            mCreateButton.setVisibility(View.INVISIBLE);
+//            mTransfer.setVisibility(View.VISIBLE);
+//        }
+//        else
+//        {
+//            mTransfer.setVisibility(View.INVISIBLE);
+//            mCreateButton.setVisibility(View.VISIBLE);
+//        }
 
         // When a user clicks the create button, create a new account
         mCreateButton.setOnClickListener(new View.OnClickListener() {
