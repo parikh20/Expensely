@@ -391,6 +391,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
     public static void alertSet(final FirebaseAuth mAuth, final FirebaseFirestore db, final Context context, final AlarmManager alarmManager) {
         //Set up pending alert IDs in preferences -
+
+        if (mAuth == null || mAuth.getUid() == null || mAuth.getUid() == "") {
+            return;
+        }
          DocumentReference ref =   db.collection("users").document(mAuth.getUid()).collection("Preferences").document("PendingExpenseIDs");
          ref.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
              @Override
