@@ -130,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         //NOTE TO LUCAS REMEMBER TO REMOVE THIS!!!!!!!!!!!!!!!!!!!!!!!  Testing only!!!!!!!!!! TODO
-        Intent notificationIntent = new Intent(this,AlertReceiver.class);
+        /*Intent notificationIntent = new Intent(this,AlertReceiver.class);
         notificationIntent.putExtra(AlertReceiver.NOTIFICATION_ID,1);
         Notification n;
         Notification.Builder builder = new Notification.Builder(this);
@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
         long futureMillis = SystemClock.elapsedRealtime() + 10000;
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,futureMillis,pendingIntent);
-        System.out.println("Set up alarm for " + (SystemClock.elapsedRealtime() + 10000));
+        System.out.println("Set up alarm for " + (SystemClock.elapsedRealtime() + 10000));*/
 
         //update Time and monthly totals
         DocumentReference refM = db.collection("users").document(mAuth.getUid());
