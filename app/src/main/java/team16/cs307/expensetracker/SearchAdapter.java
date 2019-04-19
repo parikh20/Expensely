@@ -10,6 +10,10 @@ import android.widget.TextView;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class SearchAdapter extends FirestoreRecyclerAdapter<SearchItem, SearchAdapter.ViewHolder> {
     public SearchAdapter(@NonNull FirestoreRecyclerOptions<SearchItem> options) {
         super(options);
@@ -17,9 +21,21 @@ public class SearchAdapter extends FirestoreRecyclerAdapter<SearchItem, SearchAd
 
     @Override
     protected void onBindViewHolder(@NonNull SearchAdapter.ViewHolder holder, int position, @NonNull SearchItem model) {
-        holder.Description.setText(model.getName());
-        holder.Description1.setText("$ "+Double.toString(model.getAmount()));
-        holder.Description2.setText("Location:"+model.getLocation());
+        holder.Name.setText(model.getName());
+        holder.Amount.setText("Amount: $ "+Double.toString(model.getAmount()));
+        holder.Location.setText("Location: "+model.getLocation());
+        holder.Priority.setText("Priority: "+ Integer.toString(model.getPriority()));
+        if(model.isRepeating()){
+            holder.repeating.setText("Repeating: Yes:");
+        }else{
+            holder.repeating.setText("Repeating: No");
+        }
+        Date epochTime = new Date(model.getTime()*1000L);
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String finalTime = format.format(epochTime);
+
+        holder.time.setText(finalTime);
+
 
     }
     @NonNull
@@ -33,18 +49,24 @@ public class SearchAdapter extends FirestoreRecyclerAdapter<SearchItem, SearchAd
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView Description;
-        private TextView Description1;
-        private TextView Description2;
+        private TextView Name;
+        private TextView Priority;
+        private TextView Amount;
+        private TextView Location;
+        private TextView repeating;
+        private TextView time;
 
 
 
         public ViewHolder(View view) {
             super(view);
 
-            Description = view.findViewById(R.id.Search_Description);
-            Description1 = view.findViewById(R.id.Search_amount);
-            Description2 = view.findViewById(R.id.Search_location);
+            Name = view.findViewById(R.id.Search_Description);
+            Priority = view.findViewById(R.id.Search_Priority);
+            Amount = view.findViewById(R.id.Search_amount);
+            Location = view.findViewById(R.id.Search_location);
+            repeating = view.findViewById(R.id.Search_repeating);
+            time = view.findViewById(R.id.Search_time);
 
 
         }
