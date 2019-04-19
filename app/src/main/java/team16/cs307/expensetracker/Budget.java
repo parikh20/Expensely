@@ -8,6 +8,8 @@ public class Budget {
     private double limitWeekly;
     private ArrayList<Limit> customLimits;
     private String name;
+    private int totalRating;
+    private int numRatings;
 
     public Budget() {
         this.name = "";
@@ -15,6 +17,8 @@ public class Budget {
         this.limitMonthly = 0;
         this.limitWeekly = 0;
         this.limitYearly = 0;
+        this.totalRating = 0;
+        this.numRatings = 0;
     }
 
     public Budget(String name, double limitWeekly, double limitMonthly,double limitYearly, ArrayList<Limit> customLimits) {
@@ -68,4 +72,22 @@ public class Budget {
     public void addCustomLimit (Limit l) {
         this.customLimits.add(l);
     }
+
+
+    public int getTotalRating() {
+        return totalRating;
+    }
+
+    public void setTotalRating(int totalRating) {
+        this.totalRating = totalRating;
+    }
+
+    public int getNumRatings() {
+        return numRatings;
+    }
+
+    public void setNumRatings(int numRatings) {
+        this.numRatings = numRatings;
+    }
+
 }

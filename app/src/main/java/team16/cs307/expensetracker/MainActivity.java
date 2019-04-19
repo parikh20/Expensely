@@ -16,6 +16,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -93,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
     private Button mSwap;
     private Button editBudget;
     private Button becomeUser;
+    private Button mAlerts;
 
 
     private Budget curr_budg;
@@ -121,23 +123,25 @@ public class MainActivity extends AppCompatActivity {
         amt = 0;
         editExpenses = findViewById(R.id.MainActivity_edit_expenses);
         becomeUser = findViewById(R.id.becomeUser);
+        mAlerts = findViewById(R.id.main_alerts);
         message = "0";
 
 
-        Intent notificationIntent = new Intent(this, AlertReceiver.class);
-        notificationIntent.putExtra(AlertReceiver.NOTIFICATION_ID, 1);
+        //NOTE TO LUCAS REMEMBER TO REMOVE THIS!!!!!!!!!!!!!!!!!!!!!!!  Testing only!!!!!!!!!! TODO
+        Intent notificationIntent = new Intent(this,AlertReceiver.class);
+        notificationIntent.putExtra(AlertReceiver.NOTIFICATION_ID,1);
         Notification n;
         Notification.Builder builder = new Notification.Builder(this);
         builder.setContentTitle("Budget Checkup");
         builder.setContentText("placeholder info about budget here");
         //builder.setSmallIcon(R.drawable.ic_logo);
         n = builder.build();
-        notificationIntent.putExtra(AlertReceiver.NOTIFICATION, n);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        long futureMillis = SystemClock.elapsedRealtime() + 20000;
+        notificationIntent.putExtra(AlertReceiver.NOTIFICATION,n);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),0,notificationIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+        long futureMillis = SystemClock.elapsedRealtime() + 10000;
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureMillis, pendingIntent);
-        System.out.println("Set up alarm for " + (SystemClock.elapsedRealtime() + 20000));
+        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,futureMillis,pendingIntent);
+        System.out.println("Set up alarm for " + (SystemClock.elapsedRealtime() + 10000));
 
         //update Time and monthly totals
         DocumentReference refM = db.collection("users").document(mAuth.getUid());
@@ -261,8 +265,8 @@ public class MainActivity extends AppCompatActivity {
                 ArrayList<String> categoryList = new ArrayList<>(); //list of monthly categories
                 ArrayList<Double> categoryValues = new ArrayList<>(); //list of monthly totals
                 //Note: We only care about the primary category of each expense for the purposes of the pie chart.  Limit calculation and comparison might produce different results
-                //TODO If we change our mind here, this will have to change
 
+                boolean FutureThisMonth = false;
                 for (Expense e : ei) {
 
                     Instant inst = Instant.ofEpochSecond(e.getTime());
@@ -270,53 +274,68 @@ public class MainActivity extends AppCompatActivity {
                     //if it's in the current month and isn't an outlier (Behaved weirdly when i tried just checking getMonthvalue == getMonthValue.  This wasn't much harder)
                     if (zdt.isAfter(ZonedDateTime.now().withDayOfMonth(1)) && !e.getOutlierMonthly() && zdt.isBefore(ZonedDateTime.now().withDayOfMonth(LocalDate.now().lengthOfMonth()).plusDays(1))) {
                         //Add it to the line graph
-                        double am = e.getAmount();
-                        amt += am;
-                        long tim = e.getTime();
-                        //add expense data point on date
-                        ie.add(new DataPoint(tim, amt));
-                        Instant i = Instant.ofEpochSecond(tim);
-                        ZonedDateTime z = ZonedDateTime.ofInstant(i, ZonedDateTime.now().getZone());
-                        double budgetcheck = perday * (z.getDayOfMonth() - 1);
-                        isAboveLimit = (budgetcheck < amt) && budgetcheck != 0;
-
-                        //Add it to the category list
-                        if (e.getTags() == null || e.getTags().isEmpty()) {
-                            boolean found = false;
-                            int itr = 0;
-                            for (String str : categoryList) {
-                                if (str.equals("Unassigned")) {
-                                    categoryValues.set(itr, categoryValues.get(itr) + am);
-                                    found = true;
-                                }
-                                itr++;
-                            }
-                            if (!found) {
-                                categoryList.add("Unassigned");
-                                categoryValues.add(am);
-                            }
+                        if (zdt.isAfter(ZonedDateTime.now())) {
+                            FutureThisMonth = true;
                         } else {
-                            String cat = e.getTags().get(0);
-                            boolean found = false;
-                            int itr = 0;
-                            for (String str : categoryList) {
-                                if (cat.equals(str)) {
-                                    categoryValues.set(itr, categoryValues.get(itr) + am);
-                                    found = true;
+
+
+
+                            double am = e.getAmount();
+                            amt += am;
+                            long tim = e.getTime();
+                            //add expense data point on date
+                            ie.add(new DataPoint(tim, amt));
+                            Instant i = Instant.ofEpochSecond(tim);
+                            ZonedDateTime z = ZonedDateTime.ofInstant(i, ZonedDateTime.now().getZone());
+                            double budgetcheck = perday * (z.getDayOfMonth() - 1);
+                            isAboveLimit = (budgetcheck < amt) && budgetcheck != 0;
+
+                            //Add it to the category list
+                            if (e.getTags() == null || e.getTags().isEmpty()) {
+                                boolean found = false;
+                                int itr = 0;
+                                for (String str : categoryList) {
+                                    if (str.equals("Unassigned")) {
+                                        categoryValues.set(itr, categoryValues.get(itr) + am);
+                                        found = true;
+                                    }
+                                    itr++;
                                 }
-                                itr++;
-                            }
-                            if (!found) {
-                                categoryList.add(cat);
-                                categoryValues.add(am);
+                                if (!found) {
+                                    categoryList.add("Unassigned");
+                                    categoryValues.add(am);
+                                }
+                            } else {
+                                String cat = e.getTags().get(0);
+                                boolean found = false;
+                                int itr = 0;
+                                for (String str : categoryList) {
+                                    if (cat.equals(str)) {
+                                        categoryValues.set(itr, categoryValues.get(itr) + am);
+                                        found = true;
+                                    }
+                                    itr++;
+                                }
+                                if (!found) {
+                                    categoryList.add(cat);
+                                    categoryValues.add(am);
+                                }
                             }
                         }
                     }
                 }
                 //set up and complete series for line graph
                 //add additional points for current day and first day of month.
+
+                //if (!FutureThisMonth) {
+                    ie.add(new DataPoint(ZonedDateTime.now().toEpochSecond(), amt));
+                //System.out.println("amount ========================================================================= " + amt);
+                //}
+
+                ie.add(new DataPoint(ZonedDateTime.now().withDayOfMonth(1).toEpochSecond(),0));
+
                 ie.add(new DataPoint(ZonedDateTime.now().toEpochSecond(), amt));
-                ie.add(new DataPoint(ZonedDateTime.now().withDayOfMonth(1).toEpochSecond(), 0));
+
                 DataSort(ie);
                 DataPoint[] de = new DataPoint[ie.size()];
                 LineGraphSeries<DataPoint> series = new LineGraphSeries<>(ie.toArray(de));
@@ -329,6 +348,9 @@ public class MainActivity extends AppCompatActivity {
                     series.setColor(Color.GREEN);
                 }
                 series.setTitle("Your Spending");
+                if (!FutureThisMonth) {
+                    series.setTitle("Your Spending (Projected)");
+                }
                 mGraph.addSeries(series);
 
                 //set up and complete series for pie chart
@@ -405,7 +427,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), EditExpensesActivity.class);
                 startActivity(intent);
-                finish();
+
             }
         });
 
@@ -437,6 +459,17 @@ public class MainActivity extends AppCompatActivity {
                 accountInfo();
             }
         });
+
+        mAlerts.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alerts();
+            }
+        });
+
+
+
+
         mSwap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -458,7 +491,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), EditBudgetActivity.class);
                 startActivity(intent);
-                finish();
+
             }
         });
 
@@ -481,7 +514,7 @@ public class MainActivity extends AppCompatActivity {
     private void addExpense() {
             Intent intent = new Intent(getApplicationContext(), CustomExpense.class);
             startActivity(intent);
-            finish();
+
 
         }
         private void accessImage(){
@@ -515,6 +548,60 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(getApplicationContext(), BudgetDownloadActivity.class);
             startActivity(intent);
         }
+
+   // add option menu
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.option_menu,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.Menu_Add_New_Expense:
+                addExpense();
+                return true;
+            case R.id.Menu_Budget_Select:
+                selectBudget();
+                return true;
+            case R.id.Menu_Current_Budget:
+                editCurrentBudget();
+                return true;
+            case R.id.Menu_Past_Expense:
+                editPastExpense();
+                return true;
+            case R.id.Menu_Image_Acess:
+                accessImage();
+                return true;
+            case R.id.Menu_Search:
+                Search();
+                return true;
+
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    void editCurrentBudget(){
+        Intent intent = new Intent(getApplicationContext(), EditBudgetActivity.class);
+        startActivity(intent);
+
+    }
+    void editPastExpense(){
+        Intent intent = new Intent(getApplicationContext(), EditExpensesActivity.class);
+        startActivity(intent);
+
+    }
+    void Search(){
+        Intent intent = new Intent(getApplicationContext(), SearchExpense.class);
+        startActivity(intent);
+    }
+    void alerts() {
+        Intent intent = new Intent(getApplicationContext(), AlertPreferencesActivity.class);
+        startActivity(intent);
+    }
 }
 
 

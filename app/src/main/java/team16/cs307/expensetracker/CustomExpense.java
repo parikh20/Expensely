@@ -1,16 +1,25 @@
 package team16.cs307.expensetracker;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.PendingIntent;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -27,10 +36,12 @@ import com.google.firebase.firestore.SetOptions;
 import android.widget.AdapterView.OnItemSelectedListener;
 import org.threeten.bp.Instant;
 import org.threeten.bp.LocalDateTime;
+import org.threeten.bp.Month;
 import org.threeten.bp.ZoneId;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,6 +66,10 @@ public class CustomExpense extends AppCompatActivity implements AdapterView.OnIt
     private ArrayList<String> tags;
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
+    private DatePicker mDate;
+    private TimePicker mTime;
+    private Button mSetTime;
+    private boolean timeChanged;
 
 
     @Override
@@ -62,8 +77,10 @@ public class CustomExpense extends AppCompatActivity implements AdapterView.OnIt
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_custom_expense);
 
-
+        timeChanged = false;
         mLocation = findViewById(R.id.custom_expense_location);
+        mDate = findViewById(R.id.simpleDatePicker);
+        mSetTime = findViewById(R.id.custom_expense_setDate);
         mName = findViewById(R.id.custom_expense_name);
         mRepeating = findViewById(R.id.custom_expense_repeating);
         mFinish = findViewById(R.id.custom_expense_finish);
@@ -74,9 +91,15 @@ public class CustomExpense extends AppCompatActivity implements AdapterView.OnIt
         mOutlier = findViewById(R.id.custom_expense_outlier);
         tags = new ArrayList<>();
 
+        mDate.setEnabled(false);
+        mDate.setVisibility(View.INVISIBLE);
+
+
         mOutlier.setOnItemSelectedListener(this);
 
         mPriority.setOnItemSelectedListener(this);
+
+
 
         priority = 0;
         outlier = 0;
@@ -108,6 +131,44 @@ public class CustomExpense extends AppCompatActivity implements AdapterView.OnIt
         mOutlier.setAdapter(outlierAdapter);
 
 
+        mSetTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!mDate.isEnabled()) {
+                    timeChanged = true;
+                    mLocation.setVisibility(View.INVISIBLE);
+                    mDate.setVisibility(View.VISIBLE);
+                    //mSetTime = findViewById(R.id.custom_expense_setDate);
+                    mName.setVisibility(View.INVISIBLE);
+                    mRepeating.setVisibility(View.INVISIBLE);
+                    mFinish.setVisibility(View.INVISIBLE);
+                    mFrequency.setVisibility(View.INVISIBLE);
+                    mAmount.setVisibility(View.INVISIBLE);
+                    mCategory.setVisibility(View.INVISIBLE);
+                    mPriority.setVisibility(View.INVISIBLE);
+                    mOutlier.setVisibility(View.INVISIBLE);
+                    mDate.setEnabled(true);
+
+
+                } else {
+                    mDate.setEnabled(false);
+                    mLocation.setVisibility(View.VISIBLE);
+                    mDate.setVisibility(View.INVISIBLE);
+                    //mSetTime = findViewById(R.id.custom_expense_setDate);
+                    mName.setVisibility(View.VISIBLE);
+                    mRepeating.setVisibility(View.VISIBLE);
+                    mFinish.setVisibility(View.VISIBLE);
+                    mFrequency.setVisibility(View.VISIBLE);
+                    mAmount.setVisibility(View.VISIBLE);
+                    mCategory.setVisibility(View.VISIBLE);
+                    mPriority.setVisibility(View.VISIBLE);
+                    mOutlier.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+
+
         mFinish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -119,7 +180,18 @@ public class CustomExpense extends AppCompatActivity implements AdapterView.OnIt
                     Toast.makeText(CustomExpense.this, "Please select your purchase's priority", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                String name = mName.getText().toString();
+                long time = LocalDateTime.now().atZone(ZoneId.systemDefault()).toEpochSecond();
+                if (timeChanged) {
+                    int month = mDate.getMonth() + 1; //We need to add one because DatePicker starts at 0 with months (all hail lack of consistency in java packages)
+                    int year = mDate.getYear();
+                    int day = mDate.getDayOfMonth();
+                    time = LocalDateTime.of(year, month, day, LocalDateTime.now().getHour(), LocalDateTime.now().getMinute()).atZone(ZoneId.systemDefault()).toEpochSecond();
+
+
+
+                }
+
+                final String name = mName.getText().toString();
                 String location = mLocation.getText().toString();
                 String repeating = mRepeating.getText().toString();
                 final double amount = Double.parseDouble(mAmount.getText().toString());
@@ -143,7 +215,7 @@ public class CustomExpense extends AppCompatActivity implements AdapterView.OnIt
                 }
                 boolean outlierW = outlier == 1;
                 boolean outlierM = outlier == 2;
-                long time = LocalDateTime.now().atZone(ZoneId.systemDefault()).toEpochSecond();
+
                 Expense e = new Expense(name, location, repeating.equals("Y"), time, amount, tags, priority, outlierM, outlierW);
                 db.collection("users").document(mAuth.getUid()).collection("Expenses").document(name).set(e);
 
@@ -151,7 +223,8 @@ public class CustomExpense extends AppCompatActivity implements AdapterView.OnIt
                     //TODO: update total monthly/weekly/yearly, update category totals m/y/w
 
 
-                if (!outlierM) {
+                if (!outlierM && (!timeChanged || mDate.getMonth() + 1 == LocalDateTime.now().getMonthValue() && mDate.getDayOfMonth() <= LocalDateTime.now().getDayOfMonth()) ) {
+
                     DocumentReference ref = db.collection("users").document(mAuth.getUid());
                     ref.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                         @Override
@@ -179,11 +252,98 @@ public class CustomExpense extends AppCompatActivity implements AdapterView.OnIt
                         }
                     });
                 }
+                final int month = mDate.getMonth() + 1;
+                final int day = mDate.getDayOfMonth();
+                final int year = mDate.getYear();
+                final int currMonth = LocalDateTime.now().getMonthValue() ;
+                final int currDay = LocalDateTime.now().getDayOfMonth();
+                final int currYear = LocalDateTime.now().getYear();
+                if (timeChanged && ((month > currMonth && currYear == year) || (day > currDay && month == currMonth && currYear == year) || year > currYear)) {
+                    DocumentReference ref =   db.collection("users").document(mAuth.getUid()).collection("Preferences").document("PendingExpenseIDs");
+                    ref.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+
+
+                            IDTracker tracker = documentSnapshot.toObject(IDTracker.class);
+                            int last = 0;
+                            if (tracker == null) {
+
+                                tracker = new IDTracker(name);
+                                db.collection("users").document(mAuth.getUid()).collection("Preferences").document("PendingExpenseIDs").set(tracker);
+                            } else {
+                                last = tracker.getLastID();
+                                ArrayList<String> ids = tracker.getIDs();
+                                System.out.println(ids);
+                                if (last == -1) {
+
+                                    //no pending expenses
+                                    tracker.addID(name);
+                                    //ID is 0
+                                    last = 0;
+                                    db.collection("users").document(mAuth.getUid()).collection("Preferences").document("PendingExpenseIDs").set(tracker);
+                                } else {
+
+                                    //one or more pending expense
+                                    tracker.addID(name);
+                                    last = tracker.getLastID();
+                                    db.collection("users").document(mAuth.getUid()).collection("Preferences").document("PendingExpenseIDs").set(tracker);
+
+                                }
+
+
+                            }
+                            //last now points to the desired broadcast id of the current expense : 0 if it has been just created, or is the only entry, otherwise the index of the entry
+                            //now we will send an alert with an extra string "name" containing the expense's name, scheduled for the day of the expense.
+
+                            final Context context = getApplicationContext();
+                            ComponentName receiver = new ComponentName(context, AlertReceiver.class);
+                            PackageManager pm = context.getPackageManager();
+
+                            pm.setComponentEnabledSetting(receiver, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
+                            Toast.makeText(context, "Setting up expense alert for: " + name, Toast.LENGTH_SHORT).show();
+
+                            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                            Intent notificationIntent = new Intent(context, AlertReceiver.class);
+                            notificationIntent.putExtra(AlertReceiver.NOTIFICATION_ID, last + 100);
+                            notificationIntent.putExtra("expense", name);
+                            Notification n;
+                            Intent exRedirect = new Intent(context, LoginActivity.class); //We will send the user to the login activity page directly, to let them see their graphs.
+                            PendingIntent mainIntent = PendingIntent.getActivity(context, last + 100, exRedirect, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                            NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "ExpenseAlerts: " + name);
+                            builder.setContentTitle("Expense Triggered");
+                            builder.setContentText("placeholder info about Expense here: " + name);
+                            builder.setSmallIcon(R.drawable.ic_launcher_background);
+                            builder.setContentIntent(mainIntent);
+                            builder.setAutoCancel(true);
+                            builder.setStyle(new NotificationCompat.BigTextStyle().bigText("placeholder info about Expense here"));
+
+
+                            n = builder.build();
+                            notificationIntent.putExtra(AlertReceiver.NOTIFICATION, n);
+                            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, last + 100, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                            Calendar cal = Calendar.getInstance();
+                            //cal.set(year, month, day, 0, 0, 1);
+                            cal.set(2019,3,18,20,13,0);  //TESTING PURPOSES : set specific time
+                            final int id = (int) System.currentTimeMillis();
+                            alarmManager.set(AlarmManager.RTC_WAKEUP,cal.getTimeInMillis(), pendingIntent);
+                            System.out.println("Set up alarm for " + cal.getTimeInMillis());
 
 
 
 
-                //TODO: update total monthly/weekly/yearly, update category totals m/y/w
+
+
+                        }
+                    });
+
+                }
+
+
+
+
+                //TODO: mark these payments as future payments
 
                 if(weekly) {
 

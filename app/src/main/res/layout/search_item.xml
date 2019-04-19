@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="8dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginEnd="8dp"
+    app:cardBackgroundColor="#FFFFE8"
+    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/Search_Description"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:textColor="#000000"
+                android:gravity="center"
+                android:layout_gravity="center"
+
+                android:text="Budget name"
+                android:background="@drawable/ic_textback"
+                android:layout_marginStart="10dp"
+                android:textSize="25sp" />
+            <TextView
+                android:id="@+id/Search_Priority"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:textColor="#000000"
+                android:layout_marginStart="120dp"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:text="Priority:"
+
+                android:textSize="15sp" />
+        </LinearLayout>
+        <TextView
+            android:id="@+id/Search_location"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:textColor="#000000"
+
+            android:text="Budget name"
+            android:textSize="20sp"
+            android:layout_marginStart="10dp"/>
+        <TextView
+            android:id="@+id/Search_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:textColor="#000000"
+
+            android:text="Budget name"
+            android:textSize="20sp"
+            android:layout_marginStart="10dp"/>
+        <TextView
+            android:id="@+id/Search_repeating"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:textColor="#000000"
+
+            android:text="Budget name"
+            android:textSize="20sp"
+            android:layout_marginStart="10dp"/>
+        <TextView
+            android:id="@+id/Search_time"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:textColor="#000000"
+            android:layout_marginStart="10dp"
+
+            android:text="Budget name"
+            android:textSize="20sp" />
+
+
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>

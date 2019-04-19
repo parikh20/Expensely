@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".SearchExpense">
+
+
+    <EditText
+        android:id="@+id/Search_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ic_searchround"
+        android:ems="10"
+        android:hint="Type here"
+        android:layout_marginTop="5dp"
+
+        android:inputType="textPersonName"
+        android:padding="10dp"
+        android:paddingLeft="10dp"
+        android:paddingEnd="10dp"
+        android:paddingBottom="10dp" />
+    <Switch
+        android:id="@+id/Search_Switch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:text="Descending"/>
+
+    <Button
+        android:id="@+id/Search_sortName"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Search by name" />
+    <Button
+        android:id="@+id/Search_sortLocation"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Search by Location " />
+    <Button
+        android:id="@+id/Search_sortPriority"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Search by priority" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/Search_recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="20dp"
+
+
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="0dp" />
+
+
+</LinearLayout>

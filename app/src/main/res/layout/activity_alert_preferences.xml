@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:ignore="ExtraText"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="0dp"
+        tools:context=".AlertPreferencesActivity">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/alert_logo"
+                android:layout_width="wrap_content"
+                android:layout_height="150dp"
+                android:layout_marginTop="15dp"
+                android:background="@null"
+                android:contentDescription="@string/login_activity_logo"
+                android:src="@mipmap/logo_transparent_cropped" />
+
+
+            <TextView
+                android:id="@+id/alert_intro"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:textAlignment="center"
+                android:layout_marginTop="170dp"
+                android:text="Change your Alert preferences and frequency. \n\nHere, you can choose whether or not to receive daily budget alerts and pending expense alerts" />
+
+            <TextView
+                android:id="@+id/alert_interval_intro"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:textAlignment="center"
+                android:layout_marginTop="340dp"
+                android:text="How many days do you want in between budget alerts?" />
+
+            <EditText
+                android:id="@+id/alert_interval"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="370dp"
+                android:layout_centerHorizontal="true"
+                android:ems="10"
+                android:hint="1"
+                android:inputType="number" />
+
+
+            <Button
+                android:id="@+id/alert_update_interval"
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+
+                android:layout_marginTop="410dp"
+                android:text="Change Interval" />
+            <Button
+                android:id="@+id/alert_set_budget"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="515dp"
+                android:text="Turn off Budget Alerts" />
+            <Button
+                android:id="@+id/alert_set_expense"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="565dp"
+                android:text="Turn off Expense Alerts" />
+            <Button
+                android:id="@+id/alert_finish"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="625dp"
+                android:text="Finish" />
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+
