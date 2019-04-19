@@ -79,6 +79,14 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="565dp"
                 android:text="Turn off Expense Alerts" />
+            <Button
+                android:id="@+id/alert_finish"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="625dp"
+                android:text="Finish" />
 
         </RelativeLayout>
 
