@@ -4,6 +4,7 @@ import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.os.SystemClock;
+import android.support.annotation.NonNull;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -24,6 +25,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -44,11 +46,14 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.ZonedDateTime;
 
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static java.lang.Math.round;
 
 public class BrowseBudgets extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
     private TextView mName;
@@ -56,6 +61,7 @@ public class BrowseBudgets extends AppCompatActivity implements AdapterView.OnIt
     private TextView mWeekly;
     private TextView mYearly;
     private TextView mLimits;
+    private TextView mRatingView;
     private Button mFinish;
 
     private ArrayList<Limit> limits;
@@ -65,6 +71,10 @@ public class BrowseBudgets extends AppCompatActivity implements AdapterView.OnIt
     private Spinner mBudgets;
     private Spinner mRating;
     private String i;
+    private String currDocName="";
+    private int numRating = 0;
+    private int totalrating = 0;
+    private int userRating = 0;
 
 
     @Override
@@ -81,6 +91,8 @@ public class BrowseBudgets extends AppCompatActivity implements AdapterView.OnIt
         mBudgets.setOnItemSelectedListener(this);
         mRating = findViewById(R.id.budget_rating);
         mRating.setOnItemSelectedListener(this);
+        mRatingView = findViewById(R.id.browse_rating);
+
 
         limits = new ArrayList<Limit>();
 
@@ -142,6 +154,8 @@ public class BrowseBudgets extends AppCompatActivity implements AdapterView.OnIt
                 }
 
                 db.collection("users").document(mAuth.getUid()).collection("Preferences").document("Current Budget").set(curr_budg);
+                db.collection("PublicBudgets").document(currDocName).update("numRatings",numRating+1);
+                db.collection("PublicBudgets").document(currDocName).update("totalRating",totalrating+userRating);
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getApplicationContext().startActivity(intent);
@@ -152,14 +166,32 @@ public class BrowseBudgets extends AppCompatActivity implements AdapterView.OnIt
 
         mRating.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemSelected(AdapterView<?> parent, View view, final int position, long id) {
                 if (i != null) {
                     System.out.println(i);
-                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference("PublicBudgets").child(i);
-                    Map<String, Object> update = new HashMap<String, Object>();
-                    update.put("totalRating", 5);
-                    ref.updateChildren(update);
+
+////                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference("PublicBudgets").child(i);
+//
+//                    Map<String, Object> update = new HashMap<String, Object>();
+//                    update.put("totalRating", 5);
+//                    ref.updateChildren(update);
+                    final DocumentReference dRef = db.collection("PublicBudgets").document(currDocName);
+                    dRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if(task.isSuccessful()){
+                                userRating = position;
+                                DocumentSnapshot document = task.getResult();
+                                numRating = document.getLong("numRatings").intValue();
+                                totalrating = document.getLong("totalRating").intValue();
+
+
+                            }
+                        }
+                    });
+
                 }
+                //Toast.makeText(BrowseBudgets.this,Integer.toString(position),Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -185,6 +217,7 @@ public class BrowseBudgets extends AppCompatActivity implements AdapterView.OnIt
 
         //make all else visible and populate it with retrieved values
         DocumentReference ref = db.collection("PublicBudgets").document(item);
+        currDocName=item;
         ref.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -207,6 +240,8 @@ public class BrowseBudgets extends AppCompatActivity implements AdapterView.OnIt
                     String month = "Monthly Limit: " + String.valueOf(curr_budg.getLimitMonthly());
                     String week = "Weekly Limit: " + String.valueOf(curr_budg.getLimitWeekly());
                     String year = "Yearly Limit: " + String.valueOf(curr_budg.getLimitYearly());
+                    double overallRating = Double.valueOf(curr_budg.getTotalRating())/Double.valueOf(curr_budg.getNumRatings());
+                    mRatingView .setText(String.format("%1.1f",overallRating)+"/"+"5"+"  ("+curr_budg.getNumRatings()+"  reviews)");
                     mMonthly.setText(month);
                     mWeekly.setText(week);
                     mYearly.setText(year);

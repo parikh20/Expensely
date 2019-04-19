@@ -7,11 +7,11 @@
     tools:context=".BrowseBudgets"
     >
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
         >
-
         <ImageView
             android:id="@+id/browse_budgets_logo"
             android:layout_width="wrap_content"
@@ -20,75 +20,104 @@
             android:background="@null"
             android:contentDescription="@string/login_activity_logo"
             android:src="@mipmap/logo_transparent_cropped" />
-
-
-
-
-
-        <TextView
-            android:id="@+id/browse_budget_monthly"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="340dp"
-            android:ems="10"
-
-             />
-
-        <TextView
-            android:id="@+id/browse_budget_weekly"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="265dp"
-            android:ems="10"
-
-             />
-
-        <TextView
-            android:id="@+id/browse_budget_yearly"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="415dp"
-            android:ems="10"
-
-             />
-
-        <Button
-            android:id="@+id/browse_budget_select"
-
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="645dp"
-
-            android:layout_centerHorizontal="true"
-            android:text="Select Budget" />
-
-        <TextView
-            android:id="@+id/browse_budget_current_limits"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="485dp"
-            android:text="@string/custom_budget_current_limits" />
-
         <Spinner
-            android:id="@+id/budget_rating"
+            android:id="@+id/browse_budget_selector"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="525dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="20dp"
+
             />
 
         <TextView
             android:id="@+id/browse_budgets_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="195dp"
-            android:ems="10" />
+            android:layout_marginTop="20dp"
+            android:ems="10"
+            android:textSize="20sp"/>
 
-        <Spinner
-            android:id="@+id/browse_budget_selector"
+
+        <TextView
+            android:id="@+id/browse_budget_weekly"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="165dp"
+            android:layout_marginTop="20dp"
+            android:ems="10"
+            android:textSize="20sp"
+
             />
-    </RelativeLayout>>
+
+        <TextView
+            android:id="@+id/browse_budget_monthly"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:ems="10"
+            android:textSize="20sp"
+
+
+            />
+
+        <TextView
+            android:id="@+id/browse_budget_yearly"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:ems="10"
+            android:textSize="20sp"
+
+            />
+
+
+        <TextView
+            android:id="@+id/browse_budget_current_limits"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:textSize="20sp"
+            android:text="@string/custom_budget_current_limits" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <Spinner
+            android:id="@+id/budget_rating"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp" />
+        <TextView
+            android:id="@+id/browse_rating"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:ems="10"
+            android:textSize="20sp"/>
+
+
+
+
+
+
+        <Button
+            android:id="@+id/browse_budget_select"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:text="Select Budget" />
+    </LinearLayout>
 
 </ScrollView>
