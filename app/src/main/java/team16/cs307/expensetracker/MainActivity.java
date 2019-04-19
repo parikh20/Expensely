@@ -161,7 +161,18 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
+        //Check whether it's an anonymous account
+        Bundle bundle = getIntent().getExtras();
+        String message1 = bundle.getString("message1");
+        assert message1 != null;
+        if(message1.equals("1"))
+        {
+            becomeUser.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            becomeUser.setVisibility(View.INVISIBLE);
+        }
 
         //set up mchart
         mChart.setVisibility(View.INVISIBLE); //Invisible at start, to be added here: check user settings for default graph, make that one visible

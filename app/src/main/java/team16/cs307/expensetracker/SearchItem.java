@@ -10,21 +10,21 @@ public class SearchItem {
     public double amount;
     public String location;
     public boolean outlierMonthly;
-    public boolean isOutlierWeekly;
+    public boolean outlierWeekly;
     public int priority;
     //public String[] tags;
     public boolean repeating;
-    public int time;
+    public long time;
 
 
 
 
-    public SearchItem(double amount,String location,String name,boolean outlierMonthly,boolean OutlierWeekly,int priority,boolean repeating,int time){
+    public SearchItem(double amount,String location,String name,boolean outlierMonthly,boolean outlierWeekly,int priority,boolean repeating,long time){
         this.name=name;
         this.amount=amount;
         this.location=location;
         this.outlierMonthly=outlierMonthly;
-        this.isOutlierWeekly=isOutlierWeekly();
+        this.outlierWeekly=outlierWeekly;
         this.priority=priority;
         this.repeating=repeating;
         //this.tags=tags;
@@ -48,7 +48,7 @@ public class SearchItem {
     }
 
     public boolean isOutlierWeekly() {
-        return isOutlierWeekly;
+        return outlierWeekly;
     }
 
     public int getPriority() {
@@ -61,7 +61,7 @@ public class SearchItem {
         return repeating;
     }
 
-    public int getTime() {
+    public long getTime() {
         return time;
     }
     public SearchItem(){
