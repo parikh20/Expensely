@@ -260,10 +260,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                      db.collection("users").document(mAuth.getUid()).collection("Preference").document("userPreference").set(userPref);
                                      Toast.makeText(LoginActivity.this, "moving to financial info", Toast.LENGTH_SHORT).show();
                                      LoginActivity.alertSet(mAuth, db, getApplicationContext(), (AlarmManager) getSystemService(Context.ALARM_SERVICE));
-                                     Intent financialInfoIntent = new Intent(getApplicationContext(), FinancialInfo.class);
+                                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                      message1 = "1";
-                                     financialInfoIntent.putExtra("message1", message1);
-                                     startActivity(financialInfoIntent);
+                                     intent.putExtra("message1", message1);
+                                     startActivity(intent);
                                      finish();
                                      message1 = "0";
                                  }
