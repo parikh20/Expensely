@@ -32,7 +32,8 @@
                 android:layout_centerHorizontal="true"
                 android:textAlignment="center"
                 android:layout_marginTop="170dp"
-                android:text="Change your Alert preferences and frequency. \n\nHere, you can choose whether or not to receive daily budget alerts and pending expense alerts" />
+                android:text="Change your Alert preferences and frequency. \n\nHere, you can choose whether or not to receive daily budget alerts and pending expense alerts\n
+You can also choose to receive alerts as SMS messages or Emails" />
 
             <TextView
                 android:id="@+id/alert_interval_intro"
@@ -40,14 +41,14 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:textAlignment="center"
-                android:layout_marginTop="340dp"
+                android:layout_marginTop="320dp"
                 android:text="How many days do you want in between budget alerts?" />
 
             <EditText
                 android:id="@+id/alert_interval"
                 android:layout_width="60dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="370dp"
+                android:layout_marginTop="340dp"
                 android:layout_centerHorizontal="true"
                 android:ems="10"
                 android:hint="1"
@@ -61,7 +62,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
 
-                android:layout_marginTop="410dp"
+                android:layout_marginTop="380dp"
                 android:text="Change Interval" />
             <Button
                 android:id="@+id/alert_set_budget"
@@ -69,7 +70,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="515dp"
+                android:layout_marginTop="445dp"
                 android:text="Turn off Budget Alerts" />
             <Button
                 android:id="@+id/alert_set_expense"
@@ -77,15 +78,31 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="565dp"
+                android:layout_marginTop="495dp"
                 android:text="Turn off Expense Alerts" />
+            <Button
+                android:id="@+id/alert_toggle_sms"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="545dp"
+                android:text="Turn on SMS alerts" />
+            <Button
+                android:id="@+id/alert_toggle_email"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="595dp"
+                android:text="Turn on Email alerts" />
             <Button
                 android:id="@+id/alert_finish"
                 style="@style/Widget.AppCompat.Button.Colored"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="625dp"
+                android:layout_marginTop="645dp"
                 android:text="Finish" />
 
         </RelativeLayout>

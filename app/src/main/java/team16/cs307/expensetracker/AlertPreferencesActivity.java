@@ -20,7 +20,11 @@ import java.util.Map;
 public class AlertPreferencesActivity extends AppCompatActivity {
     private boolean isExemptExpenses;
     private boolean isExemptBudgets;
+    private boolean isSMS;
+    private boolean isEmail;
     private Button mIntervalChange;
+    private Button mSMS;
+    private Button mEmail;
     private EditText mInterval;
     private int interval;
     private Button mBudgetAlerts;
@@ -39,6 +43,8 @@ public class AlertPreferencesActivity extends AppCompatActivity {
         mBudgetAlerts = findViewById(R.id.alert_set_budget);
         mExpenseAlerts = findViewById(R.id.alert_set_expense);
         mFinish = findViewById(R.id.alert_finish);
+        mSMS = findViewById(R.id.alert_toggle_sms);
+        mEmail = findViewById(R.id.alert_toggle_email);
 
 
 
@@ -77,6 +83,35 @@ public class AlertPreferencesActivity extends AppCompatActivity {
                     db.collection("users").document(mAuth.getUid()).set(map, SetOptions.merge());
                     interval = 1;
                     mInterval.setText("1");
+                }
+
+                if (documentSnapshot.get("SMSEnabled") != null) {
+                    isSMS = Boolean.parseBoolean(documentSnapshot.getString("SMSEnabled"));
+
+                } else {
+                    Map<String, String> map = new HashMap<>();
+                    map.put("SMSEnabled", "false");
+                    db.collection("users").document(mAuth.getUid()).set(map, SetOptions.merge());
+                    isSMS = false;
+                }
+                if (documentSnapshot.get("EmailEnabled") != null) {
+                    isEmail = Boolean.parseBoolean(documentSnapshot.getString("EmailEnabled"));
+
+                } else {
+                    Map<String, String> map = new HashMap<>();
+                    map.put("EmailEnabled", "false");
+                    db.collection("users").document(mAuth.getUid()).set(map, SetOptions.merge());
+                    isEmail = false;
+                }
+
+                if (isEmail) {
+                    mEmail.setText("Turn off Email Alerts");
+                    mSMS.setText("Turn on SMS Alerts");
+
+                }
+                if (isSMS) {
+                    mSMS.setText("Turn off SMS Alerts");
+                    mEmail.setText("Turn on Email Alerts");
                 }
 
                 if (isExemptExpenses) {
@@ -157,6 +192,68 @@ public class AlertPreferencesActivity extends AppCompatActivity {
                     db.collection("users").document(mAuth.getUid()).set(map, SetOptions.merge());
                     isExemptBudgets = true;
                     mBudgetAlerts.setText("Turn on Budget Alerts");
+                }
+            }
+        });
+
+
+        mSMS.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!setup) {
+                    return;
+                }
+                if (isSMS) {
+                    isSMS = false;
+                    Map<String, String> map = new HashMap<>();
+                    map.put("SMSEnabled", "false");
+                    db.collection("users").document(mAuth.getUid()).set(map, SetOptions.merge());
+                    mSMS.setText("Turn on SMS Alerts");
+
+                } else {
+                    isSMS = true;
+                    Map<String, String> map = new HashMap<>();
+                    map.put("SMSEnabled", "true");
+                    db.collection("users").document(mAuth.getUid()).set(map, SetOptions.merge());
+                    mSMS.setText("Turn off SMS Alerts");
+                    if (isEmail) {
+                        isEmail = false;
+                        Map<String, String> mapE = new HashMap<>();
+                        mapE.put("EmailEnabled", "false");
+                        db.collection("users").document(mAuth.getUid()).set(mapE, SetOptions.merge());
+                        mEmail.setText("Turn on Email Alerts");
+                    }
+                }
+            }
+        });
+
+
+        mEmail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!setup) {
+                    return;
+                }
+                if (isEmail) {
+                    isEmail = false;
+                    Map<String, String> map = new HashMap<>();
+                    map.put("EmailEnabled", "false");
+                    db.collection("users").document(mAuth.getUid()).set(map, SetOptions.merge());
+                    mEmail.setText("Turn on Email Alerts");
+
+                } else {
+                    isEmail = true;
+                    Map<String, String> map = new HashMap<>();
+                    map.put("EmailEnabled", "true");
+                    db.collection("users").document(mAuth.getUid()).set(map, SetOptions.merge());
+                    mEmail.setText("Turn off Email Alerts");
+                    if (isSMS) {
+                        isSMS = false;
+                        Map<String, String> mapE = new HashMap<>();
+                        mapE.put("SMSEnabled", "false");
+                        db.collection("users").document(mAuth.getUid()).set(mapE, SetOptions.merge());
+                        mSMS.setText("Turn on SMS Alerts");
+                    }
                 }
             }
         });

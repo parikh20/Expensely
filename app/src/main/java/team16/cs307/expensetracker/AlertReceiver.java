@@ -110,7 +110,9 @@ public class AlertReceiver extends BroadcastReceiver {
                     exemptCheck.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                         @Override
                         public void onSuccess(DocumentSnapshot documentSnapshot) {
-                            if (documentSnapshot.get("expenseAlertsTurnedOff") != null && documentSnapshot.getString("expenseAlertsTurnedOff").equals("false")) {
+                            if (documentSnapshot.get("expenseAlertsTurnedOff") != null && documentSnapshot.getString("expenseAlertsTurnedOff").equals("false")
+                                && (documentSnapshot.get("EmailEnabled") == null || documentSnapshot.getString("EmailEnabled").equals("false"))
+                                && (documentSnapshot.get("SMSEnabled") == null || documentSnapshot.getString("SMSEnabled").equals("false"))) {
                                 notificationManager.notify(id, fn);
                             }
 
@@ -280,7 +282,9 @@ public class AlertReceiver extends BroadcastReceiver {
                             exemptCheck.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                 @Override
                                 public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                    if (documentSnapshot.get("alertsTurnedOff") != null && documentSnapshot.getString("alertsTurnedOff").equals("false")) {
+                                    if (documentSnapshot.get("alertsTurnedOff") != null && documentSnapshot.getString("alertsTurnedOff").equals("false")
+                                            && (documentSnapshot.get("EmailEnabled") == null || documentSnapshot.getString("EmailEnabled").equals("false"))
+                                            && (documentSnapshot.get("SMSEnabled") == null || documentSnapshot.getString("SMSEnabled").equals("false"))) {
                                         notificationManager.notify(id, fn);
                                     }
 
