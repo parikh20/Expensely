@@ -4,7 +4,7 @@
     tools:showIn="navigation_view">
     <group android:checkableBehavior="single">
         <item android:id="@+id/dashboard"
-            android:title="Summary"/>
+            android:title="Dashboard"/>
         <item android:id="@+id/access_image"
             android:title="Access Images"/>
         <item android:title="Manage Budget">
@@ -17,9 +17,13 @@
                     android:title="Select/Download Budget"/>
             </menu>
         </item>
-        <item android:id="@+id/settings"
-            android:title="Settings"/>
-        <item android:id="@+id/logout"
-            android:title="Logout"/>
+        <item android:title="Account">
+            <menu>
+                <item android:id="@+id/settings"
+                    android:title="Settings"/>
+                <item android:id="@+id/logout"
+                    android:title="Logout"/>
+            </menu>
+        </item>
     </group>
 </menu>

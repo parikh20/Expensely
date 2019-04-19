@@ -97,4 +97,8 @@
     <string name="custom_settings_default_graph">Default Graph</string>
     <string name="title_activity_search_expense">SearchExpense</string>
 
+    <!-- Navigation Drawer Strings -->
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
 </resources>

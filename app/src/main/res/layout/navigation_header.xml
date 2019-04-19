@@ -8,40 +8,43 @@
     android:padding="16dp"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <ImageView
-            android:id="@+id/profile_img"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_account_96dp" />
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-            <TextView
-                android:id="@+id/fullname"
+            <ImageView
+                android:id="@+id/profile_img"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="10dp"
-                android:paddingTop="10dp"
-                android:textSize="17dp"
-                android:fontFamily="@font/raleway_bold"
-                android:text="First-Name Last-Name"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="something@something.com"
-                android:textSize="17dp"
-                android:layout_below="@+id/fullname"
-                android:paddingLeft="10dp"
-                android:fontFamily="@font/raleway_semibold"
-                android:textStyle="italic"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
-        </RelativeLayout>
-    </LinearLayout>
+                android:src="@drawable/ic_account_48dp" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/fullname"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="10dp"
+                        android:textSize="15dp"
+                        android:fontFamily="@font/raleway_bold"
+                        android:text="First-Name Last-Name"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="something@something.com"
+                        android:textSize="14dp"
+                        android:layout_below="@+id/fullname"
+                        android:paddingLeft="10dp"
+                        android:fontFamily="@font/raleway_semibold"
+                        android:textStyle="italic"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
+                </RelativeLayout>
+        </LinearLayout>
 
 
 
