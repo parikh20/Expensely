@@ -58,6 +58,7 @@ public class CreateNewAccountActivity extends AppCompatActivity {
         mConfirmPassword = (EditText) findViewById(R.id.confirm_password_editText);
         mCreateButton = (Button) findViewById(R.id.create_new_account_button);
         mTransfer = findViewById(R.id.transfer_button);
+        mTransfer.setVisibility(View.INVISIBLE);
 
         // Get Firebase instance
         mAuth = FirebaseAuth.getInstance();

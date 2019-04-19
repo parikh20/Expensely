@@ -36,7 +36,7 @@ public class AccountInfo extends AppCompatActivity {
     private DocumentReference mDoc;
     private Button logout,removal;
     private TextView emailText;
-    private Button emailChange,resetPassword,supportEmail;
+    private Button emailChange,resetPassword,supportEmail,mAlert;
     private Spinner graphSpinner;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +54,7 @@ public class AccountInfo extends AppCompatActivity {
         emailText = (TextView)findViewById(R.id.AccountInfo_text);
         emailText.setText(mAuth.getCurrentUser().getEmail());
         graphSpinner = (Spinner)findViewById(R.id.graph_spinner);
+        mAlert = (Button)findViewById(R.id.AccountInfo_Alert);
 
         List<String> graphs = new ArrayList<>();
         graphs.add("Line Graph");
@@ -64,6 +65,12 @@ public class AccountInfo extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 logout();
+            }
+        });
+        mAlert.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alerts();
             }
         });
 
@@ -244,6 +251,11 @@ public class AccountInfo extends AppCompatActivity {
 
 
 
+    }
+
+    void alerts() {
+        Intent intent = new Intent(getApplicationContext(), AlertPreferencesActivity.class);
+        startActivity(intent);
     }
 
 

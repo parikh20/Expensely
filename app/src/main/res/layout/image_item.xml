@@ -19,8 +19,9 @@
         android:textColor="@android:color/black"
         android:textSize="20sp"
         android:gravity="center"
-        android:background="#90EE90"
+        android:background="@drawable/ic_textback"
         android:layout_gravity="center_horizontal"
+
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"/>
     <ImageView

@@ -82,5 +82,14 @@
             android:layout_gravity="center"
             android:backgroundTint="@color/fui_bgPhone"
             android:text="Send email to support team" />
+        <Button
+            android:id="@+id/AccountInfo_Alert"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:backgroundTint="@color/fui_bgPhone"
+            android:text="Alert Preference" />
+
+
         </LinearLayout>
 </ScrollView>

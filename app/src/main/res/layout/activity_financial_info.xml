@@ -1,63 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
     tools:ignore="ExtraText"
     tools:context=".FinancialInfo">
 
 
-    <EditText
-        android:id="@+id/salary"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="91dp"
-        android:layout_marginEnd="122dp"
-        android:layout_marginBottom="337dp"
-        android:ems="10"
-        android:hint="Salary range"
-        android:inputType="textPersonName"
-        android:text="" />
 
-    <EditText
-        android:id="@+id/financial_info_dependants"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="103dp"
-        android:layout_marginEnd="127dp"
-        android:layout_marginBottom="246dp"
-        android:ems="10"
-        android:hint="Dependants"
-        android:inputType="textPersonName"
-        android:text="" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
 
-    <TextView
-        android:id="@+id/financial_info_intro"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="97dp"
-        android:layout_marginTop="66dp"
-        android:layout_marginEnd="119dp"
-        android:text="@string/financial_info_intro"
-        android:textAlignment="center" />
+        <TextView
+            android:id="@+id/financial_info_intro"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
 
-    <Button
-        android:id="@+id/financial_info_continue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="650dp"
-        android:text="@string/financial_info_continue" />
-</RelativeLayout>
+            android:layout_marginTop="50dp"
+            android:layout_marginBottom="30dp"
+            android:text="@string/financial_info_intro"
+            android:textAlignment="center"
+            android:layout_gravity="center"/>
+        <EditText
+            android:id="@+id/salary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+
+            android:layout_marginBottom="30dp"
+            android:ems="10"
+            android:hint="Salary range"
+            android:inputType="textPersonName"
+            android:layout_gravity="center"
+            android:text="" />
+
+        <EditText
+            android:id="@+id/financial_info_dependants"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_marginBottom="30dp"
+            android:ems="10"
+            android:hint="Dependants"
+            android:layout_gravity="center"
+            android:inputType="textPersonName"
+            android:text="" />
+
+
+
+        <Button
+            android:id="@+id/financial_info_continue"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:text="@string/financial_info_continue" />
+    </LinearLayout>
+
+
+
+</ScrollView>

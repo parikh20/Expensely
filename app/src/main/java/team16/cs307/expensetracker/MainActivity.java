@@ -81,20 +81,22 @@ import java.util.concurrent.ExecutionException;
 public class MainActivity extends AppCompatActivity {
     private TextView mStats;
 
-    private Button selectbudg;
-    private Button editExpenses;
-    private Button addExp;
-    private Button imageAccess;
-    private Button account;
+//    private Button selectbudg;
+//    private Button editExpenses;
+//    private Button addExp;
+//    private Button imageAccess;
+//    private Button account;
+//    private Button editBudget;
+//    private Button mAlerts;
     private FirebaseAuth mAuth;
     private GraphView mGraph;
     private FirebaseFirestore db;
     private String statBlock;
     private PieChart mChart;
     private Button mSwap;
-    private Button editBudget;
+
     private Button becomeUser;
-    private Button mAlerts;
+
 
 
     private Budget curr_budg;
@@ -110,20 +112,20 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mStats = findViewById(R.id.quick_stats);
         mGraph = findViewById(R.id.main_graph);
-        selectbudg = findViewById(R.id.MainActivity_select_budg);
-        editBudget = findViewById(R.id.MainActivity_edit_budget);
-        addExp = findViewById(R.id.main_new_expense);
-        imageAccess = findViewById(R.id.MainActivity_ImageAccess);
-        account = findViewById(R.id.main_account);
+//        selectbudg = findViewById(R.id.MainActivity_select_budg);
+//        editBudget = findViewById(R.id.MainActivity_edit_budget);
+//        addExp = findViewById(R.id.main_new_expense);
+//        imageAccess = findViewById(R.id.MainActivity_ImageAccess);
+//        account = findViewById(R.id.main_account);
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         mChart = findViewById(R.id.main_chart);
         mSwap = findViewById(R.id.main_swapchart);
         perday = 0;
         amt = 0;
-        editExpenses = findViewById(R.id.MainActivity_edit_expenses);
+        //editExpenses = findViewById(R.id.MainActivity_edit_expenses);
         becomeUser = findViewById(R.id.becomeUser);
-        mAlerts = findViewById(R.id.main_alerts);
+        //mAlerts = findViewById(R.id.main_alerts);
         message = "0";
 
 
@@ -161,18 +163,22 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-        //Check whether it's an anonymous account
-//        Bundle bundle = getIntent().getExtras();
-//        String message1 = bundle.getString("message1");
-//        assert message1 != null;
-//        if(message1.equals("1"))
-//        {
-//            becomeUser.setVisibility(View.VISIBLE);
-//        }
-//        else
-//        {
-//            becomeUser.setVisibility(View.INVISIBLE);
-//        }
+        //Check whether it's an anonymous
+        if(mAuth.getCurrentUser()==null) {
+                Bundle bundle = getIntent().getExtras();
+                String message1 = bundle.getString("message1");
+                assert message1 != null;
+                if(message1.equals("1"))
+                {
+                    becomeUser.setVisibility(View.VISIBLE);
+                }
+                else
+                {
+                    becomeUser.setVisibility(View.INVISIBLE);
+                }
+        }else{
+          becomeUser.setVisibility(View.INVISIBLE);
+        }
 
         //set up mchart
         mChart.setVisibility(View.INVISIBLE); //Invisible at start, to be added here: check user settings for default graph, make that one visible
@@ -422,50 +428,50 @@ public class MainActivity extends AppCompatActivity {
         mGraph.getViewport().setXAxisBoundsManual(true);
 
 
-        editExpenses.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), EditExpensesActivity.class);
-                startActivity(intent);
-
-            }
-        });
-
-
-        selectbudg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                selectBudget();
-            }
-        });
-
-        addExp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addExpense();
-            }
-        });
-
-        imageAccess.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                accessImage();
-            }
-        });
-
-        account.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                accountInfo();
-            }
-        });
-
-        mAlerts.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                alerts();
-            }
-        });
+//        editExpenses.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(getApplicationContext(), EditExpensesActivity.class);
+//                startActivity(intent);
+//
+//            }
+//        });
+//
+//
+//        selectbudg.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                selectBudget();
+//            }
+//        });
+//
+//        addExp.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                addExpense();
+//            }
+//        });
+//
+//        imageAccess.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                accessImage();
+//            }
+//        });
+//
+//        account.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                accountInfo();
+//            }
+//        });
+//
+//        mAlerts.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                alerts();
+//            }
+//        });
 
 
 
@@ -486,14 +492,14 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        editBudget.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), EditBudgetActivity.class);
-                startActivity(intent);
-
-            }
-        });
+//        editBudget.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(getApplicationContext(), EditBudgetActivity.class);
+//                startActivity(intent);
+//
+//            }
+//        });
 
         //Become a new user for anonymous user
 
@@ -577,6 +583,9 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.Menu_Search:
                 Search();
+                return true;
+            case R.id.Menu_Account:
+                accountInfo();
                 return true;
 
 
