@@ -61,7 +61,7 @@ public class BrowseBudgets extends AppCompatActivity implements AdapterView.OnIt
     private FirebaseAuth mAuth;
     private Budget curr_budg;
     private Spinner mBudgets;
-
+    private Spinner mRating;
 
 
 
@@ -77,16 +77,13 @@ public class BrowseBudgets extends AppCompatActivity implements AdapterView.OnIt
         mFinish = findViewById(R.id.browse_budget_select);
         mBudgets = findViewById(R.id.browse_budget_selector);
         mBudgets.setOnItemSelectedListener(this);
-
-
-
+        mRating = findViewById(R.id.budget_rating);
+        mRating.setOnItemSelectedListener(this);
 
         limits = new ArrayList<Limit>();
 
-
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
-
 
         //populate public budget spinner from db
         CollectionReference refE = db.collection("PublicBudgets");
@@ -121,8 +118,18 @@ public class BrowseBudgets extends AppCompatActivity implements AdapterView.OnIt
             }
         });
 
+        // Populate rating spinner
+        String[] intSpinner = new String[6];
+        intSpinner[0] = "Choose a Rating!";
+        intSpinner[1] = "1";
+        intSpinner[2] = "2";
+        intSpinner[3] = "3";
+        intSpinner[4] = "4";
+        intSpinner[5] = "5";
 
-
+        ArrayAdapter<String> ratingsAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, intSpinner);
+        ratingsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mRating.setAdapter(ratingsAdapter);
 
         mFinish.setOnClickListener(new View.OnClickListener() {
             @Override
