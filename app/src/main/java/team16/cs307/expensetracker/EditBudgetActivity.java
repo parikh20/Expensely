@@ -86,7 +86,7 @@ public class EditBudgetActivity extends AppCompatActivity {
                         listLimits += lim.getCategory();
                         listLimits += ", ";
                     }
-                    if (!listLimits.equals("")) {
+                    if (limits != null && limits.size() > 0){
                         mLimits.setText(listLimits.substring(0, listLimits.lastIndexOf(",")));
                     }
 
@@ -171,7 +171,10 @@ public class EditBudgetActivity extends AppCompatActivity {
                     listLimits += lim.getCategory();
                     listLimits += ", ";
                 }
-                mLimits.setText(listLimits.substring(0, listLimits.lastIndexOf(",")));
+
+                if (limits != null && limits.size() > 0){
+                    mLimits.setText(listLimits.substring(0, listLimits.lastIndexOf(",")));
+                }
             }
 
         }
