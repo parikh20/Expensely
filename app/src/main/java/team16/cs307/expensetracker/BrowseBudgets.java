@@ -29,6 +29,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -47,6 +48,7 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class BrowseBudgets extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
     private TextView mName;
@@ -61,8 +63,8 @@ public class BrowseBudgets extends AppCompatActivity implements AdapterView.OnIt
     private FirebaseAuth mAuth;
     private Budget curr_budg;
     private Spinner mBudgets;
-
-
+    private Spinner mRating;
+    private String i;
 
 
     @Override
@@ -77,16 +79,13 @@ public class BrowseBudgets extends AppCompatActivity implements AdapterView.OnIt
         mFinish = findViewById(R.id.browse_budget_select);
         mBudgets = findViewById(R.id.browse_budget_selector);
         mBudgets.setOnItemSelectedListener(this);
-
-
-
+        mRating = findViewById(R.id.budget_rating);
+        mRating.setOnItemSelectedListener(this);
 
         limits = new ArrayList<Limit>();
 
-
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
-
 
         //populate public budget spinner from db
         CollectionReference refE = db.collection("PublicBudgets");
@@ -121,8 +120,18 @@ public class BrowseBudgets extends AppCompatActivity implements AdapterView.OnIt
             }
         });
 
+        // Populate rating spinner
+        String[] intSpinner = new String[6];
+        intSpinner[0] = "Choose a Rating!";
+        intSpinner[1] = "1";
+        intSpinner[2] = "2";
+        intSpinner[3] = "3";
+        intSpinner[4] = "4";
+        intSpinner[5] = "5";
 
-
+        ArrayAdapter<String> ratingsAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, intSpinner);
+        ratingsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mRating.setAdapter(ratingsAdapter);
 
         mFinish.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -137,19 +146,37 @@ public class BrowseBudgets extends AppCompatActivity implements AdapterView.OnIt
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getApplicationContext().startActivity(intent);
 
-
                 finish();
-
             }
         });
 
+        mRating.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (i != null) {
+                    System.out.println(i);
+                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference("PublicBudgets").child(i);
+                    Map<String, Object> update = new HashMap<String, Object>();
+                    update.put("totalRating", 5);
+                    ref.updateChildren(update);
+                }
+            }
 
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        }); {
+
+        }
     }
+
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
         String item = parent.getItemAtPosition(position).toString();
+        i = item;
         System.out.println("=========================================================");
         System.out.println(item);
         if (item == "Choose From Public Budgets") {

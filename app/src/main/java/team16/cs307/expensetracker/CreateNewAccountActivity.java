@@ -58,25 +58,26 @@ public class CreateNewAccountActivity extends AppCompatActivity {
         mConfirmPassword = (EditText) findViewById(R.id.confirm_password_editText);
         mCreateButton = (Button) findViewById(R.id.create_new_account_button);
         mTransfer = findViewById(R.id.transfer_button);
+        mTransfer.setVisibility(View.INVISIBLE);
 
         // Get Firebase instance
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
-        //Check whether it's a permanent user or an anonymous user
-        Bundle bundle = getIntent().getExtras();
-        String message = bundle.getString("message");
-        assert message != null;
-        if(message.equals("1"))
-        {
-            mCreateButton.setVisibility(View.INVISIBLE);
-            mTransfer.setVisibility(View.VISIBLE);
-        }
-        else
-        {
-            mTransfer.setVisibility(View.INVISIBLE);
-            mCreateButton.setVisibility(View.VISIBLE);
-        }
+//        //Check whether it's a permanent user or an anonymous user
+//        Bundle bundle = getIntent().getExtras();
+//        String message = bundle.getString("message");
+//        assert message != null;
+//        if(message.equals("1"))
+//        {
+//            mCreateButton.setVisibility(View.INVISIBLE);
+//            mTransfer.setVisibility(View.VISIBLE);
+//        }
+//        else
+//        {
+//            mTransfer.setVisibility(View.INVISIBLE);
+//            mCreateButton.setVisibility(View.VISIBLE);
+//        }
 
         // When a user clicks the create button, create a new account
         mCreateButton.setOnClickListener(new View.OnClickListener() {
@@ -126,6 +127,7 @@ public class CreateNewAccountActivity extends AppCompatActivity {
                 }
             }
         });
+        //When the anonymous user changes his temp account to permanent account
         mTransfer.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v) {
                 if (validateInputs(mEmail, mPassword, mConfirmPassword)) {

@@ -36,6 +36,7 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
@@ -78,6 +79,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private GoogleApiClient mGoogleApiClient;
     private TextView mTryClickable;
     FirebaseFirestore db;
+    private String message1;
     //private ProgressDialog pd;
 
     @Override
@@ -93,6 +95,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         mLoginButton = (Button) findViewById(R.id.login_button);
         mGoogleSignInButton = (SignInButton) findViewById(R.id.google_sign_in_button);
         mTryClickable = (TextView) findViewById(R.id.mTryClickable);
+        message1 = "0";
         //pd = new ProgressDialog(this);
         //pd.setMessage("Logging in...");
 
@@ -228,41 +231,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         // OnClickListener for when the Try the app is clicked
         mTryClickable.setOnClickListener(new View.OnClickListener() {
              @Override
-             public void onClick(View v) {
-                 //Due to alerts being generally long term, alerts are to be turned off by default for trial users
-                 //No alerts are to be set up here, or on future login!  will need to check if a user is a trial user when they log in, and avoid enabling alerts
-                 //Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                 // Create an anonymous user
-                 mAuth.signInAnonymously().
-                         addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                             @Override
-                             public void onComplete(@NonNull Task<AuthResult> task) {
-                                 if (!task.isSuccessful()) {
-                                     Toast.makeText(LoginActivity.this, task.getException().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                                 } else {
-
-                                     Map<String, Object> newUser = new HashMap<>();
-                                     newUser.put("email", mAuth.getCurrentUser().getEmail());
-
-                                     db.collection("users").document(mAuth.getUid()).set(newUser, SetOptions.merge());
-                                     //default user preference
-                                     Preferences defPref = new Preferences();
-                                     Map<String, Object> userPref = new HashMap<>();
-                                     userPref.put("darkMode", defPref.isDarkMode());
-                                     userPref.put("fontSize", defPref.getFontSize());
-                                     userPref.put("colorScheme", defPref.getColorScheme());
-                                     userPref.put("defaultGraph", defPref.getDefaultGraph());
-                                     userPref.put("defaultBudgetNum", defPref.getDefaultBudgetNum());
-                                     db.collection("users").document(mAuth.getUid()).collection("Preference").document("userPreference").set(userPref);
-                                     Toast.makeText(LoginActivity.this, "moving to financial info", Toast.LENGTH_SHORT).show();
-                                     LoginActivity.alertSet(mAuth, db, getApplicationContext(), (AlarmManager) getSystemService(Context.ALARM_SERVICE));
-                                     Intent financialInfoIntent = new Intent(getApplicationContext(), FinancialInfo.class);
-                                     startActivity(financialInfoIntent);
-                                     finish();
-                                 }
-                             }
-
-                         });
+             public void onClick(View v)
+             {
+                 // Create an anonymous user
+                 updateUI(mAuth.getCurrentUser());
                  alertSet(mAuth, db, getApplicationContext(), (AlarmManager) getSystemService(Context.ALARM_SERVICE));
                  Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                  LoginActivity.this.startActivity(intent);
@@ -280,6 +252,67 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         });
     }
 
+    private void updateUI(FirebaseUser user) {
+        if (user == null) {
+            mAuth.signInAnonymously().
+                    addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (!task.isSuccessful()) {
+                                updateUI(null);
+                            } else {
+
+//                                         Map<String, Object> newUser = new HashMap<>();
+//                                         newUser.put("email", "");
+//
+//                                         db.collection("users").document(mAuth.getUid()).set(newUser, SetOptions.merge());
+//                                         //default user preference
+//                                         Preferences defPref = new Preferences();
+//                                         Map<String, Object> userPref = new HashMap<>();
+//                                         userPref.put("darkMode", defPref.isDarkMode());
+//                                         userPref.put("fontSize", defPref.getFontSize());
+//                                         userPref.put("colorScheme", defPref.getColorScheme());
+//                                         userPref.put("defaultGraph", defPref.getDefaultGraph());
+//                                         userPref.put("defaultBudgetNum", defPref.getDefaultBudgetNum());
+//                                         db.collection("users").document(mAuth.getUid()).collection("Preference").document("userPreference").set(userPref);
+//                                         Toast.makeText(LoginActivity.this, "moving to financial info", Toast.LENGTH_SHORT).show();
+//                                         LoginActivity.alertSet(mAuth, db, getApplicationContext(), (AlarmManager) getSystemService(Context.ALARM_SERVICE));
+                                updateUI(mAuth.getCurrentUser());
+                                DocumentReference user = db.collection("users").document(mAuth.getCurrentUser().getUid());
+                                user.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            DocumentSnapshot document = task.getResult();
+                                            if (document.exists()) {
+                                                //user exists in db
+                                                //Toast.makeText(LoginActivity.this, "User is in db!", Toast.LENGTH_SHORT).show();
+
+                                            } else {
+                                                //user does not exist in db
+                                                Toast.makeText(LoginActivity.this, "User does not exist in db", Toast.LENGTH_SHORT).show();
+                                                Map<String, Object> newUser = new HashMap<>();
+                                                newUser.put("email", mAuth.getCurrentUser().getEmail());
+                                                db.collection("users").document(mAuth.getUid()).set(newUser, SetOptions.merge());
+                                                Preferences defPref = new Preferences();
+                                                Map<String, Object> userPref = new HashMap<>();
+                                                userPref.put("darkMode", defPref.isDarkMode());
+                                                userPref.put("fontSize", defPref.getFontSize());
+                                                userPref.put("colorScheme", defPref.getColorScheme());
+                                                userPref.put("defaultGraph", defPref.getDefaultGraph());
+                                                userPref.put("defaultBudgetNum", defPref.getDefaultBudgetNum());
+                                                db.collection("users").document(mAuth.getUid()).collection("Preference").document("userPreference").set(userPref);
+                                            }
+                                        } else {
+                                            Toast.makeText(LoginActivity.this, "Failure to check db", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    });
+        }
+    }
     public void configureGoogleSignIn() {
         GoogleSignInOptions options = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken("1000541586546-kcq736a6s7fvon8cvi08oiuog7a36l7i.apps.googleusercontent.com").requestEmail().build();
@@ -387,6 +420,32 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
     public static void alertSet(final FirebaseAuth mAuth, final FirebaseFirestore db, final Context context, final AlarmManager alarmManager) {
+        //Set up pending alert IDs in preferences -
+
+        if (mAuth == null || mAuth.getUid() == null || mAuth.getUid() == "") {
+            return;
+        }
+         DocumentReference ref =   db.collection("users").document(mAuth.getUid()).collection("Preferences").document("PendingExpenseIDs");
+         ref.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+             @Override
+             public void onSuccess(DocumentSnapshot documentSnapshot) {
+                 IDTracker tracker = documentSnapshot.toObject(IDTracker.class);
+
+                 if (tracker == null) {
+                     tracker = new IDTracker();
+                     db.collection("users").document(mAuth.getUid()).collection("Preferences").document("PendingExpenseIDs").set(tracker);
+                 } else {
+                     System.out.println(tracker.getIDs());
+                     int last = tracker.getLastID();
+                     if (last == -1) {
+                         //no pending expenses
+                     } else {
+                         //one or more pending expense
+                     }
+                 }
+             }
+         });
+
         /*alertSet is called on every log in, it will
         1. check if alerts are already configured and running
             A. if they are, nothing to see here, all operating as normal.  continues out of function to login
@@ -402,6 +461,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 c. the alert then displays this information, allowing the user to click it and enter the app (main screen redirect)
 
         */
+
+
+
         DocumentReference docRef = db.collection("users").document(mAuth.getUid());
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -409,9 +471,19 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document != null && document.exists()) {
-                        if (document.get("alertsSetUp") == null || document.get("alertsTurnedOff") == null) {
+                        int days = 1;
+                        if (document.get("budg_interval") == null || document.getString("budg_interval") == null ) {
+                            Map<String, String> interval = new HashMap<>();
+                            interval.put("budg_interval", "1");
+                            db.collection("users").document(mAuth.getUid()).set(interval, SetOptions.merge());
+                        } else {
+                            days = Integer.valueOf(document.getString("budg_interval"));
+                        }
+                        final int fdays = days;
+                        if (document.get("alertsSetUp") == null || document.get("alertsTurnedOff") == null || document.get("expenseAlertsTurnedOff") == null) {
                             Map<String,String> alerts = new HashMap<>();
                             alerts.put("alertsSetUp", "false");
+                            alerts.put("expenseAlertsTurnedOff", "false");
                             alerts.put("alertsTurnedOff","false");
                             alerts.put("email", mAuth.getCurrentUser().getEmail());
                             db.collection("users").document(mAuth.getUid()).set(alerts, SetOptions.merge());
@@ -463,11 +535,11 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                 notificationIntent.putExtra(AlertReceiver.NOTIFICATION,n);
                                 PendingIntent pendingIntent = PendingIntent.getBroadcast(context,0,notificationIntent,PendingIntent.FLAG_CANCEL_CURRENT);
                                 //!!!!!!!!!!!!FOR TESTING NOTIFICATIONS==== SET FUTUREMILLIS TO elapsed time + 10000 for a ten second notification
-                                long futureMillis = SystemClock.elapsedRealtime() + TimeUnit.DAYS.toMillis(1);//10000;
+                                long futureMillis = SystemClock.elapsedRealtime() + TimeUnit.DAYS.toMillis(fdays);//10000;
                                 //AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
                                 alarmManager.cancel(pendingIntent);
-                                alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,futureMillis, AlarmManager.INTERVAL_DAY,pendingIntent);//,pendingIntent);10000
-                                System.out.println("Set up alarm for " + (SystemClock.elapsedRealtime() + TimeUnit.DAYS.toMillis(1)));//10000));//
+                                alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,futureMillis, AlarmManager.INTERVAL_DAY * fdays,pendingIntent);//,pendingIntent);10000
+                                System.out.println("Set up alarm for " + (SystemClock.elapsedRealtime() + TimeUnit.DAYS.toMillis(fdays)));//10000));//
 
                                 Map<String,String> alerts = new HashMap<>();
                                 alerts.put("alertsSetUp", "true");

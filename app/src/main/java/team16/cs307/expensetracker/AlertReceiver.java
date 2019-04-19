@@ -58,12 +58,122 @@ public class AlertReceiver extends BroadcastReceiver {
             });
             return;
         }
+        final Context fcontext = context;
+        final Intent fintent = intent;
+        if(intent.getStringExtra("expense") != null) {
+
+
+
+
+            final String name = intent.getStringExtra("expense");
+            System.out.println("Looking at an expense" + name);
+            DocumentReference ref =  db.collection("users").document(mAuth.getUid()).collection("Preferences").document("PendingExpenseIDs");
+            ref.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    IDTracker ids = documentSnapshot.toObject(IDTracker.class);
+                    if (ids == null) {
+                        //not supposed to be getting an alert, user has no pending expenses
+                        return;
+                    }
+                    String title = "Remember to pay " + name + " today!";
+                    String content = "Find more info in the Expensely app!";
+                    final NotificationManager notificationManager = (NotificationManager) fcontext.getSystemService(Context.NOTIFICATION_SERVICE);
+
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
+                            notificationManager.getNotificationChannel("ExpenseAlerts: " + name) == null) {
+                        System.out.println("CORRECTING FOR OREO AND ABOVE");
+                        notificationManager.createNotificationChannel(new NotificationChannel(name,
+                                "ExpenseChannel", NotificationManager.IMPORTANCE_DEFAULT));
+
+
+                    }
+                    //not using below line because we're creating a custom notification here, with up to date data
+                    //Notification n = fintent.getParcelableExtra(NOTIFICATION);
+                    Notification n;
+
+                    Intent ExRedirect = new Intent(fcontext, LoginActivity.class);
+                    PendingIntent mainIntent = PendingIntent.getActivity(fcontext, Integer.valueOf(ids.IDindexOf(name)), ExRedirect, PendingIntent.FLAG_UPDATE_CURRENT);
+                    NotificationCompat.Builder builder = new NotificationCompat.Builder(fcontext, name);
+                    builder.setContentTitle(title);
+                    builder.setContentText(content);
+                    builder.setStyle(new NotificationCompat.BigTextStyle().bigText(content));
+                    builder.setSmallIcon(R.drawable.ic_launcher_background);
+                    builder.setContentIntent(mainIntent);
+                    builder.setAutoCancel(true);
+                    n = builder.build();
+                    final int id = fintent.getIntExtra(NOTIFICATION_ID, 0);
+                    System.out.println("ABOUT TO NOTIFY " + name);
+                    final Notification fn = n;
+                    DocumentReference exemptCheck = db.collection("users").document(mAuth.getUid());
+                    exemptCheck.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            if (documentSnapshot.get("expenseAlertsTurnedOff") != null && documentSnapshot.getString("expenseAlertsTurnedOff").equals("false")
+                                && (documentSnapshot.get("EmailEnabled") == null || documentSnapshot.getString("EmailEnabled").equals("false"))
+                                && (documentSnapshot.get("SMSEnabled") == null || documentSnapshot.getString("SMSEnabled").equals("false"))) {
+                                notificationManager.notify(id, fn);
+                            }
+
+
+
+                        }
+                    });
+
+
+
+
+
+
+
+                    if (name != null && ids != null) {
+                        ids.remove(name);
+                        db.collection("users").document(mAuth.getUid()).collection("Preferences").document("PendingExpenseIDs").set(ids);
+                        DocumentReference refAu = db.collection("users").document(mAuth.getUid());
+                        refAu.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                            @Override
+                            public void onSuccess(final DocumentSnapshot documentSnapshot) {
+                                if (documentSnapshot.get("Monthly Total") != null);
+                                    final double total = Double.valueOf(documentSnapshot.getString("Monthly Total"));
+                                    DocumentReference refEx = db.collection("users").document(mAuth.getUid()).collection("Expenses").document(name);
+                                    refEx.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onSuccess(DocumentSnapshot documentSnapshotEx) {
+                                            Expense e = documentSnapshotEx.toObject(Expense.class);
+                                            final double newTotal = total + e.getAmount();
+                                            HashMap<String, String> map = new HashMap<>();
+                                            map.put("Monthly Total", String.valueOf(newTotal));
+                                            db.collection("users").document(mAuth.getUid()).set(map, SetOptions.merge());
+                                        }
+                                    });
+
+
+                            }
+                        });
+
+
+                    }
+
+
+
+                }
+            });
+            return;
+
+
+
+
+
+
+        }
+
+
 
 
         System.out.println("triggered!!!!!!!!!!!!!!!!!!!!");
         //called when alarm is triggered
-        final Context fcontext = context;
-        final Intent fintent = intent;
+
         DocumentReference ref = db.collection("users").document(mAuth.getUid()).collection("Preferences").document("Current Budget");
         ref.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
@@ -74,7 +184,7 @@ public class AlertReceiver extends BroadcastReceiver {
                 if (currBudget == null) {
                     title = "You don't have an Expensely budget selected";
                     content = "Create or select a budget in the Expensely app and begin monitoring your expenses";
-                    NotificationManager notificationManager = (NotificationManager) fcontext.getSystemService(Context.NOTIFICATION_SERVICE);
+                    final NotificationManager notificationManager = (NotificationManager) fcontext.getSystemService(Context.NOTIFICATION_SERVICE);
 
 
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
@@ -97,8 +207,22 @@ public class AlertReceiver extends BroadcastReceiver {
                     builder.setContentIntent(mainIntent);
                     builder.setAutoCancel(true);
                     n = builder.build();
-                    int id = fintent.getIntExtra(NOTIFICATION_ID, 0);
-                    notificationManager.notify(id, n);
+                    final int id = fintent.getIntExtra(NOTIFICATION_ID, 0);
+
+                    final Notification fn = n;
+                    DocumentReference exemptCheck = db.collection("users").document(mAuth.getUid());
+                    exemptCheck.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            if (documentSnapshot.get("alertsTurnedOff") != null && documentSnapshot.getString("alertsTurnedOff").equals("false")) {
+                                notificationManager.notify(id, fn);
+                            }
+
+
+
+                        }
+                    });
+
                 } else {
 
                     DocumentReference ref = db.collection("users").document(mAuth.getUid());
@@ -127,7 +251,7 @@ public class AlertReceiver extends BroadcastReceiver {
 
 
 
-                            NotificationManager notificationManager = (NotificationManager) fcontext.getSystemService(Context.NOTIFICATION_SERVICE);
+                            final NotificationManager notificationManager = (NotificationManager) fcontext.getSystemService(Context.NOTIFICATION_SERVICE);
 
 
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
@@ -150,8 +274,24 @@ public class AlertReceiver extends BroadcastReceiver {
                             builder.setContentIntent(mainIntent);
                             builder.setAutoCancel(true);
                             n = builder.build();
-                            int id = fintent.getIntExtra(NOTIFICATION_ID, 0);
-                            notificationManager.notify(id, n);
+                            final int id = fintent.getIntExtra(NOTIFICATION_ID, 0);
+
+
+                            final Notification fn = n;
+                            DocumentReference exemptCheck = db.collection("users").document(mAuth.getUid());
+                            exemptCheck.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                @Override
+                                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                    if (documentSnapshot.get("alertsTurnedOff") != null && documentSnapshot.getString("alertsTurnedOff").equals("false")
+                                            && (documentSnapshot.get("EmailEnabled") == null || documentSnapshot.getString("EmailEnabled").equals("false"))
+                                            && (documentSnapshot.get("SMSEnabled") == null || documentSnapshot.getString("SMSEnabled").equals("false"))) {
+                                        notificationManager.notify(id, fn);
+                                    }
+
+
+
+                                }
+                            });
                         }
                     });
 

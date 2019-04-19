@@ -3,99 +3,146 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
+
     tools:ignore="ExtraText"
     >
-    <RelativeLayout
+    <LinearLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
+    android:layout_height="match_parent" android:orientation="vertical"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp"
     tools:ignore="ExtraText"
     >
         <ImageView
-    android:id="@+id/custom_expense_logo"
-    android:layout_width="wrap_content"
-    android:layout_height="150dp"
-    android:layout_marginTop="15dp"
-    android:background="@null"
-    android:contentDescription="@string/login_activity_logo"
-    android:src="@mipmap/logo_transparent_cropped" />
-
-    <EditText
-        android:id="@+id/custom_expense_location"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="225dp"
-        android:ems="10"
-        android:hint="@string/custom_expense_location"
-        android:inputType="textPersonName" />
-
-    <EditText
-        android:id="@+id/custom_expense_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="185dp"
-        android:ems="10"
-        android:hint="@string/custom_expense_name"
-        android:inputType="textPersonName" />
-
-    <EditText
-        android:id="@+id/custom_expense_repeating"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="265dp"
-        android:ems="10"
-        android:hint="@string/custom_expense_repeating"
-        android:inputType="textPersonName" />
-
-    <Button
-        android:id="@+id/custom_expense_finish"
+        android:id="@+id/custom_expense_logo"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
+        android:layout_height="150dp"
+        android:layout_marginTop="15dp" android:layout_marginBottom="10dp"
+        android:background="@null"
+        android:contentDescription="@string/login_activity_logo"
+        android:src="@mipmap/logo_transparent_cropped" />
 
-        android:layout_marginTop="645dp"
-        android:text="@string/custom_expense_finish" />
+        <Spinner
+            android:id="@+id/edit_expense_selector"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/custom_expense_logo"
+            android:layout_alignBottom="@+id/edit_expense_selector"
+            android:layout_marginBottom="10dp"
+            android:prompt="@string/edit_expense_choose" />
 
-    <Button
-        android:id="@+id/custom_expense_category"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:text="Name: "
+            android:textSize="20sp" />
+        <EditText
+            android:id="@+id/custom_expense_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:ems="10"
+            android:hint="@string/custom_expense_name"
+            android:inputType="textPersonName" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Location:"
+            android:layout_marginStart="5dp"
+            android:textSize="20sp"/>
+        <EditText
+            android:id="@+id/custom_expense_location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:ems="10"
+            android:hint="@string/custom_expense_location"
+            android:inputType="textPersonName" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Repeat:"
+            android:layout_marginStart="5dp"
+            android:textSize="20sp"/>
 
-        android:layout_marginTop="605dp"
-        android:text="@string/custom_expense_category" />
+        <EditText
+            android:id="@+id/custom_expense_repeating"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:ems="10"
+            android:hint="@string/custom_expense_repeating"
+            android:inputType="textPersonName" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Amount:"
+            android:layout_marginStart="5dp"
+            android:textSize="20sp"/>
+        <EditText
+            android:id="@+id/custom_expense_amount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:ems="10"
+            android:hint="@string/custom_expense_amount"
+            android:inputType="textPersonName" />
 
-    <EditText
-        android:id="@+id/custom_expense_amount"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="345dp"
-        android:ems="10"
-        android:hint="@string/custom_expense_amount"
-        android:inputType="textPersonName" />
 
-    <Spinner
-        android:id="@+id/custom_expense_priority"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="395dp"
-        android:prompt="@string/custom_expense_priority_prompt" />
-    <Spinner
-        android:id="@+id/custom_expense_outlier"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="435dp"
-        android:prompt="@string/custom_expense_outlier" />
 
-    <Spinner
-        android:id="@+id/edit_expense_selector"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="165dp"
-        android:prompt="@string/edit_expense_choose" />
-    </RelativeLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Priority:"
+            android:layout_marginStart="5dp"
+            android:textSize="20sp"/>
+
+        <Spinner
+            android:id="@+id/custom_expense_priority"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:prompt="@string/custom_expense_priority_prompt" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Outlier:"
+            android:layout_marginStart="5dp"
+            android:textSize="20sp"/>
+        <Spinner
+            android:id="@+id/custom_expense_outlier"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:prompt="@string/custom_expense_outlier" />
+
+
+        <Button
+            android:id="@+id/custom_expense_category"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/fui_idp_button_background_anonymous"
+            android:text="@string/custom_expense_category" />
+
+        <Button
+            android:id="@+id/custom_expense_finish"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/ic_textback"
+            android:text="@string/custom_expense_finish" />
+
+
+
+
+    </LinearLayout>
 
 </ScrollView>

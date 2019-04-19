@@ -69,6 +69,12 @@
             android:layout_marginTop="485dp"
             android:text="@string/custom_budget_current_limits" />
 
+        <Spinner
+            android:id="@+id/budget_rating"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="525dp"
+            />
 
         <TextView
             android:id="@+id/browse_budgets_name"

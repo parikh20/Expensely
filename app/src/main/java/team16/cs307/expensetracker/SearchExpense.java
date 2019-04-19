@@ -9,7 +9,8 @@ import android.view.View;
 
 import android.widget.Button;
 import android.widget.EditText;
-
+import android.widget.Switch;
+import android.widget.Toast;
 
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -23,16 +24,14 @@ import org.w3c.dom.Text;
 
 public class SearchExpense extends AppCompatActivity {
     private EditText mSearch;
-    private Button btnsortName,btnSortLocation,btnSortAmount;
+    private Button btnsortName,btnSortLocation,btnSortPriority;
+    private Switch swAscending;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private CollectionReference mRef;
     private SearchAdapter adapter;
     private RecyclerView recyclerView;
-    private boolean isName = true;
-    private boolean isLocation=false;
-    private boolean isAmount=false;
-    private Query query;
+    private boolean isAscending = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,66 +40,88 @@ public class SearchExpense extends AppCompatActivity {
          mSearch = (EditText)findViewById(R.id.Search_text);
         btnsortName=(Button) findViewById(R.id.Search_sortName);
         btnSortLocation=(Button) findViewById(R.id.Search_sortLocation);
-        btnSortAmount=(Button) findViewById(R.id.Search_sortAmount);
+        btnSortPriority=(Button) findViewById(R.id.Search_sortPriority);
+        swAscending = (Switch)findViewById(R.id.Search_Switch);
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         mRef = db.collection("users").document(mAuth.getUid()).collection("Expenses");
-        firebaseSearch(mSearch.getText().toString());
+        /*firebaseSearch(mSearch.getText().toString());
+        Query query=mRef.orderBy("name").startAt(mSearch.getText().toString()).endAt(mSearch.getText().toString()+"uf8ff");
+        firebaseSearch(query);*/
+
 
         btnsortName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isName=!isName;
-                if(isName){
-                    isLocation=false;
-                    isAmount=false;
+                if(swAscending.isChecked()==false) {
+                    Query query = mRef.orderBy("name", Query.Direction.ASCENDING).startAt(mSearch.getText().toString()).endAt(mSearch.getText().toString() + "uf8ff");
+                    firebaseSearch(query);
+                }else{
+                    Query query = mRef.orderBy("name", Query.Direction.DESCENDING).startAt(mSearch.getText().toString() + "uf8ff").endAt(mSearch.getText().toString());
+                    firebaseSearch(query);
                 }
+
             }
         });
         btnSortLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isLocation=!isLocation;
-                if(isLocation){
-                    isName=false;
-                    isAmount=false;
+                if(swAscending.isChecked()==false) {
+                    Query query = mRef.orderBy("location", Query.Direction.ASCENDING).startAt(mSearch.getText().toString() ).endAt(mSearch.getText().toString()+ "uf8ff");
+                    firebaseSearch(query);
+                }else{
+                    Query query = mRef.orderBy("location", Query.Direction.DESCENDING).startAt(mSearch.getText().toString() + "uf8ff").endAt(mSearch.getText().toString());
+                    firebaseSearch(query);
                 }
+
+
             }
 
         });
-        btnSortAmount.setOnClickListener(new View.OnClickListener() {
+        btnSortPriority.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isAmount=!isAmount;
-                if(isAmount){
-                    isName=false;
-                    isLocation=false;
+                int priority = 0;
+                try{
+                    priority=Integer.parseInt(mSearch.getText().toString());
+                }catch (Exception e){
+                    Toast.makeText(SearchExpense.this,"Priority should be a number!",Toast.LENGTH_SHORT).show();
                 }
+
+                if(swAscending.isChecked()==false) {
+                    Query query=mRef.orderBy("priority", Query.Direction.ASCENDING).whereEqualTo("priority",priority);
+                    firebaseSearch(query);
+                }else{
+                    Query query=mRef.orderBy("priority", Query.Direction.DESCENDING).whereEqualTo("priority",priority);
+                    firebaseSearch(query);
+                }
+
             }
         });
 
 
 
     }
-    private void firebaseSearch(String result){
-        Query query=mRef.orderBy("name").startAt(result).endAt(result+"uf8ff");;
-        if(isLocation){
+    private void firebaseSearch(Query sortQuery){
+
+        /*if(isLocation){
             query=mRef.orderBy("location").startAt(result).endAt(result+"uf8ff");
         }else if(isAmount){
             query=mRef.orderBy("amount").startAt(result).endAt(result+"uf8ff");
-        }
+        }*/
 
-        FirestoreRecyclerOptions<SearchItem> options = new FirestoreRecyclerOptions.Builder<SearchItem>().setQuery(query,SearchItem.class).build();
+        FirestoreRecyclerOptions<SearchItem> options = new FirestoreRecyclerOptions.Builder<SearchItem>().setQuery(sortQuery,SearchItem.class).build();
         adapter = new SearchAdapter(options);
         recyclerView = findViewById(R.id.Search_recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        adapter.startListening();
         recyclerView.setAdapter(adapter);
 
     }
 
 
-    @Override
+    /*@Override
     protected void onStart(){
         super.onStart();
 
@@ -112,7 +133,7 @@ public class SearchExpense extends AppCompatActivity {
         super.onStop();
 
         adapter.stopListening();
-    }
+    }*/
 
 
 

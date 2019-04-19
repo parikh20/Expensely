@@ -81,19 +81,22 @@ import java.util.concurrent.ExecutionException;
 public class MainActivity extends AppCompatActivity {
     private TextView mStats;
 
-    private Button selectbudg;
-    private Button editExpenses;
-    private Button addExp;
-    private Button imageAccess;
-    private Button account;
+//    private Button selectbudg;
+//    private Button editExpenses;
+//    private Button addExp;
+//    private Button imageAccess;
+//    private Button account;
+//    private Button editBudget;
+//    private Button mAlerts;
     private FirebaseAuth mAuth;
     private GraphView mGraph;
     private FirebaseFirestore db;
     private String statBlock;
     private PieChart mChart;
     private Button mSwap;
-    private Button editBudget;
+
     private Button becomeUser;
+
 
 
     private Budget curr_budg;
@@ -109,36 +112,38 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mStats = findViewById(R.id.quick_stats);
         mGraph = findViewById(R.id.main_graph);
-        selectbudg = findViewById(R.id.MainActivity_select_budg);
-        editBudget = findViewById(R.id.MainActivity_edit_budget);
-        addExp = findViewById(R.id.main_new_expense);
-        imageAccess = findViewById(R.id.MainActivity_ImageAccess);
-        account = findViewById(R.id.main_account);
+//        selectbudg = findViewById(R.id.MainActivity_select_budg);
+//        editBudget = findViewById(R.id.MainActivity_edit_budget);
+//        addExp = findViewById(R.id.main_new_expense);
+//        imageAccess = findViewById(R.id.MainActivity_ImageAccess);
+//        account = findViewById(R.id.main_account);
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         mChart = findViewById(R.id.main_chart);
         mSwap = findViewById(R.id.main_swapchart);
         perday = 0;
         amt = 0;
-        editExpenses = findViewById(R.id.MainActivity_edit_expenses);
+        //editExpenses = findViewById(R.id.MainActivity_edit_expenses);
         becomeUser = findViewById(R.id.becomeUser);
+        //mAlerts = findViewById(R.id.main_alerts);
         message = "0";
 
 
-        Intent notificationIntent = new Intent(this, AlertReceiver.class);
-        notificationIntent.putExtra(AlertReceiver.NOTIFICATION_ID, 1);
+        //NOTE TO LUCAS REMEMBER TO REMOVE THIS!!!!!!!!!!!!!!!!!!!!!!!  Testing only!!!!!!!!!! TODO
+        /*Intent notificationIntent = new Intent(this,AlertReceiver.class);
+        notificationIntent.putExtra(AlertReceiver.NOTIFICATION_ID,1);
         Notification n;
         Notification.Builder builder = new Notification.Builder(this);
         builder.setContentTitle("Budget Checkup");
         builder.setContentText("placeholder info about budget here");
         //builder.setSmallIcon(R.drawable.ic_logo);
         n = builder.build();
-        notificationIntent.putExtra(AlertReceiver.NOTIFICATION, n);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        long futureMillis = SystemClock.elapsedRealtime() + 20000;
+        notificationIntent.putExtra(AlertReceiver.NOTIFICATION,n);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),0,notificationIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+        long futureMillis = SystemClock.elapsedRealtime() + 10000;
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureMillis, pendingIntent);
-        System.out.println("Set up alarm for " + (SystemClock.elapsedRealtime() + 20000));
+        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,futureMillis,pendingIntent);
+        System.out.println("Set up alarm for " + (SystemClock.elapsedRealtime() + 10000));*/
 
         //update Time and monthly totals
         DocumentReference refM = db.collection("users").document(mAuth.getUid());
@@ -158,7 +163,22 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
+        //Check whether it's an anonymous
+        if(mAuth.getCurrentUser()==null) {
+                Bundle bundle = getIntent().getExtras();
+                String message1 = bundle.getString("message1");
+                assert message1 != null;
+                if(message1.equals("1"))
+                {
+                    becomeUser.setVisibility(View.VISIBLE);
+                }
+                else
+                {
+                    becomeUser.setVisibility(View.INVISIBLE);
+                }
+        }else{
+          becomeUser.setVisibility(View.INVISIBLE);
+        }
 
         //set up mchart
         mChart.setVisibility(View.INVISIBLE); //Invisible at start, to be added here: check user settings for default graph, make that one visible
@@ -251,8 +271,8 @@ public class MainActivity extends AppCompatActivity {
                 ArrayList<String> categoryList = new ArrayList<>(); //list of monthly categories
                 ArrayList<Double> categoryValues = new ArrayList<>(); //list of monthly totals
                 //Note: We only care about the primary category of each expense for the purposes of the pie chart.  Limit calculation and comparison might produce different results
-                //TODO If we change our mind here, this will have to change
 
+                boolean FutureThisMonth = false;
                 for (Expense e : ei) {
 
                     Instant inst = Instant.ofEpochSecond(e.getTime());
@@ -260,53 +280,68 @@ public class MainActivity extends AppCompatActivity {
                     //if it's in the current month and isn't an outlier (Behaved weirdly when i tried just checking getMonthvalue == getMonthValue.  This wasn't much harder)
                     if (zdt.isAfter(ZonedDateTime.now().withDayOfMonth(1)) && !e.getOutlierMonthly() && zdt.isBefore(ZonedDateTime.now().withDayOfMonth(LocalDate.now().lengthOfMonth()).plusDays(1))) {
                         //Add it to the line graph
-                        double am = e.getAmount();
-                        amt += am;
-                        long tim = e.getTime();
-                        //add expense data point on date
-                        ie.add(new DataPoint(tim, amt));
-                        Instant i = Instant.ofEpochSecond(tim);
-                        ZonedDateTime z = ZonedDateTime.ofInstant(i, ZonedDateTime.now().getZone());
-                        double budgetcheck = perday * (z.getDayOfMonth() - 1);
-                        isAboveLimit = (budgetcheck < amt) && budgetcheck != 0;
-
-                        //Add it to the category list
-                        if (e.getTags() == null || e.getTags().isEmpty()) {
-                            boolean found = false;
-                            int itr = 0;
-                            for (String str : categoryList) {
-                                if (str.equals("Unassigned")) {
-                                    categoryValues.set(itr, categoryValues.get(itr) + am);
-                                    found = true;
-                                }
-                                itr++;
-                            }
-                            if (!found) {
-                                categoryList.add("Unassigned");
-                                categoryValues.add(am);
-                            }
+                        if (zdt.isAfter(ZonedDateTime.now())) {
+                            FutureThisMonth = true;
                         } else {
-                            String cat = e.getTags().get(0);
-                            boolean found = false;
-                            int itr = 0;
-                            for (String str : categoryList) {
-                                if (cat.equals(str)) {
-                                    categoryValues.set(itr, categoryValues.get(itr) + am);
-                                    found = true;
+
+
+
+                            double am = e.getAmount();
+                            amt += am;
+                            long tim = e.getTime();
+                            //add expense data point on date
+                            ie.add(new DataPoint(tim, amt));
+                            Instant i = Instant.ofEpochSecond(tim);
+                            ZonedDateTime z = ZonedDateTime.ofInstant(i, ZonedDateTime.now().getZone());
+                            double budgetcheck = perday * (z.getDayOfMonth() - 1);
+                            isAboveLimit = (budgetcheck < amt) && budgetcheck != 0;
+
+                            //Add it to the category list
+                            if (e.getTags() == null || e.getTags().isEmpty()) {
+                                boolean found = false;
+                                int itr = 0;
+                                for (String str : categoryList) {
+                                    if (str.equals("Unassigned")) {
+                                        categoryValues.set(itr, categoryValues.get(itr) + am);
+                                        found = true;
+                                    }
+                                    itr++;
                                 }
-                                itr++;
-                            }
-                            if (!found) {
-                                categoryList.add(cat);
-                                categoryValues.add(am);
+                                if (!found) {
+                                    categoryList.add("Unassigned");
+                                    categoryValues.add(am);
+                                }
+                            } else {
+                                String cat = e.getTags().get(0);
+                                boolean found = false;
+                                int itr = 0;
+                                for (String str : categoryList) {
+                                    if (cat.equals(str)) {
+                                        categoryValues.set(itr, categoryValues.get(itr) + am);
+                                        found = true;
+                                    }
+                                    itr++;
+                                }
+                                if (!found) {
+                                    categoryList.add(cat);
+                                    categoryValues.add(am);
+                                }
                             }
                         }
                     }
                 }
                 //set up and complete series for line graph
                 //add additional points for current day and first day of month.
+
+                //if (!FutureThisMonth) {
+                    ie.add(new DataPoint(ZonedDateTime.now().toEpochSecond(), amt));
+                //System.out.println("amount ========================================================================= " + amt);
+                //}
+
+                ie.add(new DataPoint(ZonedDateTime.now().withDayOfMonth(1).toEpochSecond(),0));
+
                 ie.add(new DataPoint(ZonedDateTime.now().toEpochSecond(), amt));
-                ie.add(new DataPoint(ZonedDateTime.now().withDayOfMonth(1).toEpochSecond(), 0));
+
                 DataSort(ie);
                 DataPoint[] de = new DataPoint[ie.size()];
                 LineGraphSeries<DataPoint> series = new LineGraphSeries<>(ie.toArray(de));
@@ -319,6 +354,9 @@ public class MainActivity extends AppCompatActivity {
                     series.setColor(Color.GREEN);
                 }
                 series.setTitle("Your Spending");
+                if (!FutureThisMonth) {
+                    series.setTitle("Your Spending (Projected)");
+                }
                 mGraph.addSeries(series);
 
                 //set up and complete series for pie chart
@@ -390,43 +428,54 @@ public class MainActivity extends AppCompatActivity {
         mGraph.getViewport().setXAxisBoundsManual(true);
 
 
-        editExpenses.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), EditExpensesActivity.class);
-                startActivity(intent);
+//        editExpenses.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(getApplicationContext(), EditExpensesActivity.class);
+//                startActivity(intent);
+//
+//            }
+//        });
+//
+//
+//        selectbudg.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                selectBudget();
+//            }
+//        });
+//
+//        addExp.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                addExpense();
+//            }
+//        });
+//
+//        imageAccess.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                accessImage();
+//            }
+//        });
+//
+//        account.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                accountInfo();
+//            }
+//        });
+//
+//        mAlerts.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                alerts();
+//            }
+//        });
 
-            }
-        });
 
 
-        selectbudg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                selectBudget();
-            }
-        });
 
-        addExp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addExpense();
-            }
-        });
-
-        imageAccess.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                accessImage();
-            }
-        });
-
-        account.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                accountInfo();
-            }
-        });
         mSwap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -443,14 +492,14 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        editBudget.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), EditBudgetActivity.class);
-                startActivity(intent);
-
-            }
-        });
+//        editBudget.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(getApplicationContext(), EditBudgetActivity.class);
+//                startActivity(intent);
+//
+//            }
+//        });
 
         //Become a new user for anonymous user
 
@@ -535,6 +584,9 @@ public class MainActivity extends AppCompatActivity {
             case R.id.Menu_Search:
                 Search();
                 return true;
+            case R.id.Menu_Account:
+                accountInfo();
+                return true;
 
 
         }
@@ -553,6 +605,10 @@ public class MainActivity extends AppCompatActivity {
     }
     void Search(){
         Intent intent = new Intent(getApplicationContext(), SearchExpense.class);
+        startActivity(intent);
+    }
+    void alerts() {
+        Intent intent = new Intent(getApplicationContext(), AlertPreferencesActivity.class);
         startActivity(intent);
     }
 }

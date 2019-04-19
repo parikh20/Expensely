@@ -45,7 +45,6 @@ public class EditBudgetActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private Budget curr_budg;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,8 +85,9 @@ public class EditBudgetActivity extends AppCompatActivity {
                         listLimits += lim.getCategory();
                         listLimits += ", ";
                     }
-                    mLimits.setText(listLimits.substring(0, listLimits.lastIndexOf(",")));
-
+                    if (limits != null && limits.size() > 0){
+                        mLimits.setText(listLimits.substring(0, listLimits.lastIndexOf(",")));
+                    }
 
 
                 } else {
@@ -170,7 +170,10 @@ public class EditBudgetActivity extends AppCompatActivity {
                     listLimits += lim.getCategory();
                     listLimits += ", ";
                 }
-                mLimits.setText(listLimits.substring(0, listLimits.lastIndexOf(",")));
+
+                if (limits != null && limits.size() > 0){
+                    mLimits.setText(listLimits.substring(0, listLimits.lastIndexOf(",")));
+                }
             }
 
         }

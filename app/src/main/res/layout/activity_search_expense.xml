@@ -7,41 +7,55 @@
     android:orientation="vertical"
     tools:context=".SearchExpense">
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="Budget Search"
-        android:textSize="35sp"
-        android:textColor="#000000"/>
+
     <EditText
         android:id="@+id/Search_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="5dp"
+
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/ic_searchround"
         android:ems="10"
         android:hint="Type here"
+        android:inputType="textPersonName"
+        android:padding="10dp"
+        android:paddingStart="10dp"
+        android:paddingLeft="10dp"
+        android:paddingEnd="10dp"
+        android:paddingBottom="10dp" />
 
-        android:inputType="textPersonName" />
+    <Switch
+        android:id="@+id/Search_Switch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="5dp"
+        android:text="Descending" />
 
     <Button
         android:id="@+id/Search_sortName"
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Sort by name" />
+        android:text="Search by name" />
     <Button
         android:id="@+id/Search_sortLocation"
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Sort by Location " />
+        android:text="Search by Location " />
     <Button
-        android:id="@+id/Search_sortAmount"
+        android:id="@+id/Search_sortPriority"
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Sort by Amount" />
+        android:text="Search by priority" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/Search_recyclerView"
