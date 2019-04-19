@@ -78,6 +78,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private GoogleApiClient mGoogleApiClient;
     private TextView mTryClickable;
     FirebaseFirestore db;
+    private String message1;
     //private ProgressDialog pd;
 
     @Override
@@ -93,6 +94,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         mLoginButton = (Button) findViewById(R.id.login_button);
         mGoogleSignInButton = (SignInButton) findViewById(R.id.google_sign_in_button);
         mTryClickable = (TextView) findViewById(R.id.mTryClickable);
+        message1 = "0";
         //pd = new ProgressDialog(this);
         //pd.setMessage("Logging in...");
 
@@ -232,7 +234,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                  //Due to alerts being generally long term, alerts are to be turned off by default for trial users
                  //No alerts are to be set up here, or on future login!  will need to check if a user is a trial user when they log in, and avoid enabling alerts
                  //Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                 // Create an anonymous user
+
+                 // Create an anonymous user
                  mAuth.signInAnonymously().
                          addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                              @Override
@@ -257,8 +260,11 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                      Toast.makeText(LoginActivity.this, "moving to financial info", Toast.LENGTH_SHORT).show();
                                      LoginActivity.alertSet(mAuth, db, getApplicationContext(), (AlarmManager) getSystemService(Context.ALARM_SERVICE));
                                      Intent financialInfoIntent = new Intent(getApplicationContext(), FinancialInfo.class);
+                                     message1 = "1";
+                                     financialInfoIntent.putExtra("message1", message1);
                                      startActivity(financialInfoIntent);
                                      finish();
+                                     message1 = "0";
                                  }
                              }
 

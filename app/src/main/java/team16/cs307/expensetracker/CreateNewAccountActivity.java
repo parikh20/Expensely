@@ -126,6 +126,7 @@ public class CreateNewAccountActivity extends AppCompatActivity {
                 }
             }
         });
+        //When the anonymous user changes his temp account to permanent account
         mTransfer.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v) {
                 if (validateInputs(mEmail, mPassword, mConfirmPassword)) {
