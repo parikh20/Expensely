@@ -231,45 +231,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         // OnClickListener for when the Try the app is clicked
         mTryClickable.setOnClickListener(new View.OnClickListener() {
              @Override
-             public void onClick(View v) {
-                 //Due to alerts being generally long term, alerts are to be turned off by default for trial users
-                 //No alerts are to be set up here, or on future login!  will need to check if a user is a trial user when they log in, and avoid enabling alerts
-                 //Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-
+             public void onClick(View v)
+             {
                  // Create an anonymous user
-                 mAuth.signInAnonymously().
-                         addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                             @Override
-                             public void onComplete(@NonNull Task<AuthResult> task) {
-                                 if (!task.isSuccessful()) {
-                                     Toast.makeText(LoginActivity.this, task.getException().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                                 } else {
-
-                                     Map<String, Object> newUser = new HashMap<>();
-                                     newUser.put("email", mAuth.getCurrentUser().getEmail());
-
-                                     db.collection("users").document(mAuth.getUid()).set(newUser, SetOptions.merge());
-                                     //default user preference
-                                     Preferences defPref = new Preferences();
-                                     Map<String, Object> userPref = new HashMap<>();
-                                     userPref.put("darkMode", defPref.isDarkMode());
-                                     userPref.put("fontSize", defPref.getFontSize());
-                                     userPref.put("colorScheme", defPref.getColorScheme());
-                                     userPref.put("defaultGraph", defPref.getDefaultGraph());
-                                     userPref.put("defaultBudgetNum", defPref.getDefaultBudgetNum());
-                                     db.collection("users").document(mAuth.getUid()).collection("Preference").document("userPreference").set(userPref);
-                                     Toast.makeText(LoginActivity.this, "moving to financial info", Toast.LENGTH_SHORT).show();
-                                     LoginActivity.alertSet(mAuth, db, getApplicationContext(), (AlarmManager) getSystemService(Context.ALARM_SERVICE));
-                                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                                     message1 = "1";
-                                     intent.putExtra("message1", message1);
-                                     startActivity(intent);
-                                     finish();
-                                     message1 = "0";
-                                 }
-                             }
-
-                         });
+                 updateUI(mAuth.getCurrentUser());
                  alertSet(mAuth, db, getApplicationContext(), (AlarmManager) getSystemService(Context.ALARM_SERVICE));
                  Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                  LoginActivity.this.startActivity(intent);
@@ -287,6 +252,37 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         });
     }
 
+    private void updateUI(FirebaseUser user) {
+        if (user == null) {
+            mAuth.signInAnonymously().
+                    addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (!task.isSuccessful()) {
+                                updateUI(null);
+                            } else {
+
+//                                         Map<String, Object> newUser = new HashMap<>();
+//                                         newUser.put("email", "");
+//
+//                                         db.collection("users").document(mAuth.getUid()).set(newUser, SetOptions.merge());
+//                                         //default user preference
+//                                         Preferences defPref = new Preferences();
+//                                         Map<String, Object> userPref = new HashMap<>();
+//                                         userPref.put("darkMode", defPref.isDarkMode());
+//                                         userPref.put("fontSize", defPref.getFontSize());
+//                                         userPref.put("colorScheme", defPref.getColorScheme());
+//                                         userPref.put("defaultGraph", defPref.getDefaultGraph());
+//                                         userPref.put("defaultBudgetNum", defPref.getDefaultBudgetNum());
+//                                         db.collection("users").document(mAuth.getUid()).collection("Preference").document("userPreference").set(userPref);
+//                                         Toast.makeText(LoginActivity.this, "moving to financial info", Toast.LENGTH_SHORT).show();
+//                                         LoginActivity.alertSet(mAuth, db, getApplicationContext(), (AlarmManager) getSystemService(Context.ALARM_SERVICE));
+                                updateUI(mAuth.getCurrentUser());
+                            }
+                        }
+                    });
+        }
+    }
     public void configureGoogleSignIn() {
         GoogleSignInOptions options = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken("1000541586546-kcq736a6s7fvon8cvi08oiuog7a36l7i.apps.googleusercontent.com").requestEmail().build();
