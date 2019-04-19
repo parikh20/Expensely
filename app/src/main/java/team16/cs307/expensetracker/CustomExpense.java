@@ -324,8 +324,8 @@ public class CustomExpense extends AppCompatActivity implements AdapterView.OnIt
                             notificationIntent.putExtra(AlertReceiver.NOTIFICATION, n);
                             PendingIntent pendingIntent = PendingIntent.getBroadcast(context, last + 100, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                             Calendar cal = Calendar.getInstance();
-                            cal.set(year, month, day, 0, 0, 1);
-                            //cal.set(2019,3,18,18,45,0);  TESTING PURPOSES : set specific time
+                            //cal.set(year, month, day, 0, 0, 1);
+                            cal.set(2019,3,18,20,13,0);  //TESTING PURPOSES : set specific time
                             final int id = (int) System.currentTimeMillis();
                             alarmManager.set(AlarmManager.RTC_WAKEUP,cal.getTimeInMillis(), pendingIntent);
                             System.out.println("Set up alarm for " + cal.getTimeInMillis());

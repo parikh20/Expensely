@@ -425,6 +425,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 c. the alert then displays this information, allowing the user to click it and enter the app (main screen redirect)
 
         */
+
+
+
         DocumentReference docRef = db.collection("users").document(mAuth.getUid());
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -432,9 +435,19 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document != null && document.exists()) {
-                        if (document.get("alertsSetUp") == null || document.get("alertsTurnedOff") == null) {
+                        int days = 1;
+                        if (document.get("budg_interval") == null || document.getString("budg_interval") == null ) {
+                            Map<String, String> interval = new HashMap<>();
+                            interval.put("budg_interval", "1");
+                            db.collection("users").document(mAuth.getUid()).set(interval, SetOptions.merge());
+                        } else {
+                            days = Integer.valueOf(document.getString("budg_interval"));
+                        }
+                        final int fdays = days;
+                        if (document.get("alertsSetUp") == null || document.get("alertsTurnedOff") == null || document.get("expenseAlertsTurnedOff") == null) {
                             Map<String,String> alerts = new HashMap<>();
                             alerts.put("alertsSetUp", "false");
+                            alerts.put("expenseAlertsTurnedOff", "false");
                             alerts.put("alertsTurnedOff","false");
                             alerts.put("email", mAuth.getCurrentUser().getEmail());
                             db.collection("users").document(mAuth.getUid()).set(alerts, SetOptions.merge());
@@ -486,11 +499,11 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                 notificationIntent.putExtra(AlertReceiver.NOTIFICATION,n);
                                 PendingIntent pendingIntent = PendingIntent.getBroadcast(context,0,notificationIntent,PendingIntent.FLAG_CANCEL_CURRENT);
                                 //!!!!!!!!!!!!FOR TESTING NOTIFICATIONS==== SET FUTUREMILLIS TO elapsed time + 10000 for a ten second notification
-                                long futureMillis = SystemClock.elapsedRealtime() + TimeUnit.DAYS.toMillis(1);//10000;
+                                long futureMillis = SystemClock.elapsedRealtime() + TimeUnit.DAYS.toMillis(fdays);//10000;
                                 //AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
                                 alarmManager.cancel(pendingIntent);
-                                alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,futureMillis, AlarmManager.INTERVAL_DAY,pendingIntent);//,pendingIntent);10000
-                                System.out.println("Set up alarm for " + (SystemClock.elapsedRealtime() + TimeUnit.DAYS.toMillis(1)));//10000));//
+                                alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,futureMillis, AlarmManager.INTERVAL_DAY * fdays,pendingIntent);//,pendingIntent);10000
+                                System.out.println("Set up alarm for " + (SystemClock.elapsedRealtime() + TimeUnit.DAYS.toMillis(fdays)));//10000));//
 
                                 Map<String,String> alerts = new HashMap<>();
                                 alerts.put("alertsSetUp", "true");

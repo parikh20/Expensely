@@ -94,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
     private Button mSwap;
     private Button editBudget;
     private Button becomeUser;
+    private Button mAlerts;
 
 
     private Budget curr_budg;
@@ -122,10 +123,11 @@ public class MainActivity extends AppCompatActivity {
         amt = 0;
         editExpenses = findViewById(R.id.MainActivity_edit_expenses);
         becomeUser = findViewById(R.id.becomeUser);
+        mAlerts = findViewById(R.id.main_alerts);
         message = "0";
 
 
-
+        //NOTE TO LUCAS REMEMBER TO REMOVE THIS!!!!!!!!!!!!!!!!!!!!!!!  Testing only!!!!!!!!!! TODO
         Intent notificationIntent = new Intent(this,AlertReceiver.class);
         notificationIntent.putExtra(AlertReceiver.NOTIFICATION_ID,1);
         Notification n;
@@ -446,6 +448,17 @@ public class MainActivity extends AppCompatActivity {
                 accountInfo();
             }
         });
+
+        mAlerts.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alerts();
+            }
+        });
+
+
+
+
         mSwap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -572,6 +585,10 @@ public class MainActivity extends AppCompatActivity {
     }
     void Search(){
         Intent intent = new Intent(getApplicationContext(), SearchExpense.class);
+        startActivity(intent);
+    }
+    void alerts() {
+        Intent intent = new Intent(getApplicationContext(), AlertPreferencesActivity.class);
         startActivity(intent);
     }
 }

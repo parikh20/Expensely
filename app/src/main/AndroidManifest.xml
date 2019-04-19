@@ -22,8 +22,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/LightTheme">
-        <activity android:name=".SearchExpense"
-                    android:parentActivityName=".MainActivity"></activity>
+        <activity android:name=".AlertPreferencesActivity"></activity>
+        <activity
+            android:name=".SearchExpense"
+            android:parentActivityName=".MainActivity" />
         <activity android:name=".BrowseBudgets" />
         <activity android:name=".PreferenceActivity" />
         <activity

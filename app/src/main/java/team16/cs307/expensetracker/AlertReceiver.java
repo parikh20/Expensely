@@ -61,6 +61,10 @@ public class AlertReceiver extends BroadcastReceiver {
         final Context fcontext = context;
         final Intent fintent = intent;
         if(intent.getStringExtra("expense") != null) {
+
+
+
+
             final String name = intent.getStringExtra("expense");
             System.out.println("Looking at an expense" + name);
             DocumentReference ref =  db.collection("users").document(mAuth.getUid()).collection("Preferences").document("PendingExpenseIDs");
@@ -74,7 +78,7 @@ public class AlertReceiver extends BroadcastReceiver {
                     }
                     String title = "Remember to pay " + name + " today!";
                     String content = "Find more info in the Expensely app!";
-                    NotificationManager notificationManager = (NotificationManager) fcontext.getSystemService(Context.NOTIFICATION_SERVICE);
+                    final NotificationManager notificationManager = (NotificationManager) fcontext.getSystemService(Context.NOTIFICATION_SERVICE);
 
 
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
@@ -99,9 +103,28 @@ public class AlertReceiver extends BroadcastReceiver {
                     builder.setContentIntent(mainIntent);
                     builder.setAutoCancel(true);
                     n = builder.build();
-                    int id = fintent.getIntExtra(NOTIFICATION_ID, 0);
+                    final int id = fintent.getIntExtra(NOTIFICATION_ID, 0);
                     System.out.println("ABOUT TO NOTIFY " + name);
-                    notificationManager.notify(id, n);
+                    final Notification fn = n;
+                    DocumentReference exemptCheck = db.collection("users").document(mAuth.getUid());
+                    exemptCheck.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            if (documentSnapshot.get("expenseAlertsTurnedOff") != null && documentSnapshot.getString("expenseAlertsTurnedOff").equals("false")) {
+                                notificationManager.notify(id, fn);
+                            }
+
+
+
+                        }
+                    });
+
+
+
+
+
+
+
                     if (name != null && ids != null) {
                         ids.remove(name);
                         db.collection("users").document(mAuth.getUid()).collection("Preferences").document("PendingExpenseIDs").set(ids);
@@ -135,6 +158,12 @@ public class AlertReceiver extends BroadcastReceiver {
                 }
             });
             return;
+
+
+
+
+
+
         }
 
 
@@ -153,7 +182,7 @@ public class AlertReceiver extends BroadcastReceiver {
                 if (currBudget == null) {
                     title = "You don't have an Expensely budget selected";
                     content = "Create or select a budget in the Expensely app and begin monitoring your expenses";
-                    NotificationManager notificationManager = (NotificationManager) fcontext.getSystemService(Context.NOTIFICATION_SERVICE);
+                    final NotificationManager notificationManager = (NotificationManager) fcontext.getSystemService(Context.NOTIFICATION_SERVICE);
 
 
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
@@ -176,8 +205,22 @@ public class AlertReceiver extends BroadcastReceiver {
                     builder.setContentIntent(mainIntent);
                     builder.setAutoCancel(true);
                     n = builder.build();
-                    int id = fintent.getIntExtra(NOTIFICATION_ID, 0);
-                    notificationManager.notify(id, n);
+                    final int id = fintent.getIntExtra(NOTIFICATION_ID, 0);
+
+                    final Notification fn = n;
+                    DocumentReference exemptCheck = db.collection("users").document(mAuth.getUid());
+                    exemptCheck.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            if (documentSnapshot.get("alertsTurnedOff") != null && documentSnapshot.getString("alertsTurnedOff").equals("false")) {
+                                notificationManager.notify(id, fn);
+                            }
+
+
+
+                        }
+                    });
+
                 } else {
 
                     DocumentReference ref = db.collection("users").document(mAuth.getUid());
@@ -206,7 +249,7 @@ public class AlertReceiver extends BroadcastReceiver {
 
 
 
-                            NotificationManager notificationManager = (NotificationManager) fcontext.getSystemService(Context.NOTIFICATION_SERVICE);
+                            final NotificationManager notificationManager = (NotificationManager) fcontext.getSystemService(Context.NOTIFICATION_SERVICE);
 
 
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
@@ -229,8 +272,22 @@ public class AlertReceiver extends BroadcastReceiver {
                             builder.setContentIntent(mainIntent);
                             builder.setAutoCancel(true);
                             n = builder.build();
-                            int id = fintent.getIntExtra(NOTIFICATION_ID, 0);
-                            notificationManager.notify(id, n);
+                            final int id = fintent.getIntExtra(NOTIFICATION_ID, 0);
+
+
+                            final Notification fn = n;
+                            DocumentReference exemptCheck = db.collection("users").document(mAuth.getUid());
+                            exemptCheck.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                @Override
+                                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                    if (documentSnapshot.get("alertsTurnedOff") != null && documentSnapshot.getString("alertsTurnedOff").equals("false")) {
+                                        notificationManager.notify(id, fn);
+                                    }
+
+
+
+                                }
+                            });
                         }
                     });
 
