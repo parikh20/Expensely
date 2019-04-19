@@ -9,6 +9,8 @@
     <uses-permission android:name="android.permission.camera2" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.read_external_storage" />
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:name=".CustomApp"
@@ -20,7 +22,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/LightTheme">
-        <activity android:name=".PreferenceActivity"></activity>
+        <activity android:name=".SearchExpense"
+                    android:parentActivityName=".MainActivity"></activity>
+        <activity android:name=".BrowseBudgets" />
+        <activity android:name=".PreferenceActivity" />
         <activity
             android:name=".EditBudgetActivity"
             android:parentActivityName=".MainActivity" />
@@ -36,7 +41,9 @@
             android:name=".ImageShow"
             android:label="@string/title_activity_image_show"
             android:theme="@style/LightTheme.NoActionBar" />
-        <activity android:name=".CustomExpense" />
+        <activity
+            android:name=".CustomExpense"
+            android:parentActivityName=".MainActivity" />
         <activity android:name=".CustomLimitCreation" />
         <activity android:name=".CustomBudgetCreation" />
         <activity
@@ -60,12 +67,20 @@
             android:theme="@style/LightTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".MainActivity"
+        <activity android:name=".MainActivity"
             android:theme="@style/LightTheme.NoActionBar"/>
+
+        <receiver
+            android:name=".AlertReceiver"
+            android:enabled="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

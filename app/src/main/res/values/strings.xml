@@ -95,5 +95,6 @@
 
     <!-- Custom Settings Strings -->
     <string name="custom_settings_default_graph">Default Graph</string>
+    <string name="title_activity_search_expense">SearchExpense</string>
 
 </resources>

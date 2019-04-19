@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".SearchExpense">
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Budget Search"
+        android:textSize="35sp"
+        android:textColor="#000000"/>
+    <EditText
+        android:id="@+id/Search_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Type here"
+
+        android:inputType="textPersonName" />
+
+    <Button
+        android:id="@+id/Search_sortName"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sort by name" />
+    <Button
+        android:id="@+id/Search_sortLocation"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sort by Location " />
+    <Button
+        android:id="@+id/Search_sortAmount"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sort by Amount" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/Search_recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="20dp"
+
+
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="0dp" />
+
+
+</LinearLayout>

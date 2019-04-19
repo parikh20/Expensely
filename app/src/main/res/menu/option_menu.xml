@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <item android:id = "@+id/Menu_Image_Acess"
+        android:icon="@drawable/ic_photo"
+        android:title = "Image access"
+        app:showAsAction="ifRoom"/>
+    <item android:id = "@+id/Menu_Search"
+        android:icon="@drawable/ic_search_black_24dp"
+        android:title = "Search"
+        app:showAsAction="ifRoom"/>
+    <item android:id = "@+id/Menu_Add_New_Expense"
+            android:title="New Expense"
+            app:showAsAction="never"/>
+    <item android:id = "@+id/Menu_Current_Budget"
+        android:title="Current Budget"
+        app:showAsAction="never"/>
+    <item android:id = "@+id/Menu_Past_Expense"
+        android:title="Past Expense"
+        app:showAsAction="never"/>
+    <item android:id = "@+id/Menu_Budget_Select"
+        android:title="Select Budget"
+        app:showAsAction="never"/>
+
+</menu>

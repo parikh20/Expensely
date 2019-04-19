@@ -1,10 +1,24 @@
 package team16.cs307.expensetracker;
 
 
+import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.PendingIntent;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.os.SystemClock;
+import android.support.v4.app.NotificationCompat;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -26,8 +40,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.core.Tag;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -36,9 +52,18 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import com.google.firebase.firestore.SetOptions;
 
+import org.threeten.bp.Instant;
+import org.threeten.bp.LocalDateTime;
+import org.threeten.bp.ZonedDateTime;
+import org.threeten.bp.temporal.ChronoUnit;
+
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
@@ -51,6 +76,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private SignInButton mGoogleSignInButton;
     private FirebaseAuth mAuth;
     private GoogleApiClient mGoogleApiClient;
+    private TextView mTryClickable;
     FirebaseFirestore db;
     //private ProgressDialog pd;
 
@@ -66,6 +92,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         mCreateNewAccountClickable = (TextView) findViewById(R.id.create_new_account_clickable);
         mLoginButton = (Button) findViewById(R.id.login_button);
         mGoogleSignInButton = (SignInButton) findViewById(R.id.google_sign_in_button);
+        mTryClickable = (TextView) findViewById(R.id.mTryClickable);
         //pd = new ProgressDialog(this);
         //pd.setMessage("Logging in...");
 
@@ -96,15 +123,16 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                             //Toast.makeText(LoginActivity.this, "User does not exist in db", Toast.LENGTH_SHORT).show();
                             Map<String, Object> newUser = new HashMap<>();
                             newUser.put("email", mAuth.getCurrentUser().getEmail());
-                            db.collection("users").document(mAuth.getUid()).set(newUser);
+                            db.collection("users").document(mAuth.getUid()).set(newUser, SetOptions.merge());
                         }
+
                     } else {
                         Toast.makeText(LoginActivity.this, "Failure to check db", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
 
-
+            alertSet(mAuth, db, getApplicationContext(), (AlarmManager) getSystemService(Context.ALARM_SERVICE));
             //Toast.makeText(LoginActivity.this,"user path = " + mAuth.getCurrentUser().getUid(), Toast.LENGTH_SHORT).show();
           Intent i = new Intent(LoginActivity.this, MainActivity.class);
           startActivity(i);
@@ -154,7 +182,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                                 Toast.makeText(LoginActivity.this, "User does not exist in db", Toast.LENGTH_SHORT).show();
                                                 Map<String, Object> newUser = new HashMap<>();
                                                 newUser.put("email", mAuth.getCurrentUser().getEmail());
-                                                db.collection("users").document(mAuth.getUid()).set(newUser);
+                                                db.collection("users").document(mAuth.getUid()).set(newUser, SetOptions.merge());
                                                 Preferences defPref = new Preferences();
                                                 Map<String,Object> userPref = new HashMap<>();
                                                 userPref.put("darkMode",defPref.isDarkMode());
@@ -169,6 +197,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                         }
                                     }
                                 });
+                                alertSet(mAuth, db, getApplicationContext(), (AlarmManager) getSystemService(Context.ALARM_SERVICE));
                                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                 LoginActivity.this.startActivity(intent);
                                 finish();
@@ -195,6 +224,51 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 startActivity(forgotPasswordIntent);
             }
         });
+
+        // OnClickListener for when the Try the app is clicked
+        mTryClickable.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View v) {
+                 //Due to alerts being generally long term, alerts are to be turned off by default for trial users
+                 //No alerts are to be set up here, or on future login!  will need to check if a user is a trial user when they log in, and avoid enabling alerts
+                 //Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                 // Create an anonymous user
+                 mAuth.signInAnonymously().
+                         addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                             @Override
+                             public void onComplete(@NonNull Task<AuthResult> task) {
+                                 if (!task.isSuccessful()) {
+                                     Toast.makeText(LoginActivity.this, task.getException().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                                 } else {
+
+                                     Map<String, Object> newUser = new HashMap<>();
+                                     newUser.put("email", mAuth.getCurrentUser().getEmail());
+
+                                     db.collection("users").document(mAuth.getUid()).set(newUser, SetOptions.merge());
+                                     //default user preference
+                                     Preferences defPref = new Preferences();
+                                     Map<String, Object> userPref = new HashMap<>();
+                                     userPref.put("darkMode", defPref.isDarkMode());
+                                     userPref.put("fontSize", defPref.getFontSize());
+                                     userPref.put("colorScheme", defPref.getColorScheme());
+                                     userPref.put("defaultGraph", defPref.getDefaultGraph());
+                                     userPref.put("defaultBudgetNum", defPref.getDefaultBudgetNum());
+                                     db.collection("users").document(mAuth.getUid()).collection("Preference").document("userPreference").set(userPref);
+                                     Toast.makeText(LoginActivity.this, "moving to financial info", Toast.LENGTH_SHORT).show();
+                                     LoginActivity.alertSet(mAuth, db, getApplicationContext(), (AlarmManager) getSystemService(Context.ALARM_SERVICE));
+                                     Intent financialInfoIntent = new Intent(getApplicationContext(), FinancialInfo.class);
+                                     startActivity(financialInfoIntent);
+                                     finish();
+                                 }
+                             }
+
+                         });
+                 alertSet(mAuth, db, getApplicationContext(), (AlarmManager) getSystemService(Context.ALARM_SERVICE));
+                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                 LoginActivity.this.startActivity(intent);
+                 finish();
+             }
+         });
 
         // OnClickListener for when the Create New Account text is clicked
         mCreateNewAccountClickable.setOnClickListener(new View.OnClickListener() {
@@ -245,13 +319,14 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                                     Toast.makeText(LoginActivity.this, "User does not exist in db", Toast.LENGTH_SHORT).show();
                                                     Map<String, Object> newUser = new HashMap<>();
                                                     newUser.put("email", mAuth.getCurrentUser().getEmail());
-                                                    db.collection("users").document(mAuth.getUid()).set(newUser);
+                                                    db.collection("users").document(mAuth.getUid()).set(newUser, SetOptions.merge());
                                                 }
                                             } else {
                                                 Toast.makeText(LoginActivity.this, "Failure to check db", Toast.LENGTH_SHORT).show();
                                             }
                                         }
                                     });
+                                    alertSet(mAuth, db, getApplicationContext(), (AlarmManager) getSystemService(Context.ALARM_SERVICE));
                                     Toast.makeText(LoginActivity.this, "Google Login Successful", Toast.LENGTH_SHORT).show();
                                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                     LoginActivity.this.startActivity(intent);
@@ -265,6 +340,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             }
         }
     }
+
 
 
     //onStart Placeholder for Firebase Authentication on startup.  Figure we'll replace this with login key functionality soon.
@@ -310,5 +386,106 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         return true;
     }
 
+    public static void alertSet(final FirebaseAuth mAuth, final FirebaseFirestore db, final Context context, final AlarmManager alarmManager) {
+        /*alertSet is called on every log in, it will
+        1. check if alerts are already configured and running
+            A. if they are, nothing to see here, all operating as normal.  continues out of function to login
+            B. if not, we check if the user has turned off alerts in preferences
+                a. if they did, all operating as normal, proceeds to login
+                b. if they didn't, we know alerts are not configured yet, continues to point 2
+            C. if the fields for "alertsSetUp" or "alertsTurnedOff" are missing in firebase, we know that alerts have not yet been configured for this user
+                a. continues to point 2, creating the fields with values of "false"
+        2. if we're here, it means alerts are not configured, or turned off by something other than the user
+            A. schedule a repeating budget alert
+                a. details: triggers every day, at the time which it was configured (we want to avoid exact time alerts, they're generally bad practice)
+                b. The alert will trigger a call to BudgetNotification, which checks if the user is over their projected budget and/or total budget
+                c. the alert then displays this information, allowing the user to click it and enter the app (main screen redirect)
+
+        */
+        DocumentReference docRef = db.collection("users").document(mAuth.getUid());
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document != null && document.exists()) {
+                        if (document.get("alertsSetUp") == null || document.get("alertsTurnedOff") == null) {
+                            Map<String,String> alerts = new HashMap<>();
+                            alerts.put("alertsSetUp", "false");
+                            alerts.put("alertsTurnedOff","false");
+                            alerts.put("email", mAuth.getCurrentUser().getEmail());
+                            db.collection("users").document(mAuth.getUid()).set(alerts, SetOptions.merge());
+                            //set up alerts (achieved in function)
+
+                        }
+                        Boolean setup = Boolean.parseBoolean(document.getString("alertsSetUp"));
+                        Boolean exempt = Boolean.parseBoolean(document.getString("alertsTurnedOff"));
+                        if (setup  == null || exempt == null) {
+                            //this is just here to prevent the android studio warning about nullpointer.  These variables should never result in null, as they are only placed as a boolean
+                            //if we ever reach this statement, it is likely due to one of these variables being updated incorrectly, as a non-boolean
+                            return;
+                        }
+                        if (setup || exempt) {
+                            //continue as planned
+                            return;
+                        } else {
+                            if (!exempt) {
+                                //set up alerts
+                                //Here we make a sample notification, and set an alert one day from now. (TODO: change to repeating alert)
+                                //We will specify what the notification is looking for, and get fresh data, when the alert receiver is called
+                                //
+                                ComponentName receiver = new ComponentName(context, AlertReceiver.class);
+                                PackageManager pm = context.getPackageManager();
+
+                                pm.setComponentEnabledSetting(receiver,
+                                        PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                                        PackageManager.DONT_KILL_APP);
+                                Toast.makeText(context, "Setting up alerts", Toast.LENGTH_SHORT).show();
+/*
+                                AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                                Intent intent = new Intent(getApplicationContext(), AlertReceiver.class);
+                                PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),1,intent,0);
+                                alarmManager.setExact(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis() + 10000,pendingIntent);
+*/
+
+                                Intent notificationIntent = new Intent(context,AlertReceiver.class);
+                                notificationIntent.putExtra(AlertReceiver.NOTIFICATION_ID,1);
+                                Notification n;
+                                Intent budgRedirect = new Intent(context,LoginActivity.class);
+                                PendingIntent mainIntent = PendingIntent.getActivity(context,1,budgRedirect,PendingIntent.FLAG_UPDATE_CURRENT);
+                                NotificationCompat.Builder builder = new NotificationCompat.Builder(context,"BudgetAlert");
+                                builder.setContentTitle("Budget Checkup");
+                                builder.setContentText("placeholder info about budget here");
+                                builder.setSmallIcon(R.drawable.ic_launcher_background);
+                                builder.setContentIntent(mainIntent);
+                                builder.setAutoCancel(true);
+                                n = builder.build();
+                                notificationIntent.putExtra(AlertReceiver.NOTIFICATION,n);
+                                PendingIntent pendingIntent = PendingIntent.getBroadcast(context,0,notificationIntent,PendingIntent.FLAG_CANCEL_CURRENT);
+                                //!!!!!!!!!!!!FOR TESTING NOTIFICATIONS==== SET FUTUREMILLIS TO elapsed time + 10000 for a ten second notification
+                                long futureMillis = SystemClock.elapsedRealtime() + TimeUnit.DAYS.toMillis(1);//10000;
+                                //AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                                alarmManager.cancel(pendingIntent);
+                                alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,futureMillis, AlarmManager.INTERVAL_DAY,pendingIntent);//,pendingIntent);10000
+                                System.out.println("Set up alarm for " + (SystemClock.elapsedRealtime() + TimeUnit.DAYS.toMillis(1)));//10000));//
+
+                                Map<String,String> alerts = new HashMap<>();
+                                alerts.put("alertsSetUp", "true");
+                                alerts.put("alertsTurnedOff","false"); //7:55 test time
+                                alerts.put("email", mAuth.getCurrentUser().getEmail());
+                                db.collection("users").document(mAuth.getUid()).set(alerts, SetOptions.merge());
+
+                            }
+                        }
+
+
+
+
+
+                    }
+                }
+            }
+        });
+    }
 
 }

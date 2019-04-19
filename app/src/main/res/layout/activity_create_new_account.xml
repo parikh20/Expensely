@@ -107,6 +107,19 @@
                 android:textColor="#FFFFFF"
                 android:background="@drawable/rounded_textfield_green"
                 android:elevation="4dp"/>
+            <Button
+                android:textSize="12sp"
+                android:id="@+id/transfer_button"
+                android:layout_width="200dp"
+                android:layout_height="50dp"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/padding"
+                android:ems="7"
+                android:text="CREATE AND TRANSFER DATA"
+                android:textColor="#FFFFFF"
+                android:background="@drawable/rounded_textfield_green"
+                android:elevation="4dp"/>
         </RelativeLayout>
     </RelativeLayout>
 </RelativeLayout>

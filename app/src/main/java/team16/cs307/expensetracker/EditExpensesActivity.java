@@ -25,6 +25,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
 import com.jjoe64.graphview.series.DataPoint;
 
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -34,6 +35,7 @@ import org.threeten.bp.ZoneId;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,13 +63,14 @@ public class EditExpensesActivity extends AppCompatActivity implements AdapterVi
     private FirebaseAuth mAuth;
     private Expense expense;
     private long oldtime;
+    private double oldAmount;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_expenses);
-
+        oldAmount = 0;
         mLocation = findViewById(R.id.custom_expense_location);
         mName = findViewById(R.id.custom_expense_name);
         mRepeating = findViewById(R.id.custom_expense_repeating);
@@ -179,15 +182,47 @@ public class EditExpensesActivity extends AppCompatActivity implements AdapterVi
                 String name = mName.getText().toString();
                 String location = mLocation.getText().toString();
                 String repeating = mRepeating.getText().toString();
-                double amount = Double.parseDouble(mAmount.getText().toString());
+                final double amount = Double.parseDouble(mAmount.getText().toString());
 
 
                 boolean outlierW = outlier == 1;
                 boolean outlierM = outlier == 2;
 
                 Expense e = new Expense(name, location, repeating.equals("Y"), oldtime, amount, tags, priority, outlierM, outlierW);
+                final double difference = amount - oldAmount;
                 db.collection("users").document(mAuth.getUid()).collection("Expenses").document(name).set(e);
-                //TODO: update total monthly/weekly/yearly, update category totals m/y/w
+
+                if (!outlierM && LocalDateTime.now().getMonth() == LocalDateTime.ofInstant(Instant.ofEpochSecond(oldtime), ZoneId.systemDefault()).getMonth() &&
+                        LocalDateTime.now().getYear() == LocalDateTime.ofInstant(Instant.ofEpochSecond(oldtime), ZoneId.systemDefault()).getYear()) {
+
+                    //TODO: update total monthly/weekly/yearly, update category totals m/y/w
+
+
+
+                    DocumentReference ref = db.collection("users").document(mAuth.getUid());
+                    ref.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+
+                              if (documentSnapshot.get("Monthly Total") != null) {
+                                  Map<String,String> userinfo = new HashMap<>();
+                                  userinfo.put("Monthly Total", String.valueOf(Double.valueOf(documentSnapshot.getString("Monthly Total")) + difference));
+                                  userinfo.put("LastUpdated", LocalDateTime.now().getMonth().toString());
+                                  db.collection("users").document(mAuth.getUid()).set(userinfo, SetOptions.merge());
+                              } else {
+                                  Map<String,String> userinfo = new HashMap<>();
+                                  userinfo.put("Monthly Total", String.valueOf(amount));
+                                  userinfo.put("LastUpdated", LocalDateTime.now().getMonth().toString());
+                                  db.collection("users").document(mAuth.getUid()).set(userinfo, SetOptions.merge());
+                              }
+                        }
+                    });
+                } else {
+                    System.out.println("New Month");
+                    System.out.println(LocalDateTime.now().getMonth());
+                    System.out.println(LocalDateTime.ofInstant(Instant.ofEpochSecond(oldtime), ZoneId.systemDefault()).getMonth());
+                    System.out.println(oldtime);
+                }
 
 
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
@@ -276,6 +311,7 @@ public class EditExpensesActivity extends AppCompatActivity implements AdapterVi
 
 
                         mOutlier.setVisibility(View.VISIBLE);
+                        oldAmount = expense.getAmount();
                         mAmount.setText(String.valueOf(expense.getAmount()));
                         mAmount.setVisibility(View.VISIBLE);
                     }
