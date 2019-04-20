@@ -1,5 +1,11 @@
 package team16.cs307.expensetracker;
 
+import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -22,6 +28,7 @@ public class AlertPreferencesActivity extends AppCompatActivity {
     private boolean isExemptBudgets;
     private boolean isSMS;
     private boolean isEmail;
+    private Button mTest;
     private Button mIntervalChange;
     private Button mSMS;
     private Button mEmail;
@@ -45,6 +52,7 @@ public class AlertPreferencesActivity extends AppCompatActivity {
         mFinish = findViewById(R.id.alert_finish);
         mSMS = findViewById(R.id.alert_toggle_sms);
         mEmail = findViewById(R.id.alert_toggle_email);
+        mTest = findViewById(R.id.alert_test);
 
 
 
@@ -257,6 +265,29 @@ public class AlertPreferencesActivity extends AppCompatActivity {
                 }
             }
         });
+
+
+        mTest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent notificationIntent = new Intent(getApplicationContext(),AlertReceiver.class);
+                notificationIntent.putExtra(AlertReceiver.NOTIFICATION_ID,1);
+                Notification n;
+                Notification.Builder builder = new Notification.Builder(getApplicationContext());
+                builder.setContentTitle("Budget Checkup");
+                builder.setContentText("placeholder info about budget here");
+                //builder.setSmallIcon(R.drawable.ic_logo);
+                n = builder.build();
+                notificationIntent.putExtra(AlertReceiver.NOTIFICATION,n);
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),30,notificationIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+                long futureMillis = SystemClock.elapsedRealtime() + 5000;
+                AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,futureMillis,pendingIntent);
+                System.out.println("Set up alarm for " + (SystemClock.elapsedRealtime() + 5000));
+            }
+        });
+
+
 
 
 

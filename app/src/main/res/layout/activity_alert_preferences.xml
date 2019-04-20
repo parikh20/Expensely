@@ -97,6 +97,14 @@ You can also choose to receive alerts as SMS messages or Emails" />
                 android:layout_marginTop="595dp"
                 android:text="Turn on Email alerts" />
             <Button
+                android:id="@+id/alert_test"
+                style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog"
+                android:layout_width="wrap_content"
+                android:layout_height="70dp"
+                android:layout_centerHorizontal="false"
+                android:layout_marginTop="645dp"
+                android:text="Test Alert" />
+            <Button
                 android:id="@+id/alert_finish"
                 style="@style/Widget.AppCompat.Button.Colored"
                 android:layout_width="wrap_content"

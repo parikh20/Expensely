@@ -34,6 +34,7 @@ public class AlertReceiver extends BroadcastReceiver {
     private FirebaseFirestore db;
     @Override
     public void onReceive(Context context, Intent intent) {
+        System.out.println("REceived");
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         if (mAuth.getUid() == null ) {
